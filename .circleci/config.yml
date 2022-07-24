@@ -2,11 +2,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: node:16.10.0
-
+      - image: circleci/node
     steps:
       - checkout
-
       - run:
           name: npm clear
           command: rm -rf node_modules && npm cache clear --force && npm cache clean --force
@@ -16,6 +14,10 @@ jobs:
           command: npm install --legacy-peer-dep
 
       - run:
-          name: Build
+          name: build
           command: npm run build-release-stage
 
+workflows:
+  build-workflow:
+    jobs:
+      - build
