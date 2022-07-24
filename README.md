@@ -2,8 +2,8 @@
 <h1>Base0</h1>
 
 ![GitHub](https://img.shields.io/github/license/7thcode/base0)
-[![7thCode](https://circleci.com/gh/7thCode/attrpath.svg?style=shield)]()
-![node.js.yml](https://github.com/7thCode/attrpath/actions/workflows/node.js.yml/badge.svg)
+[![7thCode](https://circleci.com/gh/7thCode/base0.svg?style=shield)]()
+![node.js.yml](https://github.com/7thCode/base0/actions/workflows/node.js.yml/badge.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/7thcode/base0)
 
 </div>
