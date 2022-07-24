@@ -1,0 +1,12 @@
+<div *ngFor="let element of description.elements" [ngClass]=element.class [ngStyle]=element.style>
+	<textarea-element (onChange)="change($event)" (onValid)="valid($event)" *ngIf="element.type === 'textarea'" [description]="element"></textarea-element>
+	<input-element (onChange)="change($event)" (onValid)="valid($event)" *ngIf="element.type === 'input'" [description]="element"></input-element>
+	<select-element (onChange)="change($event)" (onValid)="valid($event)" *ngIf="element.type === 'select'" [description]="element"></select-element>
+	<radio-element (onChange)="change($event)" (onValid)="valid($event)" *ngIf="element.type === 'radio'" [description]="element"></radio-element>
+	<check-element (onChange)="change($event)" (onValid)="valid($event)" *ngIf="element.type === 'check'" [description]="element"></check-element>
+	<button-element (onClick)="click($event)" *ngIf="element.type === 'button'" [description]="element"></button-element>
+	<page-edit (onChange)="change($event)" (onClick)="click($event)" (onValid)="valid($event)" *ngIf="element.type === 'element'" [description]="element" [fxLayout]="element.layout"></page-edit>
+	<div *ngIf="element.type === 'div'">{{element.content}}</div>
+	<img *ngIf="element.type === 'img'" [src]="element.content" alt=""/>
+</div>
+

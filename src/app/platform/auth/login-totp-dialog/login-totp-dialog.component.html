@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>{{content.title}}</h1>
+
+<mat-dialog-content fxLayout="column">
+	<mat-card>
+		<mat-card-header>
+			<div class="description-text">{{content.description}}</div>
+		</mat-card-header>
+		<mat-card-content>
+			<form #form="ngForm" fxLayout="column" fxLayoutAlign="space-between" novalidate>
+				{{content.username}}
+				<mat-form-field class="input-text">
+					<mat-label>Code...</mat-label>
+					<input #code="ngModel" [(ngModel)]="content.code" autocomplete="off" matInput maxlength="6" minlength="6" name="code" placeholder="000000" required type="text">
+					<mat-error *ngIf="code.errors?.required;">入力してください</mat-error>
+					<mat-error *ngIf="code.errors?.maxlength">長すぎます</mat-error>
+					<mat-error *ngIf="code.errors?.minlength">短すぎます</mat-error>
+				</mat-form-field>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around" style="margin:6px;">
+	<button (click)="onAccept()" [disabled]="form.invalid || progress" color="primary" mat-raised-button>OK</button>
+	<button [disabled]="progress" color="warn" mat-dialog-close="" mat-raised-button>Cancel</button>
+</mat-dialog-actions>
+

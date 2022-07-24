@@ -1,0 +1,66 @@
+<div class="fix-action-dialog">
+	<h2 mat-dialog-title>Reply</h2>
+	<mat-dialog-content>
+		<mat-accordion>
+			<mat-expansion-panel>
+				<mat-expansion-panel-header>
+					<mat-panel-title>
+						{{content.subject}}
+					</mat-panel-title>
+					<mat-panel-description>
+						{{content.reply}}
+					</mat-panel-description>
+				</mat-expansion-panel-header>
+
+				<mat-tab-group>
+					<mat-tab label="TEXT">
+						<div [innerHTML]="content.text" style="height:240px;margin:16px;overflow: visible scroll;">
+						</div>
+					</mat-tab>
+					<mat-tab label="HTML">
+						<div [innerHTML]="content.html" style="height:240px;margin:16px;overflow: visible scroll;">
+						</div>
+					</mat-tab>
+				</mat-tab-group>
+
+			</mat-expansion-panel>
+		</mat-accordion>
+
+		<form #form="ngForm" fxLayout="column" fxLayoutAlign="space-between" novalidate>
+			<mat-form-field class="input-text">
+				<mat-label>Title...</mat-label>
+				<input #title_field="ngModel" [(ngModel)]="content.title" autocomplete="off" matInput maxlength="255" minlength="3" name="title_field" placeholder="xxxxxx..." required type="text">
+				<mat-hint>3文字以上500文字まで</mat-hint>
+				<mat-error *ngIf="title_field.errors?.required;">入力してください</mat-error>
+				<mat-error *ngIf="title_field.errors?.maxlength">長すぎます</mat-error>
+				<mat-error *ngIf="title_field.errors?.minlength">短すぎます</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="input-text">
+				<textarea
+					#autosize="cdkTextareaAutosize"
+					#description_field="ngModel"
+					[(ngModel)]="content.description"
+					cdkAutosizeMaxRows="5"
+					cdkAutosizeMinRows="1"
+					cdkTextareaAutosize
+					matInput
+					maxlength="1000"
+					name="description_field"
+					placeholder="Description"
+					type="text"
+				></textarea>
+				<mat-hint>1000文字まで</mat-hint>
+				<mat-error *ngIf="description_field.errors?.maxlength">長すぎます</mat-error>
+			</mat-form-field>
+		</form>
+	</mat-dialog-content>
+
+	<div class="spacer"></div>
+
+	<mat-dialog-actions fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-around">
+		<button (click)="onAccept()" [disabled]="form.invalid" color="primary" mat-raised-button>OK</button>
+		<button (click)="cancel()" color="warn" mat-dialog-close="" mat-raised-button>Cancel</button>
+	</mat-dialog-actions>
+
+</div>

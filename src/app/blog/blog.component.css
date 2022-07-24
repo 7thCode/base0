@@ -1,0 +1,28 @@
+.container {
+	height: calc(100% - 60px);
+}
+
+.sidenav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 200px;
+}
+
+#progress {
+	background-color: #ffffff00;
+	height: 140px;
+	width: 150px;
+	padding-top: 10px;
+	float: left;
+	position: relative;
+}
+
+.paragraph {
+	font-size:14px;
+	letter-spacing: 0.07em;
+	line-height: 1.8em;
+	color:#808080;
+}
+
+/*# sourceMappingURL=progress.css.map */

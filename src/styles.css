@@ -1,0 +1,65 @@
+/* You can add global styles to this file, and also import other style files */
+/* @import "~@angular/material/prebuilt-themes/indigo-pink.css"; */
+
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@200;400;900&display=swap');
+/* @import url('//fonts.googleapis.com/css?family=Noto+Sans+JP');
+@import url('//fonts.googleapis.com/css?family=Noto+Serif+JP'); */
+
+html {
+	height: 100%;
+	/* font-size: 62.5%; */
+	/* font-size: 100%; */
+	/* font-size: calc(100vw / 800 * 10); */
+}
+
+body {
+	margin: 0;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	height: 100%;
+
+	position: relative;
+	font-feature-settings: "palt";
+	font-family: 'M PLUS 2';
+	font-weight: normal;
+	font-variant: normal;
+
+	speak: none;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+router-outlet ~ * {
+	position: absolute;
+	height:100%;
+	width: 100%;
+}
+
+.message-snackbar {
+	color: #303030;
+	background-color: #ffffff;
+}
+
+.input-text {
+	margin: 1rem 0;
+	font-size: 14px;
+	line-height: 14px;
+}
+
+.description-text {
+	margin: 6px;
+	font-size: 12px;
+	line-height: 12px;
+}
+
+body .mat-card,
+body mat-toolbar,
+body .mat-card button,
+body button,
+body .mat-button, .mat-raised-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button, .mat-fab, .mat-mini-fab {
+	font-family: 'M PLUS 2';
+}
+
+/* Angular material */

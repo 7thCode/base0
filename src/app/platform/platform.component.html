@@ -1,0 +1,143 @@
+<mat-toolbar [class.dark-theme]="false" color="primary" fxLayout="row" fxLayoutAlign="space-between center">
+
+	<div fxLayout="row" fxLayoutAlign="start">
+		<button (click)="sidenav.toggle()" *ngIf="(device === 'handset') && login" mat-icon-button>
+			<mat-icon>menu</mat-icon>
+		</button>
+		<span style="font-weight:400;">Platform</span>
+		<span style="margin-left:0.8rem;font-size:0.5rem;font-weight:900;">Release 0.5.0 / Angular {{angular}}</span>
+		<span style="margin-left:0.8rem;font-size:0.5rem;font-weight:900;">git_commit_hash 38ead966</span>
+	</div>
+
+	<div *ngIf="login">
+		<span style="font-size:12px;">{{currentSession.content.nickname}}</span>
+	</div>
+
+	<div *ngIf="!login">
+		<button [matMenuTriggerFor]="menu" mat-icon-button>
+			<mat-icon>more_vert</mat-icon>
+		</button>
+		<mat-menu #menu="matMenu">
+			<button (complete)="onLogin($event)" auth-login-button mat-menu-item>
+				<mat-icon>account_box</mat-icon>
+				<span>Login</span>
+			</button>
+			<button (complete)="onRegist($event)" auth-regist-button mat-menu-item>
+				<mat-icon>person_add</mat-icon>
+				<span>Regist</span>
+			</button>
+			<button (complete)="onPassword($event)" auth-password-button mat-menu-item>
+				<mat-icon>vpn_key</mat-icon>
+				<span>Password</span>
+			</button>
+		</mat-menu>
+	</div>
+</mat-toolbar>
+
+<mat-sidenav-container [class.dark-theme]="false" class="container">
+
+	<mat-sidenav #sidenav [mode]="(device === 'handset') ? 'over' : 'side'" [opened]="!(device === 'handset') && login" fxLayout="column" fxLayoutAlign="center" style="background-color: #757de8;">
+
+		<div fxLayout="column" fxLayoutAlign="center center">
+			<app-image (complete)="onUpdateAvatar()" (onProgress)="onProgressed($event)" [extensions]="'jpg,jpeg,png,webp'" [fileName]="'avatar.jpg'" [view]="'rename'" style="margin: 12px;"></app-image>
+		</div>
+
+		<mat-list>
+
+			<mat-list-item style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/personal" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#e5a5ff;font-size:20px;">home</mat-icon>
+					Personal</a>
+			</mat-list-item>
+
+			<mat-list-item *ngIf="auth | authis: 'manager'" style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/accounts" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#b9fad7;font-size:20px;">account_circle</mat-icon>
+					Accounts</a>
+			</mat-list-item>
+
+			<mat-list-item style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/pages" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#a7e7ff;font-size:20px;">edit</mat-icon>
+					Pages</a>
+			</mat-list-item>
+
+			<mat-list-item style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/files" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#99a9ff;font-size:20px;">photo_library</mat-icon>
+					Files</a>
+			</mat-list-item>
+
+			<mat-list-item style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/articles" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#e5a5ff;font-size:20px;">view_comfy</mat-icon>
+					Articles</a>
+			</mat-list-item>
+
+			<mat-list-item *ngIf="provider === 'local'" style="height: 34px;">
+				<button (complete)="onPassword($event);" auth-password-button mat-button style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#fd7f8f;font-size:20px;">vpn_key</mat-icon>
+					Password
+				</button>
+			</mat-list-item>
+
+			<mat-list-item *ngIf="provider === 'local'" style="height: 34px;">
+				<button (complete)="onUsername($event);" auth-username-button mat-button style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#7ebdf5;font-size:20px;">contact_mail</mat-icon>
+					Username
+				</button>
+			</mat-list-item>
+
+			<mat-list-item *ngIf="provider === 'local'" style="height: 34px;">
+				<button (complete)="onRemove($event);" auth-remove-button mat-button style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#7ebdf5;font-size:20px;">contact_mail</mat-icon>
+					Remove
+				</button>
+			</mat-list-item>
+
+			<mat-list-item>
+				<button (complete)="onLogout($event);" auth-logout-button mat-button style="color:#fdfdfd;font-size:12px;">
+					<mat-icon mat-list-icon style="font-size:20px;">exit_to_app</mat-icon>
+					Logout
+				</button>
+			</mat-list-item>
+
+			<mat-list-item>
+				<button login-qr-button mat-button style="color:#fdfdfd;font-size:12px;">
+					<mat-icon mat-list-icon style="font-size:20px;">center_focus_strong</mat-icon>
+					QR Code
+				</button>
+			</mat-list-item>
+
+			<mat-list-item style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/stripe" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#e5a5ff;font-size:20px;">view_comfy</mat-icon>
+					test Stripe</a>
+			</mat-list-item>
+
+			<mat-list-item style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/mailer" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#e5a5ff;font-size:20px;">view_comfy</mat-icon>
+					test mailer</a>
+			</mat-list-item>
+
+			<mat-list-item style="height: 34px;">
+				<a [queryParams]="params" mat-button routerLink="/platform/nativefiles" style="font-size:12px;">
+					<mat-icon mat-list-icon style="color:#e5a5ff;font-size:20px;">view_comfy</mat-icon>
+					test nativefile</a>
+			</mat-list-item>
+
+
+		</mat-list>
+
+	</mat-sidenav>
+
+	<mat-sidenav-content>
+		<div *ngIf="login">
+			<div [@fadeAnimation]="prepareRoute(outlet)">
+				<router-outlet #outlet="outlet"></router-outlet>
+			</div>
+		</div>
+	</mat-sidenav-content>
+
+</mat-sidenav-container>

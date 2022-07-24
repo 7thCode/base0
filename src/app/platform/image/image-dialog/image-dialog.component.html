@@ -1,0 +1,44 @@
+<div class="fix-action-dialog">
+	<h2 mat-dialog-title>/files/get/{{data.filename}}</h2>
+	<mat-dialog-content>
+		<div fxLayout="column" fxLayoutAlign="start">
+			<div fxLayout="row">
+				<mat-card fxFlex="80%" fxLayoutAlign="center center" style="padding:1rem;">
+					<image-cropper
+						(cropperReady)="cropperReady()"
+						(imageCropped)="imageCropped($event)"
+						(imageLoaded)="imageLoaded()"
+						(loadImageFailed)="loadImageFailed()"
+						(rotate)="onRotate($event)"
+						[format]="format()"
+						[imageBase64]="imageBase64()"
+						[imageChangedEvent]="imageChangedEvent"
+						[maintainAspectRatio]="false">
+					</image-cropper>
+				</mat-card>
+				<!-- <mat-card fxFlex="20%" fxLayout="column" fxLayoutAlign="center start">
+					<button mat-raised-button color="accent" style="margin:0.6rem auto;" (click)="rotateLeft()">
+						<i class="material-icons">rotate_left</i>
+					</button>
+					<button mat-raised-button color="accent" style="margin:0.6rem auto;" (click)="rotateRight()">
+						<i class="material-icons">rotate_right</i>
+					</button>
+					<button mat-raised-button color="accent" style="margin:0.6rem auto;" (click)="flipVertical()">
+						<i class="material-icons" style="transform: rotate(90deg);">flip</i>
+					</button>
+					<button mat-raised-button color="accent" style="margin:0.6rem auto;" (click)="flipHorizontal()">
+						<i class="material-icons">flip</i>
+					</button>
+				</mat-card> -->
+			</div>
+		</div>
+	</mat-dialog-content>
+
+	<div class="spacer"></div>
+
+	<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around" style="margin:6px;">
+		<button (click)="onAccept()" color="primary" mat-raised-button>OK</button>
+		<button (click)="cancel()" color="warn" mat-dialog-close="" mat-raised-button>Cancel</button>
+	</mat-dialog-actions>
+
+</div>

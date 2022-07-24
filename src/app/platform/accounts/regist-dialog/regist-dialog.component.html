@@ -1,0 +1,62 @@
+<div class="fix-action-dialog">
+	<div fxLayout="row" fxLayoutAlign="start">
+		<app-image (complete)="onUpdateAvatar($event)" (onProgress)="onProgressed($event)" [fileName]="'avatar.jpg'" [height]="64" [username]="content.username" [view]="'rename'" [width]="64" style="margin:0.8rem"></app-image>
+		<h1 mat-dialog-title>{{content.username}}</h1>
+	</div>
+
+	<mat-dialog-content fxLayout="column">
+		<mat-card>
+			<mat-card-header>
+				<mat-card-subtitle>
+					<div class="description-text">{{content.description}}</div>
+				</mat-card-subtitle>
+			</mat-card-header>
+			<mat-card-content>
+				<form #form="ngForm" fxLayout="column" fxLayoutAlign="space-between" novalidate>
+					<mat-form-field class="input-text">
+						<mat-label>Mail Address...</mat-label>
+						<input #username="ngModel" [(ngModel)]="content.username" autocomplete="off" email matInput maxlength="255" minlength="3" name="username" placeholder="user@name" required type="email">
+						<mat-error *ngIf="username.errors?.email;">有効なメールアドレスで</mat-error>
+						<mat-error *ngIf="username.errors?.required;">入力してください</mat-error>
+						<mat-error *ngIf="username.errors?.maxlength">長すぎます</mat-error>
+						<mat-error *ngIf="username.errors?.minlength">短すぎます</mat-error>
+					</mat-form-field>
+
+					<mat-form-field class="input-text">
+						<mat-label>Nickname...</mat-label>
+						<input #nickname="ngModel" [(ngModel)]="content.nickname" autocomplete="off" matInput maxlength="255" minlength="2" name="nickname" placeholder="Xxxxxx..." required type="text">
+						<mat-hint>3文字以上500文字まで</mat-hint>
+						<mat-error *ngIf="nickname.errors?.required;">入力してください</mat-error>
+						<mat-error *ngIf="nickname.errors?.maxlength">長すぎます</mat-error>
+						<mat-error *ngIf="nickname.errors?.minlength">短すぎます</mat-error>
+					</mat-form-field>
+
+					<mat-form-field class="input-text">
+						<mat-label>Password...</mat-label>
+						<input #password="ngModel" [(ngModel)]="content.password" matInput maxlength="1000" minlength="6" name="password" placeholder="xxxxxx..." required type="password">
+						<mat-hint>6文字以上1000文字まで</mat-hint>
+						<mat-error *ngIf="password.errors?.required;">入力してください</mat-error>
+						<mat-error *ngIf="password.errors?.maxlength">長すぎます</mat-error>
+						<mat-error *ngIf="password.errors?.minlength">短すぎます</mat-error>
+					</mat-form-field>
+
+					<mat-form-field class="input-text">
+						<mat-label>Password Again...</mat-label>
+						<input #confirm_password="ngModel" [(ngModel)]="content.confirm_password" [validateEquals]="password" matInput name="confirm_password" placeholder="xxxxxx..." required type="password">
+						<mat-hint>6文字以上1000文字まで</mat-hint>
+						<mat-error *ngIf="confirm_password.errors?.required;">確認用パスワードを入力してください</mat-error>
+						<mat-error *ngIf="confirm_password.errors?.validateEquals">確認用パスワードが一致しません</mat-error>
+					</mat-form-field>
+				</form>
+			</mat-card-content>
+		</mat-card>
+
+	</mat-dialog-content>
+
+	<div class="spacer"></div>
+
+	<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around">
+		<button (click)="onAccept()" [disabled]="form.invalid || progress" cdkFocusInitial color="primary" mat-raised-button>OK</button>
+		<button (click)="cancel()" [disabled]="progress" color="warn" mat-dialog-close="" mat-raised-button>Cancel</button>
+	</mat-dialog-actions>
+</div>

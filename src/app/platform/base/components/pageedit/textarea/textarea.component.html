@@ -1,0 +1,7 @@
+<mat-form-field class="input-text">
+	<textarea [(ngModel)]="value" [formControl]="validators" [type]="description.subtype.type" matInput placeholder="{{description.placeholder}}"></textarea>
+	<mat-hint>{{description.hint}}</mat-hint>
+	<mat-error *ngFor="let validator of description.validators">
+		<span *ngIf="validators.hasError(validator.name)">{{validator.message}}</span>
+	</mat-error>
+</mat-form-field>

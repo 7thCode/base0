@@ -1,0 +1,17 @@
+<div class="fix-action-dialog">
+	<h1 mat-dialog-title>{{content.title}}</h1>
+
+	<mat-dialog-content fxLayout="column">
+		<mat-card>
+			<mat-card-content>
+				<div>{{content.message}}</div>
+			</mat-card-content>
+		</mat-card>
+	</mat-dialog-content>
+
+	<div class="spacer"></div>
+
+	<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around">
+		<button (click)="onAccept()" color="primary" mat-raised-button>{{content.ok_button}}</button>
+	</mat-dialog-actions>
+</div>

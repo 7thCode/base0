@@ -1,0 +1,18 @@
+<div class="fix-action-dialog">
+	<h1 mat-dialog-title>{{content.title}}</h1>
+
+	<mat-dialog-content fxLayout="column" fxLayoutAlign="center">
+		<div class="description-text">{{content.description}}</div>
+		<div fxLayout="row" fxLayoutAlign="center">
+			<mat-card fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="center center" style="height:fit-content;width:fit-content;margin:24px;padding:12px;">
+				<img *ngIf="qr != ''" [src]="qr" alt="qr code" style="height:180px;width:180px;border-style: solid; border-color: #505050;">
+			</mat-card>
+		</div>
+	</mat-dialog-content>
+
+	<mat-dialog-actions fxLayout="column">
+		<div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-around">
+			<button color="warn" mat-dialog-close="" mat-raised-button>Close</button>
+		</div>
+	</mat-dialog-actions>
+</div>

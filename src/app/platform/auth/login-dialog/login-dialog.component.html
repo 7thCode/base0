@@ -1,0 +1,61 @@
+<div class="fix-action-dialog">
+	<h1 mat-dialog-title>{{content.title}}</h1>
+	<mat-dialog-content fxLayout="column">
+		<mat-card>
+			<mat-card-header>
+				<mat-card-subtitle>
+					<div class="description-text">{{content.description}}</div>
+				</mat-card-subtitle>
+			</mat-card-header>
+			<mat-card-content>
+				<form #form="ngForm" fxLayout="column" fxLayoutAlign="space-between" novalidate>
+
+					<mat-form-field class="input-text">
+						<mat-label>Mail Address...</mat-label>
+						<input #username="ngModel" [(ngModel)]="content.username" autocomplete="off" email matInput maxlength="255" minlength="3" name="username" placeholder="user@name" required type="email">
+						<mat-error *ngIf="username.errors?.email;">有効なメールアドレスで</mat-error>
+						<mat-error *ngIf="username.errors?.required;">入力してください</mat-error>
+						<mat-error *ngIf="username.errors?.maxlength">長すぎます</mat-error>
+						<mat-error *ngIf="username.errors?.minlength">短すぎます</mat-error>
+					</mat-form-field>
+
+					<div fxLayout="row">
+
+						<mat-form-field class="input-text" fxFlex="90%">
+							<mat-label>Password...</mat-label>
+							<div *ngIf="password_visible; then visible_input; else invisible_input"></div>
+							<ng-template #visible_input>
+								<input #password="ngModel" [(ngModel)]="content.password" matInput maxlength="1000" name="password" placeholder="Password" required type="text">
+							</ng-template>
+							<ng-template #invisible_input>
+								<input #password="ngModel" [(ngModel)]="content.password" matInput maxlength="1000" name="password" placeholder="Password" required type="password">
+							</ng-template>
+						</mat-form-field>
+
+						<button (click)="password_visible = !password_visible;" fxFlex="10%" mat-button mat-icon-button matSuffix>
+							<div *ngIf="password_visible; then visible_icon; else invisible_icon"></div>
+							<ng-template #visible_icon>
+								<mat-icon>visibility</mat-icon>
+							</ng-template>
+							<ng-template #invisible_icon>
+								<mat-icon>visibility_off</mat-icon>
+							</ng-template>
+						</button>
+					</div>
+				</form>
+			</mat-card-content>
+		</mat-card>
+	</mat-dialog-content>
+	<div class="spacer"></div>
+	<mat-dialog-actions fxLayout="column" fxLayoutAlign="space-around" fxLayoutAlign.lt-sm="center">
+		<div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-around" fxLayoutAlign.lt-sm="center">
+			<button (click)="onAccept()" [disabled]="form.invalid || progress" cdkFocusInitial color="primary" mat-raised-button>OK</button>
+			<a [disabled]="!form.invalid || progress" color="primary" href="/auth/facebook" mat-raised-button style="color:#fdfdfd;"><i class="fab fa-facebook-square fa-lg"></i><span style="margin-left:4px">Facebook</span></a>
+			<a [disabled]="!form.invalid || progress" color="primary" href="/auth/apple" mat-raised-button style="background-color:#fdfdfd;color:#303030;"><i class="fab fa-apple fa-lg"></i><span style="margin-left:4px">Apple</span></a>
+		</div>
+		<mat-divider style="margin:8px;"></mat-divider>
+		<div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-around">
+			<button [disabled]="progress" color="warn" mat-dialog-close="" mat-raised-button>Cancel</button>
+		</div>
+	</mat-dialog-actions>
+</div>

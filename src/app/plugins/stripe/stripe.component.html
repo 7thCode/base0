@@ -1,0 +1,71 @@
+<ng-container>
+	<mat-card style="margin:2rem;">
+		<mat-card-header>
+			<div style="font-size: 32px;font-weight: 900;">Stripe</div>
+			<button (click)="updateCustomerDialog()" mat-icon-button>
+				<mat-icon color="primary">edit</mat-icon>
+			</button>
+
+			<!-- for test <button mat-button (click)="charge()">
+				charge
+			</button> -->
+
+			<div *ngIf="heigestPlan === 0">
+				<button (click)="subscribe(1)" mat-button>subscribe 1</button>
+				<button (click)="subscribe(2)" mat-button>subscribe 2</button>
+			</div>
+			<div *ngIf="heigestPlan === 1">
+				<button (click)="update_subscription(1)" mat-button>Update subscribe 1</button>
+				<button (click)="cancel_subscription(1)" mat-button>cancel subscribe 1</button>
+			</div>
+
+			<div *ngIf="heigestPlan === 2">
+				<button (click)="update_subscription(2)" mat-button>Update subscribe 2</button>
+				<button (click)="cancel_subscription(2)" mat-button>cancel subscribe 2</button>
+			</div>
+
+		</mat-card-header>
+		<mat-card-content>
+			<div fxLayout="row" fxLayoutAlign="space-between">
+				<mat-paginator (page)="Page($event)" [length]="count" [pageSize]="size">
+				</mat-paginator>
+				<button (click)="createDialog()" class="fab-center" color="primary" mat-fab>+</button>
+			</div>
+			<mat-grid-list (window:resize)="onResize($event)" [cols]="breakpoint" rowHeight="3:2">
+				<mat-grid-tile *ngFor="let card of results; let i = index" [colspan]="card.cols" [rowspan]="card.rows">
+
+					<div [ngClass]="card.view_class" fxLayout="column" fxLayoutAlign="space-between" style="height:70%;width:70%;border-radius: 5%;">
+						<div fxLayout="row" fxLayoutAlign="space-between">
+							<div [ngClass]="card.title_class" style="font-weight:900;font-size:18px;margin:10px;">{{card.brand}}</div>
+							<div [ngClass]="card.title_class" style="font-weight:500;font-size:12px;margin:10px;">
+								<div *ngIf="card.is_default">Default</div>
+							</div>
+						</div>
+						<div fxLayout="row" fxLayoutAlign="center">
+							<div style="font-weight:900;font-size:18px;margin:10px;display:flex;align-items: baseline;">{{card.display_no}}</div>
+						</div>
+						<div fxLayout="row" fxLayoutAlign="end">
+							<div style="font-weight:500;font-size:16px;margin:10px;">{{card.exp_month}}/{{card.exp_year}}</div>
+						</div>
+					</div>
+
+					<mat-grid-tile-footer fxLayout="row" fxLayoutAlign="space-around center">
+						<!--	<button mat-icon-button (click)="updateCardDialog(card.id)">
+								<mat-icon color="primary">edit</mat-icon>
+							</button> -->
+						<button *ngIf="card.is_default" mat-icon-button>
+							<mat-icon matTooltip="Default" style="color:#ffefa9">grade</mat-icon>
+						</button>
+						<button (click)="updateDefault(card.id)" *ngIf="!card.is_default" mat-icon-button>
+							<mat-icon matTooltip="to Default" style="color:#c89e10">star</mat-icon>
+						</button>
+						<button (click)="deleteSource(i)" mat-icon-button>
+							<mat-icon color="warn">delete_sweep</mat-icon>
+						</button>
+					</mat-grid-tile-footer>
+
+				</mat-grid-tile>
+			</mat-grid-list>
+		</mat-card-content>
+	</mat-card>
+</ng-container>
