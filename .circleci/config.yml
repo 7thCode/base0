@@ -16,8 +16,31 @@ jobs:
       - run:
           name: build
           command: npm run build-release-stage
+  test:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: npm clear
+          command: rm -rf node_modules && npm cache clear --force && npm cache clean --force
+
+      - run:
+          name: install
+          command: npm install --legacy-peer-dep
+
+      - run:
+          name: build
+          command: npm run build-release-stage
+
+      - run:
+          name: test
+          command: npm run jest
 
 workflows:
   build-workflow:
     jobs:
       - build
+  test-workflow:
+    jobs:
+      - test
