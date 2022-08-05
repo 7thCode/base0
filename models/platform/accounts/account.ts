@@ -103,11 +103,11 @@ namespace AccountModel {
 	};
 
 	Account.statics.remove_by_id = function (user: IAccountModel, id: string): Promise<any> {
-		return this.model("Account").findOneAndRemove({$and: [{auth: {$gt: 1}}, {user_id: id}]});
+		return this.model("Account").findOneAndRemove({user_id: id});
 	};
 
 	Account.statics.remove_by_name = function (user: IAccountModel, name: string): Promise<any> {
-		return this.model("Account").findOneAndRemove({$and: [{auth: {$gt: 1}}, {username: name}]});
+		return this.model("Account").findOneAndRemove({username: name});
 	};
 
 	module.exports = mongoose.model("Account", Account);
