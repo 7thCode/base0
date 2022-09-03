@@ -48,23 +48,30 @@ export class BlogBaseService extends UpdatableService {
 			if (!error) {
 				this.Encode(option, (error: IErrorObject, optionString: string): void => {
 					if (!error) {
-						this.http.get(this.endPoint + "/entries/auth/" + type + "/" + queryString + "/" + optionString, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
-							if (result) {
-								if (Array.isArray(result.value)) {
-									const filterd: any[] = [];
-									result.value.forEach((group: { _id: { yyyy: number, mm: number }, entries: [], count: number }) => {
-										filterd.push(this.decorator(group));
-									});
-									callback(null, filterd);
-								} else {
-									callback(Errors.generalError(result.code, result.message, "A00302"), []);
+						this.http.get(this.endPoint + "/entries/auth/" + type + "/" + queryString + "/" + optionString, this.httpOptions).pipe(retry(3)).subscribe(
+							{
+								next: (result: any): void => {
+									if (result) {
+										if (Array.isArray(result.value)) {
+											const filterd: any[] = [];
+											result.value.forEach((group: { _id: { yyyy: number, mm: number }, entries: [], count: number }) => {
+												filterd.push(this.decorator(group));
+											});
+											callback(null, filterd);
+										} else {
+											callback(Errors.generalError(result.code, result.message, "A00302"), []);
+										}
+									} else {
+										callback(Errors.networkError("A00303"), null);
+									}
+								},
+								error: (error: HttpErrorResponse): void => {
+									callback(Errors.networkException(error, "A00304"), []);
+								},
+								complete: () => {
 								}
-							} else {
-								callback(Errors.networkError("A00303"), null);
 							}
-						}, (error: HttpErrorResponse): void => {
-							callback(Errors.networkException(error, "A00304"), []);
-						});
+						);
 					} else {
 						callback(Errors.responseError("A00305"), []);
 					}

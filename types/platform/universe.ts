@@ -5,6 +5,7 @@
  */
 
 export interface ErrorObject {
+	type:number;
 	code: number;
 	message: string;
 	tag: string;

@@ -13,11 +13,12 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class Errors {
 
 	static generalError(code: number, message: string, tag: string): IErrorObject {
-		return {code: code, message: message, tag: tag, origin: null};
+		return {type: 0, code: code, message: message, tag: tag, origin: null};
 	}
 
 	static serverError(error: IErrorObject, tag: string): IErrorObject {
 		const result: IErrorObject = error;
+		result.type = 1;
 		switch (error.code) {
 			case 1:
 				result.message = "ログインしていません.";
@@ -49,14 +50,14 @@ export class Errors {
 	}
 
 	static responseError(tag: string): IErrorObject {
-		return {code: -100, message: "response error.", tag: tag, origin: null};
+		return {type: 2, code: -100, message: "response error.", tag: tag, origin: null};
 	}
 
 	static networkError(tag: string): IErrorObject {
-		return {code: -1000, message: "network error.", tag: tag, origin: null};
+		return {type: 3, code: -1000, message: "network error.", tag: tag, origin: null};
 	}
 
 	static networkException(error: HttpErrorResponse, tag: string): IErrorObject {
-		return {code: -10000, message: "network exception.", tag: tag, origin: error};
+		return {type: 4, code: -10000, message: "network exception.", tag: tag, origin: error};
 	}
 }

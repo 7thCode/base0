@@ -79,19 +79,26 @@ export class ExtService extends HttpService {
 		if (zip.length > 3) {
 			const clean_zip: string = this.normalize_postal(this.wide_to_single(zip));
 			if (clean_zip) {
-				this.http.get(this.endPoint + "/ext/zip/address/" + clean_zip, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00037"), null);
+				this.http.get(this.endPoint + "/ext/zip/address/" + clean_zip, this.httpOptions).pipe(retry(3)).subscribe(
+					{
+						next: (result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00037"), null);
+								}
+							} else {
+								callback(Errors.networkError("A00300"), null);
+							}
+						},
+						error: (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00301"), null);
+						},
+						complete: () => {
 						}
-					} else {
-						callback(Errors.networkError("A00300"), null);
 					}
-				}, (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00301"), null);
-				});
+				);
 			} else {
 				callback(null, null);
 			}

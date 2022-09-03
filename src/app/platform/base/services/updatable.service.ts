@@ -40,19 +40,26 @@ export abstract class UpdatableService extends QueryableService {
 	 * @param callback コールバック
 	 */
 	public post(content: any, callback: Callback<any>): void {
-		this.http.post(this.endPoint + "/" + this.model + "/auth", content, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
-			if (result) {
-				if (result.code === 0) {
-					callback(null, result.value);
-				} else {
-					callback(Errors.serverError(result, "A00196"), null);
+		this.http.post(this.endPoint + "/" + this.model + "/auth", content, this.httpOptions).pipe(retry(3)).subscribe(
+			{
+				next: (result: any): void => {
+					if (result) {
+						if (result.code === 0) {
+							callback(null, result.value);
+						} else {
+							callback(Errors.serverError(result, "A00196"), null);
+						}
+					} else {
+						callback(Errors.networkError("A00197"), null);
+					}
+				},
+				error: (error: HttpErrorResponse): void => {
+					callback(Errors.networkException(error, "A00198"), null);
+				},
+				complete: () => {
 				}
-			} else {
-				callback(Errors.networkError("A00197"), null);
 			}
-		}, (error: HttpErrorResponse): void => {
-			callback(Errors.networkException(error, "A00198"), null);
-		});
+		);
 	}
 
 	/**
@@ -63,19 +70,26 @@ export abstract class UpdatableService extends QueryableService {
 	 * @param callback コールバック
 	 */
 	public put(id: string, content: any, callback: Callback<any>): void {
-		this.http.put(this.endPoint + "/" + this.model + "/auth/" + encodeURIComponent(id), content, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
-			if (result) {
-				if (result.code === 0) {
-					callback(null, result.value);
-				} else {
-					callback(Errors.serverError(result, "A00199"), null);
+		this.http.put(this.endPoint + "/" + this.model + "/auth/" + encodeURIComponent(id), content, this.httpOptions).pipe(retry(3)).subscribe(
+			{
+				next: (result: any): void => {
+					if (result) {
+						if (result.code === 0) {
+							callback(null, result.value);
+						} else {
+							callback(Errors.serverError(result, "A00199"), null);
+						}
+					} else {
+						callback(Errors.networkError("A00200"), null);
+					}
+				},
+				error: (error: HttpErrorResponse): void => {
+					callback(Errors.networkException(error, "A00201"), null);
+				},
+				complete: () => {
 				}
-			} else {
-				callback(Errors.networkError("A00200"), null);
 			}
-		}, (error: HttpErrorResponse): void => {
-			callback(Errors.networkException(error, "A00201"), null);
-		});
+		);
 	}
 
 	// public set(id: string, command: string, content: IContent, callback: Callback<any>): void {
@@ -101,19 +115,26 @@ export abstract class UpdatableService extends QueryableService {
 	 * @param callback コールバック
 	 */
 	public delete(id: string, callback: Callback<any>): void {
-		this.http.delete(this.endPoint + "/" + this.model + "/auth/" + encodeURIComponent(id), this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
-			if (result) {
-				if (result.code === 0) {
-					callback(null, result.value);
-				} else {
-					callback(Errors.serverError(result, "A00202"), null);
+		this.http.delete(this.endPoint + "/" + this.model + "/auth/" + encodeURIComponent(id), this.httpOptions).pipe(retry(3)).subscribe(
+			{
+				next: (result: any): void => {
+					if (result) {
+						if (result.code === 0) {
+							callback(null, result.value);
+						} else {
+							callback(Errors.serverError(result, "A00202"), null);
+						}
+					} else {
+						callback(Errors.networkError("A00203"), null);
+					}
+				},
+				error: (error: HttpErrorResponse): void => {
+					callback(Errors.networkException(error, "A00204"), null);
+				},
+				complete: () => {
 				}
-			} else {
-				callback(Errors.networkError("A00203"), null);
 			}
-		}, (error: HttpErrorResponse): void => {
-			callback(Errors.networkException(error, "A00204"), null);
-		});
+		);
 	}
 
 }

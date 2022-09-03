@@ -28,15 +28,22 @@ export class FragmentService extends HttpService {
 	}
 
 	public get(user_id: string, path: string, callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/pages/get/" + encodeURIComponent(path) + "?u=" + encodeURIComponent(user_id) + "&t=e", this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
-			if (result) {
-				callback(null, result.value);
-			} else {
-				callback(Errors.networkError("A00227"), null);
+		this.http.get(this.endPoint + "/pages/get/" + encodeURIComponent(path) + "?u=" + encodeURIComponent(user_id) + "&t=e", this.httpOptions).pipe(retry(3)).subscribe(
+			{
+				next: (result: any): void => {
+					if (result) {
+						callback(null, result.value);
+					} else {
+						callback(Errors.networkError("A00227"), null);
+					}
+				},
+				error: (error: HttpErrorResponse): void => {
+					callback(Errors.networkException(error, "A00228"), null);
+				},
+				complete: () => {
+				}
 			}
-		}, (error: HttpErrorResponse): void => {
-			callback(Errors.networkException(error, "A00228"), null);
-		});
+		);
 	}
 
 }
