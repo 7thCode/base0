@@ -1,0 +1,15 @@
+{
+	"HOME": {
+		"TITLE": "english"
+	},
+	"Pages": "Pages",
+	"ログアウト": "LOGOUT",
+	"LOGIN": "LOGIN",
+	"ERROR": {
+		"LOGIN": {
+			"ユーザ名かパスワードが違います。": "Incorrect username or password.",
+			"すでにログインしています。": "You are already logged in.",
+			"再度お試しください。": "Please try again."
+		}
+	}
+}

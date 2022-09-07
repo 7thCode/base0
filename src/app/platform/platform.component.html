@@ -98,7 +98,7 @@
 			<mat-list-item>
 				<button (complete)="onLogout($event);" auth-logout-button mat-button style="color:#fdfdfd;font-size:12px;">
 					<mat-icon mat-list-icon style="font-size:20px;">exit_to_app</mat-icon>
-					Logout
+					<span translate>ログアウト</span>
 				</button>
 			</mat-list-item>
 
@@ -125,6 +125,13 @@
 				<a [queryParams]="params" mat-button routerLink="/platform/nativefiles" style="font-size:12px;">
 					<mat-icon mat-list-icon style="color:#e5a5ff;font-size:20px;">view_comfy</mat-icon>
 					test nativefile</a>
+			</mat-list-item>
+
+									<!-- i18n -->
+			<mat-list-item class="side-menu-item">
+				<select #langSelect (change)="translate.use(langSelect.value)">
+					<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{ lang }}</option>
+				</select>
 			</mat-list-item>
 
 
