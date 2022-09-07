@@ -23,6 +23,7 @@ import {Spinner} from "../base/library/spinner";
 import {Errors} from "../base/library/errors";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
+import {TranslateService} from "@ngx-translate/core";
 
 /**
  * ページ
@@ -63,10 +64,19 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 		protected snackbar: MatSnackBar,
 		private router: Router,
 		protected route: ActivatedRoute,
+		public translate: TranslateService
 	) {
 		super(session, matDialog);
 		this.service = pageSerrvice;
 		this.spinner = new Spinner(overlay);
+
+		// i18n
+		translate.addLangs(['en', 'ja']);
+		translate.setDefaultLang('en');
+
+		const browserLang = translate.getBrowserLang();
+		translate.use(browserLang.match(/en|ja/) ? browserLang : 'en');
+		//
 	}
 
 	/**

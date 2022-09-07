@@ -42,6 +42,16 @@ import {PlatformRoutingModule} from "./platform-routing.module";
 import {PlatformComponent} from "./platform.component";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
+// i18n
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(httpClient: HttpClient) {
+	return new TranslateHttpLoader(httpClient, './i18n/', '.json');
+}
+//
+
 @NgModule({
 	declarations: [
 		PlatformComponent,
@@ -78,6 +88,18 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 		NativeFilesModule,
 		BasePipeModule,
 		MatSlideToggleModule,
+
+		// i18n
+		HttpClientModule,
+		TranslateModule.forRoot({
+			loader: {
+				provide: TranslateLoader,
+				useFactory: HttpLoaderFactory,
+				deps: [HttpClient]
+			}
+		})
+		//
+
 	],
 	providers: [],
 	bootstrap: [PlatformComponent],
