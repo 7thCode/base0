@@ -23,8 +23,9 @@ import {Spinner} from "../base/library/spinner";
 import {Errors} from "../base/library/errors";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
+// i18n
 import {TranslateService} from "@ngx-translate/core";
-
+//
 /**
  * ページ
  *
@@ -64,19 +65,13 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 		protected snackbar: MatSnackBar,
 		private router: Router,
 		protected route: ActivatedRoute,
+		// i18n
 		public translate: TranslateService
+		//
 	) {
 		super(session, matDialog);
 		this.service = pageSerrvice;
 		this.spinner = new Spinner(overlay);
-
-		// i18n
-		translate.addLangs(['en', 'ja']);
-		translate.setDefaultLang('en');
-
-		const browserLang = translate.getBrowserLang();
-		translate.use(browserLang.match(/en|ja/) ? browserLang : 'en');
-		//
 	}
 
 	/**
@@ -130,7 +125,6 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 	private messageBar(message: string): void {
 		if (message) {
 			this.snackbar.open(message, "Close", {
-// 		duration: 8000,
 				panelClass: ["message-snackbar"]
 			});
 		}
@@ -198,7 +192,6 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 	 * 検索
 	 */
 	public findByPath(): void {
-// 		this.paginator.pageIndex = 0;
 		this.query = {};
 		this.page = 0;
 		if (this.path) {
