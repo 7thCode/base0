@@ -47,22 +47,15 @@ export class FilesService extends HttpService {
 	public count(query: object, callback: Callback<any>): void {
 		this.Encode(query, (error: IErrorObject, queryString: string): void => {
 			if (!error) {
-				this.http.get(this.endPoint + "/files/auth/count/" + queryString, this.httpOptions).pipe(retry(3)).subscribe(
-					{
-						next: (result: any): void => {
-							if (result) {
-								callback(null, result);
-							} else {
-								callback(Errors.networkError("A00210"), 0);
-							}
-						},
-						error: (error: HttpErrorResponse): void => {
-							callback(Errors.networkException(error, "A00211"), null);
-						},
-						complete: () => {
-						}
+				this.http.get(this.endPoint + "/files/auth/count/" + queryString, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+					if (result) {
+						callback(null, result);
+					} else {
+						callback(Errors.networkError("A00210"), 0);
 					}
-				);
+				}, (error: HttpErrorResponse): void => {
+					callback(Errors.networkException(error, "A00211"), null);
+				});
 			} else {
 				callback(Errors.responseError("A00212"), null);
 			}
@@ -80,26 +73,19 @@ export class FilesService extends HttpService {
 			if (!error) {
 				this.Encode(option, (error: IErrorObject, optionString: string): void => {
 					if (!error) {
-						this.http.get(this.endPoint + "/files/auth/query/" + queryString + "/" + optionString, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (results: ArrayBuffer): void => {
-									if (results) {
-										if (Array.isArray(results)) {
-											callback(null, results);
-										} else {
-											callback(Errors.networkError("A00213"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00214"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00215"), null);
-								},
-								complete: () => {
+						this.http.get(this.endPoint + "/files/auth/query/" + queryString + "/" + optionString, this.httpOptions).pipe(retry(3)).subscribe((results: ArrayBuffer): void => {
+							if (results) {
+								if (Array.isArray(results)) {
+									callback(null, results);
+								} else {
+									callback(Errors.networkError("A00213"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00214"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00215"), null);
+						});
 					} else {
 						callback(Errors.responseError("A00216"), null);
 					}
@@ -119,26 +105,19 @@ export class FilesService extends HttpService {
 	 * @param callback
 	 */
 	public upload(filename: string, dataUrl: string, metadata: { category: string, description: string }, params: { upsert: boolean }, callback: Callback<any>): void {
-		this.http.post(this.endPoint + "/files/auth/" + filename, {url: dataUrl, category: metadata.category, description: metadata.description, params}, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00218"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00219"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00220"), null);
-				},
-				complete: () => {
+		this.http.post(this.endPoint + "/files/auth/" + filename, {url: dataUrl, category: metadata.category, description: metadata.description, params}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					callback(null, result.value);
+				} else {
+					callback(Errors.serverError(result, "A00218"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00219"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00220"), null);
+		});
 	}
 
 	/**
@@ -147,26 +126,19 @@ export class FilesService extends HttpService {
 	 * @param callback
 	 */
 	public download(filename: string, callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/files/auth/" + filename, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00221"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00222"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00223"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/files/auth/" + filename, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					callback(null, result.value);
+				} else {
+					callback(Errors.serverError(result, "A00221"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00222"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00223"), null);
+		});
 	}
 
 	/**
@@ -175,50 +147,19 @@ export class FilesService extends HttpService {
 	 * @param callback
 	 */
 	public delete(filename: string, callback: Callback<any>): void {
-		this.http.delete(this.endPoint + "/files/auth/" + filename, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00224"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00225"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00226"), null);
-				},
-				complete: () => {
+		this.http.delete(this.endPoint + "/files/auth/" + filename, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					callback(null, result.value);
+				} else {
+					callback(Errors.serverError(result, "A00224"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00225"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00226"), null);
+		});
 	}
-
-	public pathWithToken(filename: string, callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/files/token/" + filename, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00221"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00222"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00223"), null);
-				},
-				complete: () => {
-				}
-			}
-		);
-	}
-
 
 }

@@ -1,9 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 /* @import "~@angular/material/prebuilt-themes/indigo-pink.css"; */
 
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@200;400;900&display=swap');
-/* @import url('//fonts.googleapis.com/css?family=Noto+Sans+JP');
-@import url('//fonts.googleapis.com/css?family=Noto+Serif+JP'); */
+@import url('//fonts.googleapis.com/css?family=Noto+Sans+JP');
+@import url('//fonts.googleapis.com/css?family=Noto+Serif+JP');
 
 html {
 	height: 100%;
@@ -20,7 +19,7 @@ body {
 
 	position: relative;
 	font-feature-settings: "palt";
-	font-family: 'M PLUS 2';
+	font-family: 'Noto Sans JP', sans-serif;
 	font-weight: normal;
 	font-variant: normal;
 
@@ -54,12 +53,5 @@ router-outlet ~ * {
 	line-height: 12px;
 }
 
-body .mat-card,
-body mat-toolbar,
-body .mat-card button,
-body button,
-body .mat-button, .mat-raised-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button, .mat-fab, .mat-mini-fab {
-	font-family: 'M PLUS 2';
-}
 
 /* Angular material */

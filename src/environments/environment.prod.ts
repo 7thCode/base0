@@ -9,11 +9,6 @@ export const environment = {
 	use_publickey: false,
 	is_electron: false,
 
-	default: {
-		nickname: "manage",
-		username: "manage@seventh-code.com"
-	},
-
 	meta: {
 		top: {
 			title: "TITLE",

@@ -23,9 +23,7 @@ import {Spinner} from "../base/library/spinner";
 import {Errors} from "../base/library/errors";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
-// i18n
-import {TranslateService} from "@ngx-translate/core";
-//
+
 /**
  * ページ
  *
@@ -38,7 +36,7 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class PagesComponent extends GridViewComponent implements OnInit {
 
-// 	@ViewChild(MatPaginator) paginator: MatPaginator;
+// 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
 	public get isProgress(): boolean {
 		return this.spinner.progress;
@@ -65,41 +63,10 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 		protected snackbar: MatSnackBar,
 		private router: Router,
 		protected route: ActivatedRoute,
-		// i18n
-		public translate: TranslateService
-		//
 	) {
 		super(session, matDialog);
 		this.service = pageSerrvice;
 		this.spinner = new Spinner(overlay);
-	}
-
-	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	public toListView(object: any): any {
-		object.cols = 1;
-		object.rows = 1;
-		return object;
-	}
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	public toView(data: any): any {
-		return data;
-	}
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	public confirmToModel(data: any): any {
-		return data;
 	}
 
 	/**
@@ -125,6 +92,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 	private messageBar(message: string): void {
 		if (message) {
 			this.snackbar.open(message, "Close", {
+// 		duration: 8000,
 				panelClass: ["message-snackbar"]
 			});
 		}
@@ -134,23 +102,20 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 		this.spinner.Progress(value);
 	}
 
-
+	/**
+	 * リストビューデコレータ
+	 * @param object
+	 */
+	protected toListView(object: any): any {
+		object.cols = 1;
+		object.rows = 1;
+		return object;
+	}
 
 	public ngOnInit(): void {
 		this.sort = {};
 		super.ngOnInit();
-		this.route.queryParams.subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-				params => {
+		this.route.queryParams.subscribe(params => {
 			this.params = params;
 		});
 	}
@@ -181,18 +146,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.beforeClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: object): void => {
+		dialog.beforeClosed().subscribe((result: object): void => {
 			if (result) { // if not cancel then
 				this.Progress(true);
 				this.create(this.confirmToModel(result), (error: IErrorObject, result: object): void => {
@@ -204,18 +158,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 			}
 		});
 
-		dialog.afterClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: object): void => {
+		dialog.afterClosed().subscribe((result: object): void => {
 			this.Complete("", result);
 		});
 
@@ -225,8 +168,10 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 	 * 検索
 	 */
 	public findByPath(): void {
-		this.query = {};
+// 		this.paginator.pageIndex = 0;
 		this.page = 0;
+		this.query = {};
+
 		if (this.path) {
 			this.query = {"content.path": {$regex: this.path}};
 		}
@@ -260,18 +205,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 					disableClose: true,
 				});
 
-				dialog.beforeClosed().subscribe(
-					/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-					(result: { content: object }): void => {
+				dialog.beforeClosed().subscribe((result: { content: object }): void => {
 					if (result) { // if not cancel then
 						this.Progress(true);
 						this.update(id, this.confirmToModel(result.content), (error: IErrorObject, result: any): void => {
@@ -283,18 +217,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 					}
 				});
 
-				dialog.afterClosed().subscribe(
-					/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-					(result: object): void => {
+				dialog.afterClosed().subscribe((result: object): void => {
 					this.Complete("", result);
 				});
 			} else {
@@ -335,18 +258,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 				},
 				disableClose: true,
 			});
-			dialog.afterClosed().subscribe(
-				/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-				(result: object) => {
+			dialog.afterClosed().subscribe((result: object) => {
 				if (result) { // if not cancel then
 					_delete(id);
 				}

@@ -117,24 +117,6 @@ export class Cipher {
 		return crypted;
 	}
 
-	public static FixedDecryptObject(crypted: string): any {
-		let result = "";
-		try {
-			result = JSON.parse(Cipher.FixedDecrypt(crypted, config.tokensecret));
-		} catch (error) {
-		}
-		return result;
-	}
-
-	public static FixedCryptObject(obj: any): string {
-		let result = null;
-		try {
-			result = Cipher.FixedCrypt(JSON.stringify(obj), config.tokensecret);
-		} catch (error) {
-		}
-		return result;
-	}
-
 	/**
 	 *
 	 * @param username

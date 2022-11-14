@@ -43,40 +43,29 @@ export class ReplyDialogComponent extends BaseDialogComponent {
 	/**
 	 *
 	 */
-	public triggerResize():void {
-		this.zone.onStable.pipe(take(1)).subscribe(
-			{
-				next: () => {
-					this.autosize.resizeToFitContent(true);
-				},
-				error: (error): void => {
-				},
-				complete: () => {
-				}
-			}
-		)
+	public triggerResize() {
+		this.zone.onStable.pipe(take(1)).subscribe(() => this.autosize.resizeToFitContent(true));
 	}
 
-/**
- *
- */
-get content(): any
-{
-	return this.data;
-}
+	/**
+	 *
+	 */
+	get content(): any {
+		return this.data;
+	}
 
-/**
- *
- */
-public cancel(): void {
-	this.matDialogRef.close(null);
-}
+	/**
+	 *
+	 */
+	public cancel(): void {
+		this.matDialogRef.close(null);
+	}
 
-/**
- *
- */
-public onAccept(): void {
-	this.matDialogRef.close(this.data);
-}
+	/**
+	 *
+	 */
+	public onAccept(): void {
+		this.matDialogRef.close(this.data);
+	}
 
 }

@@ -23,7 +23,6 @@ const routes: Routes = [
 			return m.BlogModule;
 		})
 	},
-
 	{path: '**', component: ErrorComponent},
 ];
 

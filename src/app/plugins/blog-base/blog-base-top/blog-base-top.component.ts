@@ -24,7 +24,7 @@ import {MatPaginator} from "@angular/material/paginator";
 @Directive()
 export abstract class BlogBaseTopComponent extends BlogBasePageComponent implements OnInit {
 
-//	 @ViewChild(MatPaginator) paginator: MatPaginator;
+//	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
 	public constructor(
 		protected session: SessionService,
@@ -43,10 +43,11 @@ export abstract class BlogBaseTopComponent extends BlogBasePageComponent impleme
 	}
 
 	public ngOnInit(): void {
-// 		this.paginator.pageIndex = 0;
+	// 	this.paginator.pageIndex = 0;
+		this.page = 0;
 		this.query = {"content.category":"blog"};
 		this.sort = {};
-		this.page = 0;
+
 		this.results = [];
 		this.getSession((error: IErrorObject, session: object | null): void => {
 			if (!error) {

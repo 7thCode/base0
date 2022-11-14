@@ -12,7 +12,7 @@ import {Errors} from "./errors";
 
 const inbox = require("inbox");
 
-const simpleParser = require("mailparser").simpleParser;
+const simpleParser = require('mailparser').simpleParser;
 
 export class MailReceiver implements IMailReceiverModule {
 

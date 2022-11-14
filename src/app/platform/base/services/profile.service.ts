@@ -43,31 +43,24 @@ export class ProfileService extends HttpService {
 	 * @param callback ユーザプロファイルを戻すコールバック
 	 */
 	public get(callback: Callback<any>): any {
-		this.http.get(this.endPoint + "/profile/auth", this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						switch (result.code) {
-							case 0:
-								callback(null, result.value);
-								break;
-							case 1:
-								callback(null, null);
-								break;
-							default:
-								callback(Errors.serverError(result, "A00111"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00112"), null);
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					callback(Errors.networkException(error, "A00113"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/profile/auth", this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				switch (result.code) {
+					case 0:
+						callback(null, result.value);
+						break;
+					case 1:
+						callback(null, null);
+						break;
+					default:
+						callback(Errors.serverError(result, "A00111"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00112"), null);
 			}
-		);
+		}, (error: HttpErrorResponse) => {
+			callback(Errors.networkException(error, "A00113"), null);
+		});
 	}
 
 	/**
@@ -77,26 +70,19 @@ export class ProfileService extends HttpService {
 	 * @param callback ユーザプロファイルを戻すコールバック
 	 */
 	public put(content: object, callback: Callback<any>): void {
-		this.http.put(this.endPoint + "/profile/auth", content, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00114"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00115"), null);
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					callback(Errors.networkException(error, "A00116"), null);
-				},
-				complete: () => {
+		this.http.put(this.endPoint + "/profile/auth", content, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					callback(null, result.value);
+				} else {
+					callback(Errors.serverError(result, "A00114"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00115"), null);
 			}
-		);
+		}, (error: HttpErrorResponse) => {
+			callback(Errors.networkException(error, "A00116"), null);
+		});
 	}
 
 }

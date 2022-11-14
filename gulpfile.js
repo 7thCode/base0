@@ -24,11 +24,6 @@ gulp.task('clean', function(cb) {
 	rimraf('product', cb);
 });
 
-gulp.task('sign', function() {
-	return gulp.src('src/app/aig/aig.component.html')
-		// .pipe(replace(/git_commit_hash\s[A-Za-z0-9]+/, 'git_commit_hash ' + process.env.GIT_COMMIT_HASH))
-		.pipe(gulp.dest('src/app/aig/'));
-});
 
 gulp.task('compile', function() {
 
@@ -45,13 +40,6 @@ gulp.task('compile', function() {
 		.pipe(sourcemaps.write('./'))
 		.pipe(gulp.dest('./'));
 
-});
-
-gulp.task('prebuild', function() {
-	return gulp.src([
-		'defaults/aig/default.js'
-	], {base: './defaults/aig', allowEmpty: true})
-		.pipe(gulp.dest('config'));
 });
 
 gulp.task('build', function() {
@@ -110,6 +98,6 @@ gulp.task('productionclient', function() {
 		.pipe(gulp.dest('src'));
 });
 
-gulp.task('default', gulp.series('clean', 'compile', 'prebuild', 'build'), function() {
+gulp.task('default', gulp.series('clean', 'compile', 'build'), function() {
 
 });

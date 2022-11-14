@@ -39,9 +39,6 @@
 						<a download href="{{endPoint}}/files/get/{{file.filename}}" mat-icon-button>
 							<mat-icon color="primary">cloud_download</mat-icon>
 						</a>
-						<button (click)="pathWithToken(file.filename)" mat-icon-button>
-							<mat-icon color="primary">public</mat-icon>
-						</button>
 						<button (click)="onDelete($event, file.filename)" mat-icon-button>
 							<mat-icon color="warn">delete_sweep</mat-icon>
 						</button>

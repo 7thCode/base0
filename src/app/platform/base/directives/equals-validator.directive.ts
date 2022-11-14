@@ -30,18 +30,7 @@ export class EqualsValidator implements Validator {
 	public validate(c: AbstractControl): { [key: string]: any } | null {
 		if (!this.subscribe) {
 			this.subscribe = true;
-			this.validateEquals.valueChanges.subscribe(
-				/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-				() => {
+			this.validateEquals.valueChanges.subscribe(() => {
 				c.updateValueAndValidity();
 			});
 		}

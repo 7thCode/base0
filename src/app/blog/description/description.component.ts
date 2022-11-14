@@ -44,30 +44,4 @@ export class BlogDescriptionComponent extends BlogBaseDescriptionComponent imple
 	) {
 		super(session, blogsService, breakpointObserver, overlay, matDialog, snackbar,	 domSanitizer, activatedRoute, router, _title, meta);
 	}
-
-	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	public toListView(object: any): any {
-		return object;
-	}
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	public toView(data: any): any {
-		return data;
-	}
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	public confirmToModel(data: any): any {
-		return data;
-	}
 }

@@ -43,18 +43,7 @@ export class WithdrawDialogDirective {
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any) => {
+		dialog.afterClosed().subscribe((result: any) => {
 			this.complete.emit(null);
 		});
 	}

@@ -67,34 +67,6 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 	}
 
 	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	public toListView(object: any): any {
-		object.cols = 1;
-		object.rows = 1;
-		return object;
-	}
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	public toView(data: any): any {
-		return data;
-	}
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	public confirmToModel(data: any): any {
-		return data;
-	}
-
-	/**
 	 * エラー表示
 	 * @param error
 	 */
@@ -127,6 +99,16 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 		this.spinner.Progress(value);
 	}
 
+	/**
+	 * リストビューデコレータ
+	 * @param object
+	 */
+	protected toListView(object: any): any {
+		object.cols = 1;
+		object.rows = 1;
+		return object;
+	}
+
 	/*
 	*
 	*/
@@ -134,18 +116,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 		this.sort = {};
 		super.ngOnInit();
 
-		this.route.queryParams.subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			params => {
+		this.route.queryParams.subscribe(params => {
 			this.params = params;
 		});
 	}
@@ -174,18 +145,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.beforeClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any): void => {
+		dialog.beforeClosed().subscribe((result: any): void => {
 			if (result) { // if not cancel then
 				this.Progress(true);
 
@@ -198,18 +158,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 			}
 		});
 
-		dialog.afterClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any): void => {
+		dialog.afterClosed().subscribe((result: any): void => {
 			this.Complete("", result);
 		});
 
@@ -230,18 +179,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 					disableClose: true,
 				});
 
-				dialog.beforeClosed().subscribe(
-					/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-					(result: any): void => {
+				dialog.beforeClosed().subscribe((result: any): void => {
 					if (result) { // if not cancel then
 						this.Progress(true);
 						this.update(id, this.confirmToModel(result.content), (error: IErrorObject, result: any): void => {
@@ -253,18 +191,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 					}
 				});
 
-				dialog.afterClosed().subscribe(
-					/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-					(result: any): void => {
+				dialog.afterClosed().subscribe((result: any): void => {
 					this.Complete("", result);
 				});
 			} else {
@@ -306,18 +233,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 				},
 				disableClose: true,
 			});
-			dialog.afterClosed().subscribe(
-				/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-				(result: object) => {
+			dialog.afterClosed().subscribe((result: object) => {
 				if (result) { // if not cancel then
 					_delete(id);
 				}

@@ -13,14 +13,14 @@
 				<form #form="ngForm" fxLayout="column" fxLayoutAlign="space-between" novalidate>
 					<div fxLayout="row wrap">
 
-						<!--	<mat-form-field class="input-text">
-								<mat-label>Category</mat-label>
-								<mat-select #category="ngModel" [(ngModel)]="content.category" name="state_select" required>
-									<mat-option value="blog">Blog</mat-option>
-									<mat-option value="news">News</mat-option>
-								</mat-select>
-								<mat-error *ngIf="category.errors?.required;">入力してください</mat-error>
-							</mat-form-field> -->
+					<!--	<mat-form-field class="input-text">
+							<mat-label>Category</mat-label>
+							<mat-select #category="ngModel" [(ngModel)]="content.category" name="state_select" required>
+								<mat-option value="blog">Blog</mat-option>
+								<mat-option value="news">News</mat-option>
+							</mat-select>
+							<mat-error *ngIf="category.errors?.required;">入力してください</mat-error>
+						</mat-form-field> -->
 
 						<mat-form-field class="input-text">
 							<mat-label>Status</mat-label>
@@ -34,12 +34,12 @@
 							<mat-error *ngIf="type.errors?.maxlength">長すぎます</mat-error>
 						</mat-form-field>
 
-						<!--	<mat-form-field class="input-text">
-								<mat-label>Name</mat-label>
-								<input #name="ngModel" [(ngModel)]="content.name" autocomplete="off" matInput maxlength="256" name="name" type="text">
-								<mat-hint>256文字まで</mat-hint>
-								<mat-error *ngIf="name.errors?.maxlength">長すぎます</mat-error>
-							</mat-form-field> -->
+					<!--	<mat-form-field class="input-text">
+							<mat-label>Name</mat-label>
+							<input #name="ngModel" [(ngModel)]="content.name" autocomplete="off" matInput maxlength="256" name="name" type="text">
+							<mat-hint>256文字まで</mat-hint>
+							<mat-error *ngIf="name.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field> -->
 
 						<mat-form-field class="input-text">
 							<mat-label>Title...</mat-label>

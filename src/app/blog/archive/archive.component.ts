@@ -45,30 +45,4 @@ export class BlogArchiveComponent extends BlogBaseArchiveComponent implements On
 		this.router.navigate(['/blog/description/' + resource.id]);
 	}
 
-	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	public toListView(object: any): any {
-		return object;
-	}
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	public toView(data: any): any {
-		return data;
-	}
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	public confirmToModel(data: any): any {
-		return data;
-	}
-
 }

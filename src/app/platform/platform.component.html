@@ -1,4 +1,4 @@
-<mat-toolbar [class.dark-theme]="false" color="primary" fxLayout="row" fxLayoutAlign="space-between center">
+<mat-toolbar [class.dark-theme]="dark" color="primary" fxLayout="row" fxLayoutAlign="space-between center">
 
 	<div fxLayout="row" fxLayoutAlign="start">
 		<button (click)="sidenav.toggle()" *ngIf="(device === 'handset') && login" mat-icon-button>
@@ -34,7 +34,7 @@
 	</div>
 </mat-toolbar>
 
-<mat-sidenav-container [class.dark-theme]="false" class="container">
+<mat-sidenav-container [class.dark-theme]="dark" class="container">
 
 	<mat-sidenav #sidenav [mode]="(device === 'handset') ? 'over' : 'side'" [opened]="!(device === 'handset') && login" fxLayout="column" fxLayoutAlign="center" style="background-color: #757de8;">
 
@@ -98,7 +98,7 @@
 			<mat-list-item>
 				<button (complete)="onLogout($event);" auth-logout-button mat-button style="color:#fdfdfd;font-size:12px;">
 					<mat-icon mat-list-icon style="font-size:20px;">exit_to_app</mat-icon>
-					<span translate>ログアウト</span>
+					Logout
 				</button>
 			</mat-list-item>
 
@@ -127,13 +127,9 @@
 					test nativefile</a>
 			</mat-list-item>
 
-									<!-- i18n -->
-			<mat-list-item class="side-menu-item">
-				<select #langSelect (change)="translate.use(langSelect.value)">
-					<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{ lang }}</option>
-				</select>
+			<mat-list-item style="height: 34px;">
+				<mat-slide-toggle (change)="switch()" [checked]="dark" style="font-size:12px;">dark</mat-slide-toggle>
 			</mat-list-item>
-
 
 		</mat-list>
 

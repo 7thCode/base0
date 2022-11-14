@@ -6,7 +6,7 @@
 
 "use strict";
 
-import {IAccountModel, IJSONResponse, IQueryParam} from "../../../../types/platform/server";
+import {IAccountModel, IJSONResponse} from "../../../../types/platform/server";
 import {AuthLevel, Callback, IErrorObject} from "../../../../types/platform/universe";
 import {Errors} from "../../../platform/base/library/errors";
 
@@ -621,35 +621,6 @@ export class Stripe extends Mail {
 		return plan_ids.filter((value, index, self) => self.indexOf(value) === index && self.lastIndexOf(value) !== index);
 	}
 
-	private highestPlan(subscriptions_1: any, subscriptions_2: any): number {
-
-		const ids = (data: any[]): any[] => {
-			const result: any[] = [];
-			data.forEach((subscription: any) => {
-				const plan_id = subscription.plan.id;
-				if (result.indexOf(plan_id) === -1) {
-					result.push(plan_id);
-				}
-			});
-			return result;
-		}
-
-		const plan_ids_1: any[] = ids(subscriptions_1.data);
-		const plan_ids_2: any[] = ids(subscriptions_2.data);
-
-		let highest = 0;
-		plan_ids_1.forEach((x, index) => {
-			plan_ids_2.forEach((y) => {
-				if (x === y) {
-					if (index > highest) {
-						highest = index + 1;
-					}
-				}
-			});
-		});
-		return highest;
-	}
-
 	/**
 	 * all_subscriptions
 	 *
@@ -676,7 +647,7 @@ export class Stripe extends Mail {
 	 * 送り先あり 1
 	 * カードあり 2
 	 */
-	private payable(operator: any, callback: Callback<number>): void {
+	public payable(operator: any, callback: Callback<number>): void {
 		this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
 			if (!error) {
 				if (customer) {
@@ -703,7 +674,7 @@ export class Stripe extends Mail {
 	 * @param stripe_id
 	 * @returns none
 	 */
-	private Customer(stripe_id: string): Promise<any> {
+	public Customer(stripe_id: string): Promise<any> {
 		return this.stripe.customers.retrieve(stripe_id);
 	}
 
@@ -714,7 +685,7 @@ export class Stripe extends Mail {
 	 * @param callback
 	 * @returns none
 	 */
-	private operatorToCustomer(operator: any, callback: Callback<IAccountModel>): void {
+	public operatorToCustomer(operator: any, callback: Callback<IAccountModel>): void {
 		try {
 			LocalAccount.default_find_by_id(operator, operator.user_id).then((account: IAccountModel): void => {
 				const stripe_id = account.content.stripe_id;
@@ -736,611 +707,14 @@ export class Stripe extends Mail {
 	}
 
 	/**
-	 * innerDeleteCustomer
-	 *
-	 * @param user
-	 * @param callback
-	 * @returns none
-	 */
-	private DeleteCustomer(user: any, callback: Callback<any>): void {
-		try {
-			if (user) {
-				if (this.enable) {
-					const operator: IAccountModel = this.Transform(user);
-					this.get_self(operator, (error, account: any) => {
-						if (!error) {
-							const stripe_id = account.content.stripe_id;
-							if (stripe_id) {
-								this.logger.info('begin deleteCustomer. ' + operator.username);
-								this.stripe.customers.del(stripe_id).then((customer: any) => {
-									this.logger.info('end deleteCustomer. ' + operator.username);
-									this.put_self(operator, {"content.stripe_id": null}, (error, account) => {
-										if (!error) {
-											callback(null, customer.id);
-										} else {
-											callback(error, null);
-										}
-									});
-								}).catch((error: any) => {
-									callback(Stripe.translationError(error), null);
-								});
-							} else {
-								callback(null, null);
-							}
-						} else {
-							callback(error, null);
-						}
-					});
-				} else {
-					callback(Errors.generalError(-1, "disabled.", "S00407"), null);
-				}
-			} else {
-				callback(Errors.userError(1, "not logged in.", "S00405"), null);
-			}
-		} catch (error: any) {
-			callback(error, null);
-		}
-	}
-
-	/**
-	 * sendBankReceipt
-	 *
-	 * @param mailto
-	 * @param append
-	 * @param callback
-	 */
-	private sendBankReceipt(mailto: { address: string, charge: any, customer: any }, append: any[], callback: Callback<any>): void {
-
-		// const mail_object = this.module_config.receiptmail;
-		const immutable = JSON.parse(JSON.stringify(this.module_config.receiptmail));
-
-		const formatter = new Intl.NumberFormat('ja-JP');
-
-		immutable.html.content.text = immutable.text.content.text = [
-			`amount: ¥${formatter.format(mailto.charge.amount)}`,
-		];
-
-		append.forEach((line) => {
-			immutable.text.content.text.push(line);
-		});
-
-		immutable.text.content.text.push(`description: ${mailto.charge.description}`);
-
-		const mutable = {link: mailto.charge.receipt_url};
-
-		this.sendMail({
-			address: mailto.address,
-			bcc: this.bcc,
-			title: "Recept",
-			template_url: "views/plugins/stripe/mail/mail_template.ejs",
-			immutable: immutable,
-			mutable: mutable,
-			result_object: {code: 0, message: ["Prease Wait.", ""]},
-		}, (error: IErrorObject, result: any) => {
-			if (!error) {
-				callback(null, result);
-			} else {
-				callback(error, null);
-			}
-		});
-	}
-
-	/**
-	 * sendDeliveryReceipt
-	 *
-	 * @param mailto
-	 * @param append
-	 * @param callback
-	 */
-	private sendDeliveryReceipt(mailto: { address: string, charge: any, customer: any }, append: any[], callback: Callback<any>): void {
-
-		// const mail_object = this.module_config.receiptmail;
-		const immutable = JSON.parse(JSON.stringify(this.module_config.receiptmail));
-
-		const formatter = new Intl.NumberFormat('ja-JP');
-
-		immutable.html.content.text = immutable.text.content.text = [
-			`amount: ¥${formatter.format(mailto.charge.amount)}`,
-		];
-
-		append.forEach((line) => {
-			immutable.text.content.text.push(line);
-		});
-		immutable.text.content.text.push(`description: ${mailto.charge.description}`);
-
-		const mutable = {link: mailto.charge.receipt_url};
-
-		this.sendMail({
-			address: mailto.address,
-			bcc: this.bcc,
-			title: "Recept",
-			template_url: "views/plugins/stripe/mail/mail_template.ejs",
-			immutable: immutable,
-			mutable: mutable,
-			result_object: {code: 0, message: ["Prease Wait.", ""]},
-		}, (error: IErrorObject, result: any) => {
-			if (!error) {
-				callback(null, result);
-			} else {
-				callback(error, null);
-			}
-		});
-	}
-
-	/**
-	 * sendCardReceipt
-	 *
-	 * @param mailto
-	 * @param append
-	 * @param callback
-	 */
-	private sendCardReceipt(mailto: { address: string, charge: any, customer: any }, append: any[], callback: Callback<any>): void {
-		const card = mailto.charge.payment_method_details.card;
-		// const mail_object = this.module_config.receiptmail;
-		const immutable = JSON.parse(JSON.stringify(this.module_config.receiptmail));
-
-		const formatter = new Intl.NumberFormat('ja-JP');
-
-		immutable.html.content.text = immutable.text.content.text = [
-			`amount: ¥${formatter.format(mailto.charge.amount)}`,
-			`-`,
-			`card: ${card.brand}`,
-			`last4: ${card.last4}`,
-			`expired: ${card.exp_month}/${card.exp_year}`,
-			`-`,
-			`status: ${mailto.charge.outcome.seller_message}`,
-		];
-
-		append.forEach((line) => {
-			immutable.text.content.text.push(line);
-		});
-
-		immutable.text.content.text.push(`description: ${mailto.charge.description}`);
-
-		const mutable = {link: mailto.charge.receipt_url};
-
-		this.sendMail({
-			address: mailto.address,
-			bcc: this.bcc,
-			title: "Recept",
-			template_url: "views/plugins/stripe/mail/mail_template.ejs",
-			immutable: immutable,
-			mutable: mutable,
-			result_object: {code: 0, message: ["Prease Wait.", ""]},
-		}, (error: IErrorObject, result: any) => {
-			if (!error) {
-				callback(null, result);
-			} else {
-				callback(error, null);
-			}
-		});
-	}
-
-	/**
-	 * charge
-	 *
-	 * チャージ
-	 *
-	 * @param request
-	 * @param charge
-	 * @param callback
-	 * @returns none
-	 */
-	private Charge(request: any, charge: { customer: string, amount: number, currency: string, description: string, capture: boolean }, callback: Callback<{ address: string, charge: any, customer: any }>): void {
-		try {
-			const operator: IAccountModel = this.Transform(request.user);
-			this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
-				if (!error) {
-					if (customer) {
-						charge.customer = customer.id;
-						charge.amount = Math.round(charge.amount); // 四捨五入
-						this.stripe.charges.create(charge).then((charge: any) => {
-							if (charge.payment_method_details.card) {
-
-								//                      this.stripe.issuing.authorizations.list({}).then((charges: any) => {
-								//                              console.log(charges);
-								//                      })
-
-								//                      const chargeId: any = charge.id;
-
-								//          チャージをキャプチャする
-								//                      this.stripe.charges.capture(chargeId).then((charges: any) => {
-								//                              console.log(charges);
-								//                      });
-
-								//          払い戻しを作成する
-								//              this.stripe.refunds.create({charge: chargeId}).then((charges: any) => {
-								//                      console.log(charges);
-								//              });
-
-								callback(null, {
-									address: customer.email || operator.username,
-									charge: charge,
-									customer: customer
-								});
-							} else {
-								callback(Errors.generalError(1000, "Stripe error.", "S00422"), null);
-							}
-						}).catch((error: any) => {
-							callback(Stripe.translationError(error), null);
-						})
-					} else {
-						callback(Errors.generalError(1, "no customer.", "S00423"), null);
-					}
-				} else {
-					callback(error, null);
-				}
-			});
-		} catch (error: any) {
-			callback(error, null);
-		}
-	}
-
-	/**
-	 * Subscribe
-	 *
-	 * 定期課金
-	 *
-	 * @param operator
-	 * @param plan_no
-	 * @param subscription
-	 * @param callback
-	 * @returns none
-	 */
-	private Subscribe(operator: any, plan_no: number, subscription: any, callback: Callback<any>): void {
-		try {
-			if (0 < plan_no && plan_no <= this.plan_ids.length) {
-				this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
-					if (!error) {
-						if (customer) {
-							this.allSubscriptions((error, all_subscriptions) => { // 同一プランがなければ
-								if (!error) {
-									// 	const heigest = this.highestPlan(all_subscriptions, customer.subscriptions);
-									const subscriptions = this.hasSameSubscriptions(all_subscriptions, customer.subscriptions);
-									if (subscriptions.length > 0) { // 既にあるか。
-										const plan_id: string = this.plan_ids[plan_no - 1];
-										const sales_tax: string = this.tax_rates[0];
-										this.stripe.subscriptions.create({
-											customer: customer.id,
-											items: [
-												{price: plan_id},
-											],
-											default_tax_rates: [
-												sales_tax
-											],
-										}).then((subscription: any) => {
-											if (subscription) {
-												callback(null, {});
-											} else {
-												callback(Errors.generalError(1000, "Stripe error.", "S00424"), null);
-											}
-										}).catch((error: any) => {
-											callback(Stripe.translationError(error), null);
-										})
-									} else {
-										callback(null, {});
-									}
-								} else {
-									callback(error, null);
-								}
-							});
-						} else {
-							callback(Errors.generalError(1, "no customer.", "S00425"), null);
-						}
-					} else {
-						callback(error, null);
-					}
-				});
-			} else {
-				callback(null, {});
-			}
-		} catch (error: any) {
-			callback(error, null);
-		}
-	}
-
-	/**
-	 * hasSubscribe
-	 *
-	 * @param request
-	 * @param callback
-	 * @returns none
-	 */
-	private hasSubscribe(request: any, callback: Callback<number>): void {
-		try {
-			const operator: IAccountModel = this.Transform(request.user);
-			if (operator.auth <= AuthLevel.manager) {
-				callback(null, 2);
-			} else {
-				this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
-					if (!error) {
-						if (customer) {
-							this.allSubscriptions((error, all_subscriptions) => { // 全てのプラン
-								if (!error) {
-									const heigest = this.highestPlan(all_subscriptions, customer.subscriptions);
-									callback(null, heigest);
-								} else {
-									callback(error, null);
-								}
-							});
-						} else {
-							callback(null, 0);
-						}
-					} else {
-						callback(error, null);
-					}
-				});
-			}
-		} catch (error: any) {
-			callback(error, null);
-		}
-	}
-
-	/**
-	 * operatorToCustomer
-	 *
-	 * @param request
-	 * @param response
-	 * @returns none
-	 */
-	private isSubscribeUser(request: any, response: IJSONResponse): void {
-		try {
-			this.ifExist(response, Errors.userError(1, "not logged in.", "S03415"), request.user, () => {
-				if (this.enable) {
-					const operator: IAccountModel = this.Transform(request.user);
-					const username = request.params.username;
-					LocalAccount.default_find_by_name(operator, username).then((account: IAccountModel): void => {
-						const stripe_id = account.content.stripe_id;
-						if (stripe_id) {
-							this.stripe.customers.retrieve(stripe_id).then((customer: any) => {
-								this.isSubscribeCustomer(customer, (error: IErrorObject, heigest_plan_no: number) => {
-									if (!error) {
-										this.SendSuccess(response, heigest_plan_no); // subscribe
-									} else {
-										this.SendError(response, error);
-									}
-								});
-							}).catch((error: any) => {
-								this.SendSuccess(response, -1); // invalid stripe account
-							});
-						} else {
-							this.SendSuccess(response, -2);  // no stripe account
-						}
-					}).catch((error: IErrorObject) => {
-						this.SendError(response, error);
-					});
-				} else {
-					this.SendError(response, Errors.generalError(-1, "disabled.", "S00428"));
-				}
-			});
-		} catch (error: any) {
-			this.SendError(response, error);
-		}
-	}
-
-	/**
-	 * isSubscribeCustomer
-	 *
-	 * @param customer
-	 * @param callback
-	 * @returns none
-	 */
-	private isSubscribeCustomer(customer: any, callback: Callback<number>): void {
-		this.allSubscriptions((error, all_subscriptions) => { // 全てのプラン
-			if (!error) {
-				const heigest = this.highestPlan(all_subscriptions, customer.subscriptions);
-				callback(null, heigest);
-			} else {
-				callback(error, null);
-			}
-		});
-	}
-
-	/**
-	 * isSubscribeId
-	 *
-	 * @param stripe_id
-	 * @param callback
-	 * @returns none
-	 */
-	private isSubscribeId(stripe_id: string, callback: Callback<number>): void {
-		try {
-			if (stripe_id) {
-				this.stripe.customers.retrieve(stripe_id).then((customer: any) => {
-					this.isSubscribeCustomer(customer, (error: IErrorObject, heigest_plan_no: number) => {
-						if (!error) {
-							callback(null, heigest_plan_no); // subscribe
-						} else {
-							callback(error, null);
-						}
-					});
-				}).catch((error: any) => {
-					callback(null, -1); // invalid stripe account
-				});
-			} else {
-				callback(null, -2);  // no stripe account
-			}
-		} catch (error: any) {
-			this.SendError(error, null);
-		}
-	}
-
-	/**
-	 * updateSubscribe
-	 *
-	 * 定期課金更新
-	 *
-	 * @param operator
-	 * @param plan_no
-	 * @param metadata
-	 * @param callback
-	 * @returns none
-	 */
-	private updateSubscribe(operator: any, plan_no: number, metadata: any, callback: Callback<any>): void {
-		try {
-			if (0 < plan_no && plan_no <= this.plan_ids.length) {
-				this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
-					if (!error) {
-						if (customer) {
-							const subscriptions: any[] = customer.subscriptions.data;
-							if (subscriptions.length > 0) {
-								const promises: any = [];
-								subscriptions.forEach((subscription: any): void => {
-									const plan_id: string = this.plan_ids[plan_no - 1];
-									if (subscription.plan.id === plan_id) {
-										promises.push(new Promise((resolve: any, reject: any): void => {
-												this.stripe.subscriptions.update(subscription.id, {metadata: metadata}).then((subscription: any) => {
-													if (subscription) {
-														resolve(subscription);
-													} else {
-														reject({});
-													}
-												}).catch((error: any) => {
-													reject(error);
-												});
-											}
-										));
-									}
-								});
-								Promise.all(promises).then((objects: any): void => {
-									callback(null, objects);
-								}).catch((error): void => {
-									callback(Stripe.translationError(error), null);
-								});
-
-							} else {
-								callback(Errors.generalError(-1, "no subscription.", "S00427"), null);
-							}
-						} else {
-							callback(Errors.generalError(1, "no customer.", "S00428"), null);
-						}
-					} else {
-						callback(error, null);
-					}
-				});
-			} else {
-				callback(null, {});
-			}
-		} catch (error: any) {
-			callback(error, null);
-		}
-	}
-
-	/**
-	 * cancelSubscribe
-	 *
-	 * 定期課金解除
-	 *
-	 * @param operator
-	 * @param plan_no
-	 * @param callback
-	 * @returns none
-	 */
-	private cancelSubscribe(operator: any, plan_no: number, callback: Callback<any>): void {
-		try {
-			if (0 < plan_no && plan_no <= this.plan_ids.length) {
-				this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
-					if (!error) {
-						if (customer) {
-							const subscriptions: any[] = customer.subscriptions.data;
-							if (subscriptions.length > 0) {
-								const promises: any = [];
-								subscriptions.forEach((subscription: any): void => {
-									const plan_id: string = this.plan_ids[plan_no - 1];
-									if (subscription.plan.id === plan_id) {
-										promises.push(new Promise((resolve: any, reject: any): void => {
-											this.stripe.subscriptions.del(subscription.id).then((subscription: any) => {
-												if (subscription) {
-													resolve(subscription);
-												} else {
-													reject({});
-												}
-											}).catch((error: any) => {
-												callback(error, null);
-											});
-										}));
-									}
-								});
-
-								Promise.all(promises).then((objects: any): void => {
-									callback(null, objects);
-								}).catch((error): void => {
-									callback(Stripe.translationError(error), null);
-								});
-
-							} else {
-								callback(Errors.generalError(-1, "no subscription.", "S00429"), null);
-							}
-						} else {
-							callback(Errors.generalError(1, "no customer.", "S00430"), null);
-						}
-					} else {
-						callback(error, null);
-					}
-				});
-			} else {
-				callback(null, {});
-			}
-		} catch (error: any) {
-			callback(error, null);
-		}
-	}
-
-	/**
-	 * operatorToCustomer
-	 *
-	 * @param request
-	 * @param response
-	 * @returns
-	 *  1 subscribed.
-	 *  0 unsubscribed.
-	 * -1 invalid stripe account.
-	 * -2 no stripe account.
-	 * -3 error.
-	 */
-	private isSubscribeUserPublic(request: any, response: IJSONResponse): void {
-		try {
-			if (this.enable) {
-				const key: { key: string } = request.query;
-				const username = request.params.username;
-				LocalAccount.default_find_by_name(null, username).then((account: IAccountModel): void => {
-					const stripe_id = account.content.stripe_id;
-					if (stripe_id) {
-						this.stripe.customers.retrieve(stripe_id).then((customer: any) => {
-							this.isSubscribeCustomer(customer, (error: IErrorObject, heigest_plan_no: number) => {
-								if (!error) {
-									this.SendSuccess(response, heigest_plan_no); // 課金
-								} else {
-									this.SendError(response, error);
-								}
-							});
-						}).catch((error: any) => {
-							this.SendSuccess(response, -1); // stripeアカウント不明
-						});
-					} else {
-						this.SendSuccess(response, -2);  // stripeアカウント未登録
-					}
-				}).catch((error: IErrorObject) => {
-					this.SendError(response, error);
-				});
-			} else {
-				this.SendError(response, Errors.generalError(-1, "disabled.", "S00428"));
-			}
-		} catch (error: any) {
-			this.SendError(response, error);
-		}
-	}
-
-
-	/**
-	 * is_customer
+	 * isCustomer
 	 *
 	 * Stripe登録済？
 	 *
 	 * @param request
 	 * @param response
 	 */
-	public is_customer(request: any, response: IJSONResponse): void {
+	public isCustomer(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00444"), request.user, () => {
 				if (this.enable) {
@@ -1366,13 +740,13 @@ export class Stripe extends Mail {
 	}
 
 	/**
-	 * create_customer
+	 * createCustomer
 	 *
 	 * @param request
 	 * @param response
 	 * @returns none
 	 */
-	public create_customer(request: any, response: IJSONResponse): void {
+	public createCustomer(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00446"), request.user, () => {
 				if (this.enable) {
@@ -1414,13 +788,13 @@ export class Stripe extends Mail {
 	}
 
 	/**
-	 * retrieve_customer
+	 * retrieveCustomer
 	 *
 	 * @param request
 	 * @param response
 	 * @returns none
 	 */
-	public retrieve_customer(request: any, response: IJSONResponse): void {
+	public retrieveCustomer(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.generalError(1, "not logged in.", "S00449"), request.user, () => {
 				if (this.enable) {
@@ -1454,13 +828,13 @@ export class Stripe extends Mail {
 	}
 
 	/**
-	 * update_customer
+	 * updateCustomer
 	 *
 	 * @param request
 	 * @param response
 	 * @returns none
 	 */
-	public update_customer(request: any, response: IJSONResponse): void {
+	public updateCustomer(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.generalError(1, "not logged in.", "S00402"), request.user, () => {
 				if (this.enable) {
@@ -1491,15 +865,53 @@ export class Stripe extends Mail {
 	}
 
 	/**
-	 * delete_customer
+	 * deleteCustomer
 	 *
 	 * @param request
 	 * @param response
 	 * @returns none
 	 */
-	public delete_customer(request: any, response: IJSONResponse): void {
+	/*
+	public deleteCustomer(request: any, response: IJSONResponse): void {
 		try {
-			this.DeleteCustomer(request.user, (error: IErrorObject, customer_id) => {
+			this.ifExist(response, Errors.userError(1, "not logged in.", "S00405"), request.user, () => {
+				if (this.enable) {
+					const operator: IAccountModel = this.Transform(request.user);
+					this.get_self(operator, (error, account: any) => {
+						if (!error) {
+							const stripe_id = account.content.stripe_id;
+							if (stripe_id) {
+								this.logger.info('begin deleteCustomer. ' + operator.username);
+								this.stripe.customers.del(stripe_id).then((customer: any) => {
+									this.logger.info('end deleteCustomer. ' + operator.username);
+									this.put_self(operator, {"content.stripe_id": null}, (error, account) => {
+										this.ifSuccess(response, error, (): void => {
+											this.SendSuccess(response, customer.id);
+										});
+									})
+								}).catch((error: any) => {
+									this.SendError(response, Stripe.translationError(error));
+								});
+							} else {
+								this.SendError(response, Errors.generalError(1, "no customer.", "S00406"));
+							}
+						} else {
+							this.SendError(response, error);
+						}
+					})
+				} else {
+					this.SendError(response, Errors.generalError(-1, "disabled.", "S00407"));
+				}
+			});
+		} catch (error: any) {
+			this.SendError(response, error);
+		}
+	}
+*/
+
+	public deleteCustomer(request: any, response: IJSONResponse): void {
+		try {
+			this.innerDeleteCustomer(request.user, (error: IErrorObject, customer_id) => {
 				if (!error) {
 					this.SendSuccess(response, customer_id);
 				} else {
@@ -1512,6 +924,53 @@ export class Stripe extends Mail {
 	}
 
 	/**
+	 * innerDeleteCustomer
+	 *
+	 * @param user
+	 * @param callback
+	 * @returns none
+	 */
+	public innerDeleteCustomer(user: any, callback: Callback<any>): void {
+		try {
+			if (user) {
+				if (this.enable) {
+					const operator: IAccountModel = this.Transform(user);
+					this.get_self(operator, (error, account: any) => {
+						if (!error) {
+							const stripe_id = account.content.stripe_id;
+							if (stripe_id) {
+								this.logger.info('begin deleteCustomer. ' + operator.username);
+								this.stripe.customers.del(stripe_id).then((customer: any) => {
+									this.logger.info('end deleteCustomer. ' + operator.username);
+									this.put_self(operator, {"content.stripe_id": null}, (error, account) => {
+										if (!error) {
+											callback(null, customer.id);
+										} else {
+											callback(error, null);
+										}
+									});
+								}).catch((error: any) => {
+									callback(Stripe.translationError(error), null);
+								});
+							} else {
+								callback(null, null);
+							}
+						} else {
+							callback(error, null);
+						}
+					});
+				} else {
+					callback(Errors.generalError(-1, "disabled.", "S00407"), null);
+				}
+			} else {
+				callback(Errors.userError(1, "not logged in.", "S00405"), null);
+			}
+		} catch (error: any) {
+			callback(error, null);
+		}
+	}
+
+	/**
 	 * create card
 	 *
 	 * もしoperatorにcustomer_idが存在しないならcustomerを作成してcardを作成。
@@ -1520,7 +979,7 @@ export class Stripe extends Mail {
 	 * @param request
 	 * @param response
 	 */
-	public create_source(request: any, response: IJSONResponse): void {
+	public createSource(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "not logged in.", "SZ00408"), request.user, () => {
 				if (this.enable) {
@@ -1572,7 +1031,7 @@ export class Stripe extends Mail {
 	 * @param response
 	 * @returns none
 	 */
-	public retrieve_source(request: any, response: IJSONResponse): void {
+	public retrieveSource(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00411"), request.user, () => {
 				if (this.enable) {
@@ -1616,7 +1075,7 @@ export class Stripe extends Mail {
 	 * @param response
 	 * @returns none
 	 */
-	public update_source(request: any, response: IJSONResponse): void {
+	public updateSource(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00415"), request.user, () => {
 				if (this.enable) {
@@ -1661,7 +1120,7 @@ export class Stripe extends Mail {
 	 * @param response
 	 * @returns none
 	 */
-	public delete_source(request: any, response: IJSONResponse): void {
+	public deleteSource(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00419"), request.user, () => {
 				if (this.enable) {
@@ -1692,6 +1151,512 @@ export class Stripe extends Mail {
 			});
 		} catch (error: any) {
 			this.SendError(response, error);
+		}
+	}
+
+	/**
+	 * sendBankReceipt
+	 *
+	 * @param mailto
+	 * @param append
+	 * @param callback
+	 */
+	public sendBankReceipt(mailto: { address: string, charge: any, customer: any }, append: any[], callback: Callback<any>): void {
+
+		// const mail_object = this.module_config.receiptmail;
+		const immutable = JSON.parse(JSON.stringify(this.module_config.receiptmail));
+
+		const formatter = new Intl.NumberFormat('ja-JP');
+
+		immutable.html.content.text = immutable.text.content.text = [
+			`amount: ¥${formatter.format(mailto.charge.amount)}`,
+		];
+
+		append.forEach((line) => {
+			immutable.text.content.text.push(line);
+		});
+
+		immutable.text.content.text.push(`description: ${mailto.charge.description}`);
+
+		const mutable = {link: mailto.charge.receipt_url};
+
+		this.sendMail({
+			address: mailto.address,
+			bcc: this.bcc,
+			title: "Recept",
+			template_url: "views/plugins/stripe/mail/mail_template.ejs",
+			immutable: immutable,
+			mutable: mutable,
+			result_object: {code: 0, message: ["Prease Wait.", ""]},
+		}, (error: IErrorObject, result: any) => {
+			if (!error) {
+				callback(null, result);
+			} else {
+				callback(error, null);
+			}
+		});
+	}
+
+	/**
+	 * sendDeliveryReceipt
+	 *
+	 * @param mailto
+	 * @param append
+	 * @param callback
+	 */
+	public sendDeliveryReceipt(mailto: { address: string, charge: any, customer: any }, append: any[], callback: Callback<any>): void {
+
+		// const mail_object = this.module_config.receiptmail;
+		const immutable = JSON.parse(JSON.stringify(this.module_config.receiptmail));
+
+		const formatter = new Intl.NumberFormat('ja-JP');
+
+		immutable.html.content.text = immutable.text.content.text = [
+			`amount: ¥${formatter.format(mailto.charge.amount)}`,
+		];
+
+		append.forEach((line) => {
+			immutable.text.content.text.push(line);
+		});
+		immutable.text.content.text.push(`description: ${mailto.charge.description}`);
+
+		const mutable = {link: mailto.charge.receipt_url};
+
+		this.sendMail({
+			address: mailto.address,
+			bcc: this.bcc,
+			title: "Recept",
+			template_url: "views/plugins/stripe/mail/mail_template.ejs",
+			immutable: immutable,
+			mutable: mutable,
+			result_object: {code: 0, message: ["Prease Wait.", ""]},
+		}, (error: IErrorObject, result: any) => {
+			if (!error) {
+				callback(null, result);
+			} else {
+				callback(error, null);
+			}
+		});
+	}
+
+	/**
+	 * sendCardReceipt
+	 *
+	 * @param mailto
+	 * @param append
+	 * @param callback
+	 */
+	public sendCardReceipt(mailto: { address: string, charge: any, customer: any }, append: any[], callback: Callback<any>): void {
+		const card = mailto.charge.payment_method_details.card;
+		// const mail_object = this.module_config.receiptmail;
+		const immutable = JSON.parse(JSON.stringify(this.module_config.receiptmail));
+
+		const formatter = new Intl.NumberFormat('ja-JP');
+
+		immutable.html.content.text = immutable.text.content.text = [
+			`amount: ¥${formatter.format(mailto.charge.amount)}`,
+			`-`,
+			`card: ${card.brand}`,
+			`last4: ${card.last4}`,
+			`expired: ${card.exp_month}/${card.exp_year}`,
+			`-`,
+			`status: ${mailto.charge.outcome.seller_message}`,
+		];
+
+		append.forEach((line) => {
+			immutable.text.content.text.push(line);
+		});
+
+		immutable.text.content.text.push(`description: ${mailto.charge.description}`);
+
+		const mutable = {link: mailto.charge.receipt_url};
+
+		this.sendMail({
+			address: mailto.address,
+			bcc: this.bcc,
+			title: "Recept",
+			template_url: "views/plugins/stripe/mail/mail_template.ejs",
+			immutable: immutable,
+			mutable: mutable,
+			result_object: {code: 0, message: ["Prease Wait.", ""]},
+		}, (error: IErrorObject, result: any) => {
+			if (!error) {
+				callback(null, result);
+			} else {
+				callback(error, null);
+			}
+		});
+	}
+
+	/**
+	 * charge
+	 *
+	 * チャージ
+	 *
+	 * @param request
+	 * @param charge
+	 * @param callback
+	 * @returns none
+	 */
+	public charge(request: any, charge: { customer: string, amount: number, currency: string, description: string, capture: boolean }, callback: Callback<{ address: string, charge: any, customer: any }>): void {
+		try {
+			const operator: IAccountModel = this.Transform(request.user);
+			this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
+				if (!error) {
+					if (customer) {
+						charge.customer = customer.id;
+						charge.amount = Math.round(charge.amount); // 四捨五入
+						this.stripe.charges.create(charge).then((charge: any) => {
+							if (charge.payment_method_details.card) {
+
+								//                      this.stripe.issuing.authorizations.list({}).then((charges: any) => {
+								//                              console.log(charges);
+								//                      })
+
+								//                      const chargeId: any = charge.id;
+
+								//          チャージをキャプチャする
+								//                      this.stripe.charges.capture(chargeId).then((charges: any) => {
+								//                              console.log(charges);
+								//                      });
+
+								//          払い戻しを作成する
+								//              this.stripe.refunds.create({charge: chargeId}).then((charges: any) => {
+								//                      console.log(charges);
+								//              });
+
+								callback(null, {
+									address: customer.email || operator.username,
+									charge: charge,
+									customer: customer
+								});
+							} else {
+								callback(Errors.generalError(1000, "Stripe error.", "S00422"), null);
+							}
+						}).catch((error: any) => {
+							callback(Stripe.translationError(error), null);
+						})
+					} else {
+						callback(Errors.generalError(1, "no customer.", "S00423"), null);
+					}
+				} else {
+					callback(error, null);
+				}
+			});
+		} catch (error: any) {
+			callback(error, null);
+		}
+	}
+
+	/**
+	 * subscribe
+	 *
+	 * 定期課金
+	 *
+	 * @param request
+	 * @param subscription
+	 * @param callback
+	 * @returns none
+	 */
+	public subscribe(request: any, subscription: any, callback: Callback<any>): void {
+		try {
+			const operator: IAccountModel = this.Transform(request.user);
+			this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
+				if (!error) {
+					if (customer) {
+						this.allSubscriptions((error, all_subscriptions) => { // 同一プランがなければ
+							if (!error) {
+								const subscriptions = this.hasSameSubscriptions(all_subscriptions, customer.subscriptions);
+								if (subscriptions.length === 0) {
+									const plan_id: string = this.plan_ids[0];
+									const sales_tax: string = this.tax_rates[0];
+									this.stripe.subscriptions.create({
+										customer: customer.id,
+										items: [
+											{price: plan_id},
+										],
+										default_tax_rates: [
+											sales_tax
+										],
+									}).then((subscription: any) => {
+										if (subscription) {
+											callback(null, {});
+										} else {
+											callback(Errors.generalError(1000, "Stripe error.", "S00424"), null);
+										}
+									}).catch((error: any) => {
+										callback(Stripe.translationError(error), null);
+									})
+								} else {
+									callback(null, {});
+								}
+							} else {
+								callback(error, null);
+							}
+						});
+					} else {
+						callback(Errors.generalError(1, "no customer.", "S00425"), null);
+					}
+				} else {
+					callback(error, null);
+				}
+			});
+		} catch (error: any) {
+			callback(error, null);
+		}
+	}
+
+	/**
+	 * hasSubscribe
+	 *
+	 * @param request
+	 * @param callback
+	 * @returns none
+	 */
+	public hasSubscribe(request: any, callback: Callback<boolean>): void {
+		try {
+			const operator: IAccountModel = this.Transform(request.user);
+			if (operator.auth <= AuthLevel.manager) {
+				callback(null, true);
+			} else {
+				this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
+					if (!error) {
+						if (customer) {
+							this.allSubscriptions((error, all_subscriptions) => { // 全てのプラン
+								if (!error) {
+									const result = this.hasSameSubscriptions(all_subscriptions, customer.subscriptions);　// 自分のプランは？
+									const is_subscribe = (result.length > 0);
+									callback(null, is_subscribe);
+								} else {
+									callback(error, null);
+								}
+							});
+						} else {
+							callback(null, false);
+						}
+					} else {
+						callback(error, null);
+					}
+				});
+			}
+		} catch (error: any) {
+			callback(error, null);
+		}
+	}
+
+	/**
+	 * operatorToCustomer
+	 *
+	 * @param request
+	 * @param response
+	 * @returns none
+	 */
+	public isSubscribeUser(request: any, response: IJSONResponse): void {
+		try {
+			this.ifExist(response, Errors.userError(1, "not logged in.", "S03415"), request.user, () => {
+				if (this.enable) {
+					const operator: IAccountModel = this.Transform(request.user);
+					const username = request.params.username;
+					LocalAccount.default_find_by_name(operator, username).then((account: IAccountModel): void => {
+						const stripe_id = account.content.stripe_id;
+						if (stripe_id) {
+							this.stripe.customers.retrieve(stripe_id).then((customer: any) => {
+								this.isSubscribeCustomer(customer, (error: IErrorObject, is_subscribe: boolean) => {
+									if (!error) {
+										if (is_subscribe) {
+											this.SendSuccess(response, 1); // subscribe
+										} else {
+											this.SendSuccess(response, 0); // not subscribe
+										}
+									} else {
+										this.SendError(response, error);
+									}
+								});
+							}).catch((error: any) => {
+								this.SendSuccess(response, -1); // invalid stripe account
+								// 			this.SendError(response, Stripe.translationError(error));
+							});
+						} else {
+							this.SendSuccess(response, -2);  // no stripe account
+						}
+					}).catch((error: IErrorObject) => {
+						this.SendError(response, error);
+					});
+				} else {
+					this.SendError(response, Errors.generalError(-1, "disabled.", "S00428"));
+				}
+			});
+		} catch (error: any) {
+			this.SendError(response, error);
+		}
+	}
+
+	/**
+	 * isSubscribeCustomer
+	 *
+	 * @param customer
+	 * @param callback
+	 * @returns none
+	 */
+	public isSubscribeCustomer(customer: any, callback: Callback<boolean>): void {
+		this.allSubscriptions((error, all_subscriptions) => { // 全てのプラン
+			if (!error) {
+				const result = this.hasSameSubscriptions(all_subscriptions, customer.subscriptions);　// 自分のプランは？
+				const is_subscribe = (result.length > 0);
+				callback(null, is_subscribe);
+			} else {
+				callback(error, null);
+			}
+		});
+	}
+
+	/**
+	 * isSubscribeId
+	 *
+	 * @param stripe_id
+	 * @param callback
+	 * @returns none
+	 */
+	public isSubscribeId(stripe_id: string, callback: Callback<number>): void {
+		try {
+			if (stripe_id) {
+				this.stripe.customers.retrieve(stripe_id).then((customer: any) => {
+					this.isSubscribeCustomer(customer, (error: IErrorObject, is_subscribe: boolean) => {
+						if (!error) {
+							if (is_subscribe) {
+								callback(null, 1); // subscribe
+							} else {
+								callback(null, 0); // not subscribe
+							}
+						} else {
+							callback(error, null);
+						}
+					});
+				}).catch((error: any) => {
+					callback(null, -1); // invalid stripe account
+					// 			this.SendError(response, Stripe.translationError(error));
+				});
+			} else {
+				callback(null, -2);  // no stripe account
+			}
+		} catch (error: any) {
+			this.SendError(error, null);
+		}
+	}
+
+	/**
+	 * updateSubscribe
+	 *
+	 * 定期課金更新
+	 *
+	 * @param request
+	 * @param metadata
+	 * @param callback
+	 * @returns none
+	 */
+	public updateSubscribe(request: any, metadata: any, callback: Callback<any>): void {
+		try {
+			const operator: IAccountModel = this.Transform(request.user);
+			this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
+				if (!error) {
+					if (customer) {
+						const subscriptions: any[] = customer.subscriptions.data;
+						if (subscriptions.length > 0) {
+							const promises: any = [];
+							subscriptions.forEach((subscription: any): void => {
+								const plan_id: string = this.plan_ids[0];
+								if (subscription.plan.id === plan_id) {
+									promises.push(new Promise((resolve: any, reject: any): void => {
+
+											// 		const subscription_id = subscription.id;
+
+											this.stripe.subscriptions.update(subscription.id, {metadata: metadata}).then((subscription: any) => {
+												if (subscription) {
+													resolve(subscription);
+												} else {
+													reject({});
+												}
+											}).catch((error: any) => {
+												reject(error);
+											});
+										}
+									));
+								}
+							});
+							Promise.all(promises).then((objects: any): void => {
+								callback(null, objects);
+							}).catch((error): void => {
+								callback(Stripe.translationError(error), null);
+							});
+
+						} else {
+							callback(Errors.generalError(-1, "no subscription.", "S00427"), null);
+						}
+					} else {
+						callback(Errors.generalError(1, "no customer.", "S00428"), null);
+					}
+				} else {
+					callback(error, null);
+				}
+			});
+		} catch (error: any) {
+			callback(error, null);
+		}
+	}
+
+	/**
+	 * cancel_subscribe
+	 *
+	 * 定期課金解除
+	 *
+	 * @param request
+	 * @param callback
+	 * @returns none
+	 */
+	public cancel_subscribe(request: any, callback: Callback<any>): void {
+		try {
+			const operator: IAccountModel = this.Transform(request.user);
+			this.operatorToCustomer(operator, (error: IErrorObject, customer: any) => {
+				if (!error) {
+					if (customer) {
+						const subscriptions: any[] = customer.subscriptions.data;
+						if (subscriptions.length > 0) {
+							const promises: any = [];
+							subscriptions.forEach((subscription: any): void => {
+								const plan_id: string = this.plan_ids[0];
+								if (subscription.plan.id === plan_id) {
+									promises.push(new Promise((resolve: any, reject: any): void => {
+										this.stripe.subscriptions.del(subscription.id).then((subscription: any) => {
+											if (subscription) {
+												resolve(subscription);
+											} else {
+												reject({});
+											}
+										}).catch((error: any) => {
+											callback(error, null);
+										});
+									}));
+								}
+							});
+
+							Promise.all(promises).then((objects: any): void => {
+								callback(null, objects);
+							}).catch((error): void => {
+								callback(Stripe.translationError(error), null);
+							});
+
+						} else {
+							callback(Errors.generalError(-1, "no subscription.", "S00429"), null);
+						}
+					} else {
+						callback(Errors.generalError(1, "no customer.", "S00430"), null);
+					}
+				} else {
+					callback(error, null);
+				}
+			});
+		} catch (error: any) {
+			callback(error, null);
 		}
 	}
 
@@ -1730,7 +1695,7 @@ export class Stripe extends Mail {
 	}
 
 	/**
-	 * charge
+	 * _charge
 	 *
 	 * チャージ
 	 *
@@ -1738,11 +1703,11 @@ export class Stripe extends Mail {
 	 * @param response
 	 * @returns none
 	 */
-	public charge(request: any, response: IJSONResponse): void {
+	public _charge(request: any, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00432"), request.user, () => {
 				if (this.enable) {
-					this.Charge(request, request.body, (error, mailto: any) => {
+					this.charge(request, request.body, (error, mailto: any) => {
 						if (!error) {
 							this.sendCardReceipt(mailto, [], (error, mail_result: any) => {
 								if (!error) {
@@ -1773,15 +1738,11 @@ export class Stripe extends Mail {
 	 * @param response
 	 * @returns none
 	 */
-	public subscribe(request: any, response: IJSONResponse): void {
+	public _subscribe(request: any, response: IJSONResponse): void {
 		try {
-			const params: any = request.params;
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00434"), request.user, () => {
 				if (this.enable) {
-					const operator: IAccountModel = this.Transform(request.user);
-					const plan_no: number = params.plan_no;
-					const matadata = request.body;
-					this.Subscribe(operator, plan_no, matadata, (error, subscribe: any) => {
+					this.subscribe(request, request.body, (error, subscribe: any) => {
 						if (!error) {
 							this.SendSuccess(response, subscribe);
 						} else {
@@ -1799,11 +1760,12 @@ export class Stripe extends Mail {
 
 	public has_subscribe(request: any, response: IJSONResponse): void {
 		try {
+			// this.ifExist(response, Errors.userError(1, "not logged in.", "S00436"), request.user, () => {
 			if (request.user) {
 				if (this.enable) {
-					this.hasSubscribe(request, (error, heigest_plan_no: number) => {
+					this.hasSubscribe(request, (error, subscribe: boolean) => {
 						if (!error) {
-							this.SendSuccess(response, heigest_plan_no);
+							this.SendSuccess(response, subscribe);
 						} else {
 							this.SendWarn(response, error);
 						}
@@ -1814,6 +1776,7 @@ export class Stripe extends Mail {
 			} else {
 				this.SendSuccess(response, false);
 			}
+			// 	});
 		} catch (error: any) {
 			this.SendError(response, error);
 		}
@@ -1821,13 +1784,9 @@ export class Stripe extends Mail {
 
 	public update_subscribe(request: any, response: IJSONResponse): void {
 		try {
-			const params: any = request.params;
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00438"), request.user, () => {
 				if (this.enable) {
-					const operator: IAccountModel = this.Transform(request.user);
-					const plan_no: number = params.plan_no;
-					const matadata = request.body;
-					this.updateSubscribe(operator, plan_no, matadata, (error, subscribe: any) => {
+					this.updateSubscribe(request, request.body, (error, subscribe: any) => {
 						if (!error) {
 							this.SendSuccess(response, subscribe);
 						} else {
@@ -1843,14 +1802,11 @@ export class Stripe extends Mail {
 		}
 	}
 
-	public cancel_subscribe(request: any, response: IJSONResponse): void {
+	public _cancel_subscribe(request: any, response: IJSONResponse): void {
 		try {
-			const params: any = request.params;
 			this.ifExist(response, Errors.userError(1, "not logged in.", "S00440"), request.user, () => {
 				if (this.enable) {
-					const operator: IAccountModel = this.Transform(request.user);
-					const plan_no: number = params.plan_no;
-					this.cancelSubscribe(operator, plan_no, (error, subscribe: any) => {
+					this.cancel_subscribe(request, (error, subscribe: any) => {
 						if (!error) {
 							this.SendSuccess(response, subscribe);
 						} else {
@@ -1902,6 +1858,55 @@ export class Stripe extends Mail {
 			})
 		} catch (error: any) {
 			callback(error, null);
+		}
+	}
+
+	/**
+	 * operatorToCustomer
+	 *
+	 * @param request
+	 * @param response
+	 * @returns
+	 *  1 subscribed.
+	 *  0 unsubscribed.
+	 * -1 invalid stripe account.
+	 * -2 no stripe account.
+	 * -3 error.
+	 */
+	public isSubscribeUserPublic(request: any, response: IJSONResponse): void {
+		try {
+			if (this.enable) {
+				const key: { key: string } = request.query;
+				const username = request.params.username;
+				LocalAccount.default_find_by_name(null, username).then((account: IAccountModel): void => {
+					const stripe_id = account.content.stripe_id;
+					if (stripe_id) {
+						this.stripe.customers.retrieve(stripe_id).then((customer: any) => {
+							this.isSubscribeCustomer(customer, (error: IErrorObject, is_subscribe: boolean) => {
+								if (!error) {
+									if (is_subscribe) {
+										this.SendSuccess(response, 1); // 課金
+									} else {
+										this.SendSuccess(response, 0); // 非課金
+									}
+								} else {
+									this.SendError(response, error);
+								}
+							});
+						}).catch((error: any) => {
+							this.SendSuccess(response, -1); // stripeアカウント不明
+						});
+					} else {
+						this.SendSuccess(response, -2);  // stripeアカウント未登録
+					}
+				}).catch((error: IErrorObject) => {
+					this.SendError(response, error);
+				});
+			} else {
+				this.SendError(response, Errors.generalError(-1, "disabled.", "S00428"));
+			}
+		} catch (error: any) {
+			this.SendError(response, error);
 		}
 	}
 

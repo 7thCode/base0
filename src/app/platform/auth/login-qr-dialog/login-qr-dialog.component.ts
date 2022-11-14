@@ -53,7 +53,7 @@ export class LoginQrDialogComponent extends BaseDialogComponent implements OnIni
 		public matDialogRef: MatDialogRef<any>,
 		public snackbar: MatSnackBar,
 		public auth: AuthService,
-		public router: Router) {
+		private router: Router) {
 		super();
 	}
 

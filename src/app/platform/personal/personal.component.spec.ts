@@ -1,5 +1,5 @@
+import {PersonalComponent} from './personal.component';
+
 describe('PersonalComponent', () => {
-	it('case 1', () => {
-		expect(true).toBe(true);
-	});
+
 });

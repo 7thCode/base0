@@ -1,5 +1,5 @@
+import {TopComponent} from './top.component';
+
 describe('TopComponent', () => {
-	it('case 1', () => {
-		expect(true).toBe(true);
-	});
+
 });

@@ -23,7 +23,7 @@ import {Spinner} from "../../platform/base/library/spinner";
 import {ResizeDialogComponent} from "../../platform/image/resize-dialog/resize-dialog.component";
 import {NativeFilesService} from "./native-files.service";
 import {Errors} from "../../platform/base/library/errors";
-import {MatPaginator} from "@angular/material/paginator";
+// import {MatPaginator} from "@angular/material/paginator";
 
 /**
  * ファイル
@@ -37,7 +37,7 @@ import {MatPaginator} from "@angular/material/paginator";
 })
 export class NativeFilesComponent extends UploadableComponent implements OnInit {
 
-// 	@ViewChild(MatPaginator) paginator: MatPaginator;
+// 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
 	public get isProgress(): boolean {
 		return this.spinner.progress;
@@ -156,9 +156,10 @@ export class NativeFilesComponent extends UploadableComponent implements OnInit 
 	 */
 	public ngOnInit(): void {
 		super.ngOnInit();
-	// 	this.paginator.pageIndex = 0;
+//		this.paginator.pageIndex = 0;
 		this.page = 0;
 		this.query = {};
+
 		this.results = [];
 		this.breakpoint = this.widthToColumns(window.innerWidth);
 		this.draw((error: IErrorObject, results: object[] | null): void => {
@@ -322,9 +323,10 @@ export class NativeFilesComponent extends UploadableComponent implements OnInit 
 	 *
 	 */
 	public findByFilename(): void {
-	// 	this.paginator.pageIndex = 0;
-		this.query = {};
+
+// 		this.paginator.pageIndex = 0;
 		this.page = 0;
+		this.query = {};
 
 		if (this.filename) {
 			this.query = {filename: {$regex: this.filename}};

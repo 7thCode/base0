@@ -18,7 +18,7 @@ import {BaseDialogComponent} from "../../base/components/base-dialog.component";
  * @since 0.01
  */
 @Component({
-	selector: "pipeline-dialog",
+	selector: "article-dialog",
 	styleUrls: ["./article-dialog.component.css"],
 	templateUrl: "./article-dialog.component.html",
 })
@@ -44,18 +44,7 @@ export class ArticleDialogComponent extends BaseDialogComponent {
 	 *
 	 */
 	public triggerResize() {
-		this.zone.onStable.pipe(take(1)).subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			() => this.autosize.resizeToFitContent(true));
+		this.zone.onStable.pipe(take(1)).subscribe(() => this.autosize.resizeToFitContent(true));
 	}
 
 	/**

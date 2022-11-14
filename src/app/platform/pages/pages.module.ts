@@ -33,16 +33,6 @@ import {PagesComponent} from "./pages.component";
 import {SessionService} from "../base/services/session.service";
 import {PagesService} from "./pages.service";
 
-// i18n
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-
-export function HttpLoaderFactory(httpClient: HttpClient) {
-	return new TranslateHttpLoader(httpClient, './i18n/', '.json');
-}
-//
-
 @NgModule({
 	declarations: [
 		PagesComponent,
@@ -72,17 +62,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 // 		AceEditorModule,
 // 		AngularEditorModule,
 		PageEditModule,
-
-		// i18n
-		HttpClientModule,
-		TranslateModule.forRoot({
-			loader: {
-				provide: TranslateLoader,
-				useFactory: HttpLoaderFactory,
-				deps: [HttpClient]
-			}
-		}),
-		//
 
 		BaseModule,
 	],

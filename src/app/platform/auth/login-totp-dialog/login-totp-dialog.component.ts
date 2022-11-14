@@ -47,7 +47,7 @@ export class LoginTotpDialogComponent extends BaseDialogComponent implements OnI
 		public matDialogRef: MatDialogRef<any>,
 		public snackbar: MatSnackBar,
 		public auth: AuthService,
-		public router: Router) {
+		private router: Router) {
 		super();
 	}
 

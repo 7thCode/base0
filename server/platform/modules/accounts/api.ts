@@ -259,7 +259,6 @@ router.delete("/accounts/relation/remove/:username/:type", [gatekeeper.default, 
 			accounts.break_relation(request, response);
 		});
 	}]);
-
 /*
 */
 /*

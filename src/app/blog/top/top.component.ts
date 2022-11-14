@@ -19,7 +19,7 @@ import {DomSanitizer, Meta, Title} from "@angular/platform-browser";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {Errors} from "../../platform/base/library/errors";
 import {environment} from "../../../environments/environment";
-import {AttrPath} from 'attrpath';
+
 
 @Component({
 	selector: "blog-top",
@@ -47,34 +47,6 @@ export class BlogTopComponent extends BlogBaseTopComponent implements OnInit {
 		protected meta: Meta
 	) {
 		super(session, blogsService, breakpointObserver, overlay, matDialog, snackbar, domSanitizer, activatedRoute, router, title, meta);
-	}
-
-	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	public toListView(object: any): any {
-		object.cols = 1;
-		object.rows = 1;
-		return object;
-	}
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	public toView(data: any): any {
-		return data;
-	}
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	public confirmToModel(data: any): any {
-		return data;
 	}
 
 	/**

@@ -6,7 +6,7 @@
 	"version": 1,
 	"newProjectRoot": "projects",
 	"projects": {
-		"tarou": {
+		"base0": {
 			"projectType": "application",
 			"schematics": {},
 			"root": "",
@@ -154,16 +154,16 @@
 					"builder": "@angular-devkit/build-angular:protractor",
 					"options": {
 						"protractorConfig": "e2e/protractor.conf.js",
-						"devServerTarget": "tarou:serve"
+						"devServerTarget": "base0:serve"
 					},
 					"configurations": {
 						"production": {
-							"devServerTarget": "tarou:serve:production"
+							"devServerTarget": "base0:serve:production"
 						}
 					}
 				}
 			}
 		}
 	},
-	"defaultProject": "tarou"
+	"defaultProject": "base0"
 }

@@ -26,7 +26,7 @@ const Files: any = require("./controller");
 const file: any = new Files(event, ConfigModule, logger, connection);
 
 const modules = systemsConfig.modules;
-const files = modules.files;
+const files = modules["files"];
 const initfiles = files.initfiles;
 
 file.init(initfiles, (error: IErrorObject, result: any): void => {
@@ -90,13 +90,6 @@ file.init(initfiles, (error: IErrorObject, result: any): void => {
 				logger.trace(request.url);
 				gatekeeper.catch(response, (): void => {
 					file.renderId(request, response, next);
-				});
-			}]);
-
-		router.get("/files/token/*", [gatekeeper.default,
-			(request: any, response: any, next: () => void): void => {
-				gatekeeper.catch(response, (): void => {
-					file.pathWithToken(request, response, next);
 				});
 			}]);
 

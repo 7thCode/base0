@@ -8,7 +8,6 @@
 
 import {IJSONResponse} from "../../../../types/platform/server";
 import {Errors} from "../../base/library/errors";
-import {AttrPath} from "attrpath";
 
 const _: any = require("lodash");
 
@@ -62,20 +61,12 @@ export class Session extends Wrapper {
 			const user: { data: object } = this.Transform(request.session.req.user); // request.session.req.user;
 			if (user) {
 
-				/*
-				if (AttrPath.traverse(request, ".session.req.user.data") === undefined) {
-					request.session.req.user.data = request.body;
-				} else {
-					request.session.req.user.data = _.merge(request.session.req.user.data, request.body);
-				}
-				*/
-
 				if (request.session.req.user.data === undefined) {
 					request.session.req.user.data = request.body
 				} else {
 					request.session.req.user.data = _.merge(request.session.req.user.data, request.body);
 				}
-				
+
 				// 		request.session.req.user.data = request.body;
 				// 		user.data = request.body;
 				request.session.save();

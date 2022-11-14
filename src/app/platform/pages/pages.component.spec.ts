@@ -1,5 +1,5 @@
+import {PagesComponent} from "./pages.component";
+
 describe("PagesComponent", () => {
-	it('case 1', () => {
-		expect(true).toBe(true);
-	});
+
 });

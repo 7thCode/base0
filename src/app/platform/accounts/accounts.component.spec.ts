@@ -1,5 +1,5 @@
+import {AccountsComponent} from "./accounts.component";
+
 describe("AccountsComponent", () => {
-	it('case 1', () => {
-		expect(true).toBe(true);
-	});
+
 });

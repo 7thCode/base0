@@ -42,31 +42,24 @@ export class PublicKeyService extends HttpService {
 	 * @param callback 公開鍵を返すコールバック
 	 */
 	public fixed(callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/publickey/fixed", this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						switch (result.code) {
-							case 0:
-								callback(null, result.value);
-								break;
-							case 1:
-								callback(null, null);
-								break;
-							default:
-								callback(Errors.serverError(result, "A00028"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00029"), null);
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					callback(Errors.networkException(error, "A00030"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/publickey/fixed", this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				switch (result.code) {
+					case 0:
+						callback(null, result.value);
+						break;
+					case 1:
+						callback(null, null);
+						break;
+					default:
+						callback(Errors.serverError(result, "A00028"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00029"), null);
 			}
-		);
+		}, (error: HttpErrorResponse) => {
+			callback(Errors.networkException(error, "A00030"), null);
+		});
 	}
 
 	/**
@@ -75,31 +68,24 @@ export class PublicKeyService extends HttpService {
 	 * @param callback 公開鍵を返すコールバック
 	 */
 	public dynamic(callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/publickey/dynamic", this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						switch (result.code) {
-							case 0:
-								callback(null, result.value);
-								break;
-							case 1:
-								callback(null, null);
-								break;
-							default:
-								callback(Errors.serverError(result, "A00031"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00032"), null);
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					callback(Errors.networkException(error, "A00033"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/publickey/dynamic", this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				switch (result.code) {
+					case 0:
+						callback(null, result.value);
+						break;
+					case 1:
+						callback(null, null);
+						break;
+					default:
+						callback(Errors.serverError(result, "A00031"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00032"), null);
 			}
-		);
+		}, (error: HttpErrorResponse) => {
+			callback(Errors.networkException(error, "A00033"), null);
+		});
 	}
 
 	/**
@@ -108,31 +94,24 @@ export class PublicKeyService extends HttpService {
 	 * @param callback コールバック
 	 */
 	public token(callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/publickey/token", this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						switch (result.code) {
-							case 0:
-								callback(null, result.value);
-								break;
-							case 1:
-								callback(null, null);
-								break;
-							default:
-								callback(Errors.serverError(result, "A00034"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00035"), null);
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					callback(Errors.networkException(error, "A00036"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/publickey/token", this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				switch (result.code) {
+					case 0:
+						callback(null, result.value);
+						break;
+					case 1:
+						callback(null, null);
+						break;
+					default:
+						callback(Errors.serverError(result, "A00034"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00035"), null);
 			}
-		);
+		}, (error: HttpErrorResponse) => {
+			callback(Errors.networkException(error, "A00036"), null);
+		});
 	}
 
 }

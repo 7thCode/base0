@@ -23,98 +23,98 @@ const stripe: any = new Stripes(event, config, logger);
 router.get('/stripe/iscustomer', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.is_customer(request, response);
+			stripe.isCustomer(request, response);
 		});
 	}])
 
 router.post('/stripe/customer/create', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.create_customer(request, response);
+			stripe.createCustomer(request, response);
 		});
 	}])
 
 router.delete('/stripe/customer/delete', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.delete_customer(request, response);
+			stripe.deleteCustomer(request, response);
 		});
 	}])
 
 router.get('/stripe/customer/retrieve', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.retrieve_customer(request, response);
+			stripe.retrieveCustomer(request, response);
 		});
 	}])
 
 router.put('/stripe/customer/update', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.update_customer(request, response);
+			stripe.updateCustomer(request, response);
 		});
 	}])
 
 router.post('/stripe/source/create', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.create_source(request, response);
+			stripe.createSource(request, response);
 		});
 	}])
 
 router.get('/stripe/source/retrieve/:index', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.retrieve_source(request, response);
+			stripe.retrieveSource(request, response);
 		});
 	}])
 
 router.put('/stripe/source/update/:index', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.update_source(request, response);
+			stripe.updateSource(request, response);
 		});
 	}])
 
 router.delete('/stripe/source/delete/:index', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.delete_source(request, response);
+			stripe.deleteSource(request, response);
 		});
 	}])
 
 router.post('/stripe/charge', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.charge(request, response);
+			stripe._charge(request, response);
 		});
 	}])
 
-router.post('/stripe/subscribe/:plan_no', [gatekeeper.default, gatekeeper.authenticate,
+router.post('/stripe/subscribe', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.subscribe(request, response);
+			stripe._subscribe(request, response);
 		});
 	}])
 
 router.get('/stripe/subscribe', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.has_subscribe(request, response);
+			stripe._has_subscribe(request, response);
 		});
 	}])
 
-router.put('/stripe/subscribe/:plan_no', [gatekeeper.default, gatekeeper.authenticate,
+router.put('/stripe/subscribe', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.update_subscribe(request, response);
+			stripe._update_subscribe(request, response);
 		});
 	}])
 
-router.delete('/stripe/subscribe/:plan_no', [gatekeeper.default, gatekeeper.authenticate,
+router.delete('/stripe/subscribe', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe.cancel_subscribe(request, response);
+			stripe._cancel_subscribe(request, response);
 		});
 	}])
 

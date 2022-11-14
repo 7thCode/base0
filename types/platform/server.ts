@@ -4,16 +4,8 @@
  * opensource.org/licenses/mit-license.php
  */
 
-import {
-	Callback,
-	IAccountPublic,
-	IArticleModelContent,
-	IErrorObject,
-	IPageModelContent,
-	IQueryOption, IRights,
-	IRole,
-	IVaultModelContent,
-} from "./universe";
+import {Callback, IAccountPublic, IArticleModelContent, IErrorObject, IPageModelContent, IQueryOption, IRights, IRole, IVaultModelContent,} from "./universe";
+import mongoose from "mongoose";
 
 export interface IMailSender {
 	from: any;
@@ -25,20 +17,26 @@ export interface IMailSender {
 }
 
 export interface IMailSenderModule {
-	send(mailAddress: string, bccAddress: string, title: string,  text: string, html: string, callback: (error: IErrorObject) => void): void;
+	send(mailAddress: string, bccAddress: string, title: string, text: string, html: string, callback: (error: IErrorObject) => void): void;
 }
 
 export interface IMailReceiverModule {
 
-	connect(callback: (error: IErrorObject, imap: any,type: string, message: any) => void): void;
-	open(imap: any, name: string, callback:(error: IErrorObject, message: any) => void): void;
+	connect(callback: (error: IErrorObject, imap: any, type: string, message: any) => void): void;
+
+	open(imap: any, name: string, callback: (error: IErrorObject, message: any) => void): void;
+
 	close(imap: any): void;
 
 	listMessages(imap: any, start: number, limit: number, callback: (error: IErrorObject, messages: any) => void): void;
+
 	getMessage(imap: any, UID: string, callback: (error: IErrorObject, mail: any) => void): void;
-	deleteMessage(imap: any, UID: string, callback:(error: IErrorObject) => void): void;
-	addFlags(imap: any, UID: string,flags:string[], callback:(error: IErrorObject) => void): void;
-	removeFlags(imap: any, UID: string,flags:string[], callback:(error: IErrorObject) => void): void;
+
+	deleteMessage(imap: any, UID: string, callback: (error: IErrorObject) => void): void;
+
+	addFlags(imap: any, UID: string, flags: string[], callback: (error: IErrorObject) => void): void;
+
+	removeFlags(imap: any, UID: string, flags: string[], callback: (error: IErrorObject) => void): void;
 
 }
 
@@ -47,7 +45,7 @@ export interface IAccountModel {
 	modify: Date;
 	provider: string;
 	auth: number;
-	user_id: string;
+	user_id: mongoose.Types.ObjectId;
 	username: string;
 	password: string;
 	privatekey: string;
@@ -92,7 +90,7 @@ export interface IAccountModel {
 	publish_find_by_id(id: any): Promise<any>;
 }
 
-export  interface IAccountContent {
+export interface IAccountContent {
 	auth: number;
 	enabled: boolean;
 	mails: any;
@@ -106,12 +104,10 @@ export interface IUsernameParam {
 }
 
 export interface IUserIDParam {
-	user_id: string;
+	user_id: mongoose.Types.ObjectId;
 }
 
 export interface IUpdatableModel {
-
-	user_id:any;
 
 	public(): any;
 
@@ -258,12 +254,12 @@ export interface IDeleteRequest {
 }
 
 export interface IUserIDRequest<PARAMS> {
- 	user: {user_id: string};
- 	params: PARAMS;
+	user: { user_id: string };
+	params: PARAMS;
 }
 
 export interface ISecureContent {
-	content: {value:string};
+	content: { value: string };
 }
 
 // Auth
@@ -278,6 +274,7 @@ export interface ILoginRequest {
 		password: string;
 		content: string
 	};
+
 	login(user: object, callback: (error: IErrorObject) => void): void;
 }
 
@@ -287,7 +284,9 @@ export interface IContentRequest {
 	};
 	params: any;
 	user: any;
+
 	login(user: object, callback: (error: IErrorObject) => void): void;
+
 	logout(): void;
 }
 
@@ -301,15 +300,22 @@ export interface IUserRequest {
 
 export interface IRedirectResponse {
 	redirect(target: string): void;
+
 	status(status: number): any;
 }
 
 export interface IJSONResponse {
-	header(name:string, mime: string): void;
+	header(name: string, mime: string): void;
+
 	type(type: string): void;
+
 	jsonp(result: object): void;
+
 	send(result: string): void;
+
 	status(status: number): any;
+
+	redirect(target:string): void;
 }
 
 // File

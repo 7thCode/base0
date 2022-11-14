@@ -52,7 +52,7 @@ export class LoginDialogComponent extends BaseDialogComponent implements OnInit 
 		public matDialogRef: MatDialogRef<any>,
 		public snackbar: MatSnackBar,
 		public auth: AuthService,
-		public router: Router) {
+		private router: Router) {
 		super();
 	}
 

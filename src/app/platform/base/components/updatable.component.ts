@@ -8,7 +8,7 @@
 
 import {Callback, IContent, IErrorObject} from "../../../../../types/platform/universe";
 
-import {Directive, OnInit} from "@angular/core";
+import {Directive, OnInit, ViewChild} from "@angular/core";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 
 import {InfoDialogComponent} from "./info-dialog/info-dialog.component";
@@ -16,6 +16,7 @@ import {SessionableComponent} from "./sessionable.component";
 
 import {SessionService} from "../services/session.service";
 import {Errors} from "../library/errors";
+import {MatPaginator} from "@angular/material/paginator";
 
 /**
  * アップデータブルクラス
@@ -24,6 +25,8 @@ import {Errors} from "../library/errors";
  */
 @Directive()
 export abstract class UpdatableComponent extends SessionableComponent implements OnInit {
+
+// 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
 	public size: number = 20;
 	public count: number = 0;
@@ -45,26 +48,6 @@ export abstract class UpdatableComponent extends SessionableComponent implements
 	) {
 		super(session);
 	}
-
-	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	abstract toListView(object: any): any;
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	abstract toView(data: any): any;
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	abstract confirmToModel(data: any): any;
 
 	/**
 	 *
@@ -93,20 +76,35 @@ export abstract class UpdatableComponent extends SessionableComponent implements
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any): void => {
+		dialog.afterClosed().subscribe((result: any): void => {
 			callback(result);
 		});
+	}
+
+	/**
+	 * リストビューデコレータ
+	 *
+	 * @param object デコレーション対象
+	 */
+	protected toListView(object: any): any {
+		return object;
+	}
+
+	/**
+	 * ビューデコレータ
+	 *
+	 * @param data デコレーション対象
+	 */
+	protected toView(data: any): any {
+		return data;
+	}
+
+	/**
+	 * トランスフォーマー
+	 * @param data トランスフォーム対象
+	 */
+	protected confirmToModel(data: any): any {
+		return data;
 	}
 
 	/**
@@ -244,6 +242,7 @@ export abstract class UpdatableComponent extends SessionableComponent implements
 // 	 }
 
 	public ngOnInit(): void {
+// 		this.paginator.pageIndex = 0;
 		this.page = 0;
 		this.query = {};
 		this.results = [];

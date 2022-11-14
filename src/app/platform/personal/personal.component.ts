@@ -196,18 +196,7 @@ export class PersonalComponent extends SessionableComponent implements OnInit {
 			if (!error) {
 				this.create = session.create;
 				this.username = session.username;
-				this.route.queryParams.subscribe(
-					/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-						params => {
+				this.route.queryParams.subscribe(params => {
 					this.params = params;
 					this.draw();
 				});

@@ -10,18 +10,12 @@
 				charge
 			</button> -->
 
-			<div *ngIf="heigestPlan === 0">
-				<button (click)="subscribe(1)" mat-button>subscribe 1</button>
-				<button (click)="subscribe(2)" mat-button>subscribe 2</button>
+			<div *ngIf="!isSubscribe">
+				<button (click)="subscribe()" mat-button>subscribe</button>
 			</div>
-			<div *ngIf="heigestPlan === 1">
-				<button (click)="update_subscription(1)" mat-button>Update subscribe 1</button>
-				<button (click)="cancel_subscription(1)" mat-button>cancel subscribe 1</button>
-			</div>
-
-			<div *ngIf="heigestPlan === 2">
-				<button (click)="update_subscription(2)" mat-button>Update subscribe 2</button>
-				<button (click)="cancel_subscription(2)" mat-button>cancel subscribe 2</button>
+			<div *ngIf="isSubscribe">
+				<button (click)="update_subscription()" mat-button>Update subscribe</button>
+				<button (click)="cancel_subscription()" mat-button>cancel subscribe</button>
 			</div>
 
 		</mat-card-header>

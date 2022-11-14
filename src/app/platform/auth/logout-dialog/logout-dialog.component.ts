@@ -55,7 +55,7 @@ export class LogoutDialogComponent extends BaseDialogComponent implements OnInit
 		public location: Location,
 		public snackbar: MatSnackBar,
 		public auth: AuthService,
-		public router: Router) {
+		private router: Router) {
 		super();
 	}
 

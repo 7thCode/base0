@@ -26,8 +26,6 @@ import {SessionService} from "./base/services/session.service";
 import {fadeAnimation} from "./base/library/fade-animation";
 import {Spinner} from "./base/library/spinner";
 
-import {TranslateService} from '@ngx-translate/core';
-
 /**
  * プラットフォーム
  *
@@ -80,18 +78,8 @@ export class PlatformComponent extends ResponsiveComponent implements OnInit, On
 		private matDialog: MatDialog,
 		private router: Router,
 		protected route: ActivatedRoute,
-		public translate: TranslateService
 	) {
 		super(session, breakpointObserver);
-
-		// i18n
-		translate.addLangs(['en', 'ja']);
-		translate.setDefaultLang('en');
-
-		const browserLang = translate.getBrowserLang();
-		translate.use(browserLang.match(/en|ja/) ? browserLang : 'en');
-		//
-
 		this.widthValue = 0;
 		// 	this.sock = null;
 		this.date = new Date();

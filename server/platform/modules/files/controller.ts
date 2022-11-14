@@ -21,14 +21,12 @@ const path: any = require("path");
 const project_root: string = path.join(__dirname, "../../../..");
 
 const Wrapper: any = require("../../../../server/platform/base/controllers/wrapper");
-const Cipher: any = require("../../../../server/platform/base/library/cipher");
 
 interface IRenderParam {
 	u: string;
 	c: string;
 	w: string;
 	h: string;
-	t: string;
 }
 
 /*
@@ -185,7 +183,7 @@ export class Files extends Wrapper {
 	 * @param callback
 	 * @returns none
 	 */
-	private fromLocal(pathFrom: string, user: { username: string, user_id: string, auth: number }, name: string, category: string, description: string, mimetype: string, callback: Callback<any>): void {
+	private fromLocal(pathFrom: string, user: { username: string, user_id: any, auth: number }, name: string, category: string, description: string, mimetype: string, callback: Callback<any>): void {
 		try {
 			const writestream: any = this.gfs.openUploadStream(name,
 				{
@@ -260,7 +258,7 @@ export class Files extends Wrapper {
 	 * @param callback
 	 * @returns none
 	 */
-	private insert_file(request: IPostFile, user: { username: string, user_id: any, auth: number }, name: string, rights: { read: number, write: number }, category: string, description: string, callback: Callback<any>): void {
+	private insert_file(request: IPostFile, user: { username: string,user_id: any, auth: number }, name: string, rights: { read: number, write: number }, category: string, description: string, callback: Callback<any>): void {
 
 		const parseDataURL: any = (dataURL: string): any => {
 			const result: any = {mediaType: null, encoding: null, isBase64: null, data: null};
@@ -534,13 +532,13 @@ export class Files extends Wrapper {
 					this.collection.createIndex({
 						"filename": 1,
 						"metadata.username": 1,
-					}, {unique: true}).then(() => {
+					}).then(() => {
 						const promises: Promise<any>[] = [];
 						initfiles.forEach((doc) => {
 							promises.push(new Promise((resolve: any, reject: any): void => {
 								const path: string = project_root + doc.path;
 								const filename: string = doc.name;
-								const user: { username: string, user_id: any, auth: number } = doc.user;
+								const user: { username: string,user_id: any, auth: number } = doc.user;
 								const mimetype: string = doc.content.type;
 								const category: string = doc.content.category;
 								const description: string = doc.content.description;
@@ -759,19 +757,6 @@ export class Files extends Wrapper {
 		}
 	}
 
-	public pathWithToken(request: any, response: IJSONResponse): void {
-		const path: string = request.params[0];
-		const user: IAccountModel = this.Transform(request.user);
-		let username = "";
-		if (user.username) {
-			username = user.username;
-		}
-
-		const token = Cipher.FixedCryptObject({username, path});
-
-		this.SendSuccess(response, "/files/get/" + path + "?t=" + token);
-	}
-
 	public renderFile(request: any, response: any, next: any): void {
 
 		const path: string = request.params[0];  // Because FilePath contains "/".
@@ -784,12 +769,9 @@ export class Files extends Wrapper {
 
 		if (user.username) {
 			username = user.username;
-		} else if (param.t) {
-			const crypted: any = Cipher.FixedDecryptObject(param.t);
-			if (crypted.username) {　// exact object
-				if (crypted.path === path) { // confirmation
-					username = crypted.username;
-				}
+		} else {
+			if (param.u) {
+				username = param.u;
 			}
 		}
 

@@ -130,7 +130,7 @@ export class AccountDialogComponent extends BaseDialogComponent implements OnIni
 	 * ２要素認証に
 	 */
 	public onSet2Fa(): void {
-		this.data.service.set_2fa(this.content.user_id, (error: IErrorObject, qr: any): void => {
+		this.data.service.set_2fa(this.content.username, (error: IErrorObject, qr: any): void => {
 			if (!error) {
 				this.qr = qr;
 				this.is2Fa();
@@ -144,7 +144,7 @@ export class AccountDialogComponent extends BaseDialogComponent implements OnIni
 	 * ２要素認証解除
 	 */
 	public onReset2Fa(): void {
-		this.data.service.reset_2fa(this.content.user_id, (error: IErrorObject, result: any): void => {
+		this.data.service.reset_2fa(this.content.username, (error: IErrorObject, result: any): void => {
 			if (!error) {
 				this.qr = "";
 				this.is2Fa();

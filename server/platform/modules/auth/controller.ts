@@ -737,6 +737,7 @@ export class Auth extends Mail {
 								// const mail_object = this.message.registmail;
 								const immutable = JSON.parse(JSON.stringify(this.module_config.registmail));
 
+
 								const nickname = value.metadata.nickname;
 
 								const token: string = Cipher.FixedCrypt(JSON.stringify(tokenValue), this.systemsConfig.tokensecret);
@@ -916,8 +917,8 @@ export class Auth extends Mail {
 										// const mail_object: any = this.message.passwordmail;
 										const immutable = JSON.parse(JSON.stringify(this.module_config.passwordmail));
 
-										const nickname = account.content.nickname;
-									// 	const nickname = value.metadata.nickname;
+
+										const nickname = value.metadata.nickname;
 
 										const token: string = Cipher.FixedCrypt(JSON.stringify(tokenValue), this.systemsConfig.tokensecret);
 										const link: string = this.systemsConfig.protocol + "://" + this.systemsConfig.domain + "/auth/password/" + token;
@@ -1102,8 +1103,7 @@ export class Auth extends Mail {
 													// const mail_object: any = this.message.usernamemail;
 													const immutable = JSON.parse(JSON.stringify(this.module_config.usernamemail));
 
-													const nickname = account.content.nickname;
-												// 	const nickname = value.metadata.nickname;
+													const nickname = value.metadata.nickname;
 
 													const token: string = Cipher.FixedCrypt(JSON.stringify(tokenValue), this.systemsConfig.tokensecret);
 													const link: string = this.systemsConfig.protocol + "://" + this.systemsConfig.domain + "/auth/username/" + token;
@@ -1306,6 +1306,7 @@ export class Auth extends Mail {
 								};
 								// const mail_object = this.message.removemail;
 								const immutable = JSON.parse(JSON.stringify(this.module_config.removemail));
+
 
 								const nickname = account.content.nickname;
 

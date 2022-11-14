@@ -6,9 +6,8 @@
 
 "use strict";
 
-import {AuthLevel, IErrorObject, IQueryOption} from "../../../../types/platform/universe";
-
-import {IAccountContent, IAccountModel, IAccountRequest, IJSONResponse, IQueryParam, IQueryRequest, IUserIDParam, IUsernameParam} from "../../../../types/platform/server";
+import {AuthLevel, Callback, IErrorObject, IQueryOption} from "../../../../types/platform/universe";
+import {IAccountContent, IAccountModel, IAccountRequest, IJSONResponse, IQueryParam, IQueryRequest, IUsernameParam} from "../../../../types/platform/server";
 import * as mongoose from "mongoose";
 import {Errors} from "../../base/library/errors";
 
@@ -48,23 +47,6 @@ export class Accounts extends Wrapper {
 	 * @param username
 	 * @returns own
 	 */
-	private static own_by_id(current: any, user_id: string): boolean {
-		// マネージャ以上は、自分以外のアカウントを変更できる。
-		let readable: boolean = false;
-		if (current.auth < AuthLevel.user) { // is not manager?
-			readable = true;
-		} else {
-			readable = (current.user_id === user_id); // is self?
-		}
-		return readable;
-	}
-
-	/**
-	 *
-	 * @param current
-	 * @param username
-	 * @returns own
-	 */
 	private static own_by_name(current: any, username: string): boolean {
 		// マネージャ以上は、自分以外のアカウントを変更できる。
 		let readable: boolean = false;
@@ -82,13 +64,55 @@ export class Accounts extends Wrapper {
 	 * @param user_id
 	 * @returns own
 	 */
-	private static from_aggregater(aggregater: any[], user_id: mongoose.Types.ObjectId, type: string): void {
-		aggregater.push({$match: {$and: [{to_id: user_id}, {type: type}]}});
-		aggregater.push({$lookup: {from: 'accounts', localField: 'from_id', foreignField: 'user_id', as: 'lookup_account'}});
-		aggregater.push({$addFields: {account: {$arrayElemAt: ["$lookup_account", 0]}}});
-		aggregater.push({
+	protected static own_by_id(current: any, user_id: mongoose.Types.ObjectId): boolean {
+		// マネージャ以上は、自分以外のアカウントを変更できる。
+		let readable: boolean = false;
+		if (current.auth < AuthLevel.user) { // is not manager?
+			readable = true;
+		} else {
+			readable = (current.user_id === user_id.toString()); // is self?
+		}
+		return readable;
+	}
+
+	/**
+	 *
+	 * @param aggregator
+	 * @param type
+	 * @param linktype
+	 */
+	private static all_aggregator(aggregator: any[], type: string, linktype: string = "belongs"): void {
+		aggregator.push({$match: {type: linktype}});
+		aggregator.push({$lookup: {from: 'accounts', localField: 'from_id', foreignField: 'user_id', as: 'account'}});
+		aggregator.push({$unwind: {path: '$account'}});
+		aggregator.push({$match: {"account.type": type}});
+		aggregator.push({
 			$project: {
-				"lookup_account": 0,
+	//			'lookup_account': 0,
+				'account._id': 0,
+				'account.publickey': 0,
+				'account.privatekey': 0,
+				'account.secret': 0,
+				'account.salt': 0,
+				'account.hash': 0
+			}
+		});
+	}
+
+	/**
+	 *
+	 * @param aggregator
+	 * @param user_id
+	 * @param linktype
+	 */
+	private static from_aggregator(aggregator: any[], user_id: mongoose.Types.ObjectId, linktype: string = "belongs"): void {
+		aggregator.push({$match: {$and: [{to_id: user_id}, {type: linktype}]}});
+		aggregator.push({$lookup: {from: 'accounts', localField: 'from_id', foreignField: 'user_id', as: 'account'}});
+		aggregator.push({$unwind: {path: '$account'}});
+		// aggregator.push({$addFields: {account: {$arrayElemAt: ["$lookup_account", 0]}}});
+		aggregator.push({
+			$project: {
+	//			"lookup_account": 0,
 				"account._id": 0,
 				"account.publickey": 0,
 				"account.privatekey": 0,
@@ -99,13 +123,22 @@ export class Accounts extends Wrapper {
 		});
 	}
 
-	private static to_aggregater(aggregater: any[], user_id: mongoose.Types.ObjectId, type: string): void {
-		aggregater.push({$match: {$and: [{from_id: user_id}, {type: type}]}});
-		aggregater.push({$lookup: {from: 'accounts', localField: 'to_id', foreignField: 'user_id', as: 'lookup_account'}});
-		aggregater.push({$addFields: {account: {$arrayElemAt: ["$lookup_account", 0]}}});
-		aggregater.push({
+
+	/**
+	 *
+	 * @param aggregator
+	 * @param user_id
+	 * @param linktype
+	 */
+	private static from_user_with_type_aggregator(aggregator: any[], user_id: mongoose.Types.ObjectId, type:string, linktype: string = "belongs"): void {
+		aggregator.push({$match: {$and: [{to_id: user_id}, {type: linktype}]}});
+		aggregator.push({$lookup: {from: 'accounts', localField: 'from_id', foreignField: 'user_id', as: 'account'}});
+		aggregator.push({$unwind: {path: '$account'}});
+		// aggregator.push({$addFields: {account: {$arrayElemAt: ["$lookup_account", 0]}}});
+		aggregator.push({$match: {"account.type": type}});
+		aggregator.push({
 			$project: {
-				"lookup_account": 0,
+	//			"lookup_account": 0,
 				"account._id": 0,
 				"account.publickey": 0,
 				"account.privatekey": 0,
@@ -116,20 +149,60 @@ export class Accounts extends Wrapper {
 		});
 	}
 
-	private static option_aggregater(aggregater: any[], option: IQueryOption): void {
+	/**
+	 *
+	 * @param aggregator
+	 * @param user_id
+	 * @param linktype
+	 */
+	private static to_aggregator(aggregator: any[], user_id: mongoose.Types.ObjectId, linktype: string = "belongs"): void {
+		aggregator.push({$match: {$and: [{from_id: user_id}, {type: linktype}]}});
+		aggregator.push({$lookup: {from: 'accounts', localField: 'to_id', foreignField: 'user_id', as: 'account'}});
+		aggregator.push({$unwind: {path: '$account'}});
+		// aggregator.push({$addFields: {account: {$arrayElemAt: ["$lookup_account", 0]}}});
+		aggregator.push({
+			$project: {
+		//		"lookup_account": 0,
+				"account._id": 0,
+				"account.publickey": 0,
+				"account.privatekey": 0,
+				"account.secret": 0,
+				"account.salt": 0,
+				"account.hash": 0,
+			}
+		});
+	}
+
+	/**
+	 *
+	 * @param aggregator
+	 * @param option
+	 */
+	private static option_aggregator(aggregator: any[], option: IQueryOption): void {
 		if (option.sort) {
 			if (Object.keys(option.sort).length > 0) {
-				aggregater.push({$sort: option.sort});
+				aggregator.push({$sort: option.sort});
 			}
 		}
 
 		if (option.skip) {
-			aggregater.push({$skip: option.skip});
+			aggregator.push({$skip: option.skip});
 		}
 
 		if (option.limit) {
-			aggregater.push({$limit: option.limit});
+			aggregator.push({$limit: option.limit});
 		}
+	}
+
+	/*
+	*
+	* */
+	protected target_user(operator: any, request: any): mongoose.Types.ObjectId {
+		let target_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
+		if (request.params?.user_id) {
+			target_user_id = new mongoose.Types.ObjectId(request.params.user_id);
+		}
+		return target_user_id;
 	}
 
 	/**
@@ -214,19 +287,19 @@ export class Accounts extends Wrapper {
 	public get(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00300"), request.user, () => {
-				const target: IUserIDParam = request.params;
+				const target: IUsernameParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00301"), operator.login, () => {
-					if (Accounts.own_by_id(operator, target.user_id)) {
-						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
-							this.ifExist(response, Errors.generalError(-1, "no user.", "S00302"), account, () => {
+					if (Accounts.own_by_name(operator, target.username)) {
+						LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+							this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40002"), account, () => {
 								this.SendSuccess(response, account.public());
 							});
 						}).catch((error: IErrorObject) => {
 							this.SendError(response, Errors.Exception(error, "S10034"));
 						})
 					} else {
-						this.SendError(response, Errors.generalError(2, "unreadable.", "S00303"));
+						this.SendError(response, Errors.generalError(2, "再度お試しください.", "S00303"));
 					}
 				});
 			});
@@ -244,11 +317,11 @@ export class Accounts extends Wrapper {
 	public put(request: IAccountRequest<IAccountContent>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00304"), request.user, () => {
-				const target: IUserIDParam = request.params;
+				const target: IUsernameParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				const type: string = request.body.type;
 				const content: IAccountContent = request.body.content;
-				this.ifExist(response, Errors.generalError(1, "no content.", "S00305"), (operator && content), () => {
+				this.ifExist(response, Errors.generalError(1, "再度お試しください.", "S00305"), (operator && content), () => {
 
 					const update: any = {
 						"type": type,
@@ -264,8 +337,8 @@ export class Accounts extends Wrapper {
 					}
 
 					this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00306"), operator.login, () => {
-						if (Accounts.own_by_id(operator, target.user_id)) {
-							LocalAccount.set_by_id(operator, target.user_id, update).then((account: IAccountModel): void => {
+						if (Accounts.own_by_name(operator, target.username)) {
+							LocalAccount.set_by_name(operator, target.username, update).then((account: IAccountModel): void => {
 								this.SendSuccess(response, account.public());
 							}).catch((error: any) => {
 								this.SendError(response, Errors.Exception(error, "S10037"));
@@ -290,7 +363,7 @@ export class Accounts extends Wrapper {
 	public delete(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00308"), request.user, () => {
-				const target: IUserIDParam = request.params;
+				const target: any = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00309"), operator.login, () => {
 					if (Accounts.own_by_id(operator, target.user_id)) {
@@ -318,6 +391,7 @@ export class Accounts extends Wrapper {
 			this.SendError(response, Errors.Exception(error, "S10002"));
 		}
 	}
+
 	/**
 	 *
 	 * @param request
@@ -327,12 +401,12 @@ export class Accounts extends Wrapper {
 	public get_is_secret(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00312"), request.user, () => {
-				const target: IUserIDParam = request.params;
+				const target: IUsernameParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00313"), operator.login, () => {
-					if (Accounts.own_by_id(operator, target.user_id)) {
-						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
-							this.ifExist(response, Errors.generalError(-1, "no user.", "S00314"), account, () => {
+					if (Accounts.own_by_name(operator, target.username)) {
+						LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+							this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40003"), account, () => {
 								const is_2fa: boolean = (account.secret !== "");
 								this.SendSuccess(response, {is_2fa});
 							})
@@ -363,16 +437,16 @@ export class Accounts extends Wrapper {
 
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00316"), request.user, () => {
-				const target: IUserIDParam = request.params;
+				const target: IUsernameParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00317"), operator.login, () => {
-					if (Accounts.own_by_id(operator, target.user_id)) {
-						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
-							this.ifExist(response, Errors.generalError(-1, "no user.", "S00318"), account, () => {
+					if (Accounts.own_by_name(operator, target.username)) {
+						LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+							this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40004"), account, () => {
 								this.ifExist(response, Errors.generalError(-1, "Already Multi-factor authentication.", "S00319"), !Boolean(account.secret), () => {
 									const secret: any = SpeakEasy.generateSecret({
 										length: 20,
-										name: account.username,
+										name: target.username,
 										issuer: this.systemsConfig.ua,
 									});
 									const update: object = {
@@ -381,11 +455,11 @@ export class Accounts extends Wrapper {
 
 									const qr_url: string = SpeakEasy.otpauthURL({ // data url encode of secret QR code.
 										secret: secret.ascii,
-										label: encodeURIComponent(usernameToMail(account.username)),
+										label: encodeURIComponent(usernameToMail(target.username)),
 										issuer: this.systemsConfig.ua,
 									});
 
-									LocalAccount.set_by_name(operator, account.username, update).then((account: object): void => {
+									LocalAccount.set_by_name(operator, target.username, update).then((account: object): void => {
 										QRCode.toDataURL(qr_url, (error: IErrorObject, qrcode: any): void => {
 											this.ifSuccess(response, error, (): void => {
 												this.SendSuccess(response, {qrcode});
@@ -418,17 +492,17 @@ export class Accounts extends Wrapper {
 	public post_reset_secret(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00321"), request.user, () => {
-				const target: IUserIDParam = request.params;
+				const target: IUsernameParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00322"), operator.login, () => {
-					LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
-						this.ifExist(response, Errors.generalError(-1, "no user.", "S00323"), account, () => {
-							if (Accounts.own_by_id(operator, target.user_id)) {
+					LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+						this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40012"), account, () => {
+							if (Accounts.own_by_name(operator, target.username)) {
 								const update: object = {
 									secret: "",
 								};
-								LocalAccount.set_by_id(operator, target.user_id, update).then((account: IAccountModel): void => {
-									this.ifExist(response, Errors.generalError(-1, "no user.", "S00324"), account, () => {
+								LocalAccount.set_by_name(operator, target.username, update).then((account: IAccountModel): void => {
+									this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40013"), account, () => {
 										this.SendSuccess(response, {});
 									});
 								}).catch((error: any) => {
@@ -454,124 +528,13 @@ export class Accounts extends Wrapper {
 	 * @param response
 	 * @returns none
 	 */
-	/*
-	public get_by_id(request: IAccountRequest<any>, response: IJSONResponse): void {
-		try {
-			this.ifExist(response, Errors.generalError( 1,  "ログインしていません." , "00001"), request.user, () => {
-				const target: IUserIDParam = request.params;
-				const operator: IAccountModel = this.Transform(request.user);
-				this.ifExist(response, Errors.generalError( 1,  "ログインしていません." , "00001"), operator.login, () => {
-					if (Accounts.own_by_id(operator, target.user_id)) {
-						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
-							this.ifExist(response, {code: -1, message: "no user."}, account, () => {
-								this.SendSuccess(response, account.public());
-							});
-						}).catch((error: IErrorObject) => {
-							this.SendError(response, error);
-						})
-					} else {
-						this.SendError(response, {code: 2, message: "unreadable. 9360"});
-					}
-				});
-			});
-		} catch (error: any) {
-			this.SendError(response, error);
-		}
-	}
-*/
-	/**
-	 * アカウントプット
-	 * @param request
-	 * @param response
-	 * @returns none
-	 */
-	/*
-	public put_by_id(request: IAccountRequest<IAccountContent>, response: IJSONResponse): void {
-		try {
-			this.ifExist(response, Errors.generalError( 1,  "ログインしていません." ,                  "00001"), request.user, () => {
-				const target: IUserIDParam = request.params;
-				const operator: IAccountModel = this.Transform(request.user);
-				const content: IAccountContent = request.body.content;
-				this.ifExist(response, {code: 1, message: "no content. 1657"}, (operator && content), () => {
-					const update: any = {
-						"content.mails": content.mails,
-						"content.nickname": content.nickname,
-						"content.id": content.id,
-						"content.description": content.description,
-					};
-					if (operator.auth <= content.auth) {
-						update.auth = content.auth;
-						update.enabled = content.enabled;
-					}
-					this.ifExist(response, Errors.generalError( 1,  "ログインしていません." ,                  "00001"), operator.login, () => {
-						if (Accounts.own_by_id(operator, target.user_id)) {
-							LocalAccount.set_by_id(operator, target.user_id, update).then((account: IAccountModel): void => {
-								this.SendSuccess(response, account.public());
-							}).catch((error: any) => {
-								this.SendError(response, error);
-							})
-						} else {
-							this.SendError(response, {code: 2, message: "unreadable. 3818"});
-						}
-					});
-				});
-			});
-		} catch (error: any) {
-			this.SendError(response, error);
-		}
-	}
-*/
-	/**
-	 * アカウント削除
-	 * @param request
-	 * @param response
-	 * @returns none
-	 */
-
-	/*
-	public delete_by_id(request: IAccountRequest<any>, response: IJSONResponse): void {
-		try {
-			this.ifExist(response, Errors.generalError( 1,  "ログインしていません." ,                  "00001"), request.user, () => {
-				const target: IUserIDParam = request.params;
-				const operator: IAccountModel = this.Transform(request.user);
-				this.ifExist(response, Errors.generalError( 1,  "ログインしていません." ,                  "00001"), operator.login, () => {
-					if (Accounts.own_by_id(operator, target.user_id)) {
-						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
-							this.ifExist(response, {code: -1, message: "no user."}, account, () => {
-								LocalAccount.remove_by_id(operator, target.user_id).then((): void => {
-									this.SendSuccess(response, {});
-								}).catch((error: any) => {
-									this.SendError(response, error);
-								});
-							});
-						}).catch((error: any) => {
-							this.SendError(response, error);
-						})
-					} else {
-						this.SendError(response, {code: 2, message: "unreadable. 2245"});
-					}
-				});
-			});
-		} catch (error: any) {
-			this.SendError(response, error);
-		}
-	}
-*/
-
-	/**
-	 * アカウントゲット
-	 * @param request
-	 * @param response
-	 * @returns none
-	 */
 	public get_self(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00326"), request.user, () => {
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00327"), operator.login, () => {
 					LocalAccount.default_find_by_id(operator, operator.user_id).then((account: IAccountModel): void => {
-						this.ifExist(response, Errors.generalError(-1, "no user.", "S00328"), account, () => {
-				// 			this.SendSuccess(response, account.content);
+						this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40014"), account, () => {
 							this.SendSuccess(response, account.public());
 						});
 					}).catch((error: any) => {
@@ -604,7 +567,7 @@ export class Accounts extends Wrapper {
 				};
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00330"), operator.login, () => {
 					LocalAccount.set_by_id(operator, operator.user_id, update).then((account: IAccountModel): void => {
-						this.ifExist(response, Errors.generalError(-1, "no user.", "S00331"), account, () => {
+						this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40015"), account, () => {
 							this.SendSuccess(response, account.content);
 						});
 					}).catch((error: any) => {
@@ -627,40 +590,42 @@ export class Accounts extends Wrapper {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00332"), request.user, () => {
 				const operator: IAccountModel = this.Transform(request.user);
-				const from_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
-				const type: string = request.body.type;
-				const target_user_name: string = request.body.to;
-				LocalAccount.default_find_by_name(null, target_user_name).then((target_user: any) => {
-					if (target_user) { //
-						const to_user_id: mongoose.Types.ObjectId = target_user.user_id;
-						if (!from_user_id.equals(to_user_id)) { // 自己
-							Relation.related(from_user_id, to_user_id, type).then((result: any) => {
-								if (!result) {
-									const relation: any = new Relation();
-									relation.from_id = from_user_id;
-									relation.to_id = to_user_id;
-									relation.type = type;
-									relation.save().then((result: any) => {
+				const target_user_id: mongoose.Types.ObjectId = this.target_user(operator,request);
+				const linktype: string = request.body.type;
+				const to_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(request.body.to);
+				if (target_user_id) {
+					LocalAccount.default_find_by_id(null, to_user_id).then((target_user: any) => {
+						if (target_user) { //
+							if (!target_user_id.equals(to_user_id)) { // 自己
+								Relation.related(target_user_id, to_user_id, linktype).then((result: any) => {
+									if (!result) {
+										const relation: any = new Relation();
+										relation.from_id = target_user_id;
+										relation.to_id = to_user_id;
+										relation.type = linktype;
+										relation.save().then((result: any) => {
+											this.SendSuccess(response, result);
+										}).catch((error: IErrorObject) => {
+											this.SendError(response, error);
+										})
+									} else {
 										this.SendSuccess(response, result);
-									}).catch((error: IErrorObject) => {
-										this.SendError(response, error);
-									})
-								} else {
-									this.SendSuccess(response, result);
-							// 		this.SendError(response, Errors.generalError(1, "already.", "S00333"));
-								}
-							}).catch((error: IErrorObject) => {
-								this.SendError(response, Errors.Exception(error, "S00334"));
-							})
+									}
+								}).catch((error: IErrorObject) => {
+									this.SendError(response, Errors.Exception(error, "S00334"));
+								})
+							} else {
+								this.SendError(response, Errors.generalError(1, 'same.', "S00335"));
+							}
 						} else {
-							this.SendError(response, Errors.generalError(1, 'same.', "S00335"));
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40016"));
 						}
-					} else {
-						this.SendError(response, Errors.generalError(1, 'no user.', "S00336"));
-					}
-				}).catch((error: any) => {
-					this.SendError(response, Errors.Exception(error, "S00337"));
-				});
+					}).catch((error: any) => {
+						this.SendError(response, Errors.Exception(error, "S00337"));
+					});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
 			});
 		} catch (error: any) {
 			this.SendError(response, Errors.Exception(error, "S00338"));
@@ -676,51 +641,87 @@ export class Accounts extends Wrapper {
 	public make_relation_to(request: any, response: any): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00332"), request.user, () => {
-				const type: string = request.body.type;
-				const source_user_name: string = request.body.from;
-				LocalAccount.default_find_by_name(null, source_user_name).then((source_user: any) => {
-					if (source_user) { //
-						const from_user_id: mongoose.Types.ObjectId = source_user.user_id;
-						const target_user_name: string = request.body.to;
-						LocalAccount.default_find_by_name(null, target_user_name).then((target_user: any) => {
-							if (target_user) { //
-								const to_user_id: mongoose.Types.ObjectId = target_user.user_id;
-								if (!from_user_id.equals(to_user_id)) { // 自己
-									Relation.related(from_user_id, to_user_id, type).then((result: any) => {
-										if (!result) {
-											const relation: any = new Relation();
-											relation.from_id = from_user_id;
-											relation.to_id = to_user_id;
-											relation.type = type;
-											relation.save().then((result: any) => {
-												this.SendSuccess(response, result);
+				const linktype: string = request.body.type;
+				const source_user_id: string = request.body.from;
+				if (source_user_id) {
+					LocalAccount.default_find_by_id(null, source_user_id).then((source_user: any) => {
+						if (source_user) { //
+							const from_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(source_user.user_id);
+							const target_user_id: string = request.body.to;
+							if (target_user_id) {
+								LocalAccount.default_find_by_id(null, target_user_id).then((target_user: any) => {
+									if (target_user) { //
+										const to_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(target_user.user_id);
+										if (!from_user_id.equals(to_user_id)) { // 自己
+											Relation.related(from_user_id, to_user_id, linktype).then((result: any) => {
+												if (!result) {
+													const relation: any = new Relation();
+													relation.from_id = from_user_id;
+													relation.to_id = to_user_id;
+													relation.type = linktype;
+													relation.save().then((result: any) => {
+														this.SendSuccess(response, result);
+													}).catch((error: IErrorObject) => {
+														this.SendError(response, error);
+													})
+												} else {
+													this.SendError(response, Errors.generalError(1, "already.", "S00333"));
+												}
 											}).catch((error: IErrorObject) => {
-												this.SendError(response, error);
+												this.SendError(response, Errors.Exception(error, "S00334"));
 											})
 										} else {
-											this.SendError(response, Errors.generalError(1, "already.", "S00333"));
+											this.SendError(response, Errors.generalError(1, 'same.', "S00335"));
 										}
-									}).catch((error: IErrorObject) => {
-										this.SendError(response, Errors.Exception(error, "S00334"));
-									})
-								} else {
-									this.SendError(response, Errors.generalError(1, 'same.', "S00335"));
-								}
+									} else {
+										this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40017"));
+									}
+								}).catch((error: any) => {
+									this.SendError(response, Errors.Exception(error, "S00337"));
+								});
 							} else {
-								this.SendError(response, Errors.generalError(1, 'no user.', "S00336"));
+								//
 							}
-						}).catch((error: any) => {
-							this.SendError(response, Errors.Exception(error, "S00337"));
-						});
-					} else {
-						this.SendError(response, Errors.generalError(1, 'no user.', "S00336"));
-					}
-				}).catch((error: any) => {
-					this.SendError(response, Errors.Exception(error, "S00337"));
-				});
+						} else {
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40018"));
+						}
+					}).catch((error: any) => {
+						this.SendError(response, Errors.Exception(error, "S00337"));
+					});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
 			});
 		} catch (error: any) {
 			this.SendError(response, Errors.Exception(error, "S00338"));
+		}
+	}
+
+	/**
+	 * リレーション
+	 * @param request
+	 * @param response
+	 * @returns none
+	 */
+	public relation_all(request: any, response: any): void {
+		try {
+			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00339"), request.user, () => {
+				const params = request.params;
+				const operator: IAccountModel = this.Transform(request.user);
+				const usertype: string = params.type;
+				const linktype: string = params.linktype;
+				const option: IQueryOption = params.option;
+				const aggregator: any[] = [];
+				Accounts.all_aggregator(aggregator, usertype, linktype);
+				Accounts.option_aggregator(aggregator, option);
+				Relation.aggregate(aggregator, {allowDiskUse: true}).then((results: any[]): void => {
+					this.SendRaw(response, results);
+				}).catch((error: IErrorObject) => {
+					this.SendError(response, error);
+				});
+			});
+		} catch (error: any) {
+			this.SendError(response, error);
 		}
 	}
 
@@ -735,23 +736,17 @@ export class Accounts extends Wrapper {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00339"), request.user, () => {
 				const params = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
-
 				const user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
-				const type: string = params.type;
+				const linktype: string = params.type;
 				const option: IQueryOption = params.option;
-
-				const aggregater: any[] = [];
-
-				Accounts.from_aggregater(aggregater, user_id, type);
-
-				Accounts.option_aggregater(aggregater, option);
-
-				Relation.aggregate(aggregater).then((results: any[]): void => {
+				const aggregator: any[] = [];
+				Accounts.from_aggregator(aggregator, user_id, linktype);
+				Accounts.option_aggregator(aggregator, option);
+				Relation.aggregate(aggregator, {allowDiskUse: true}).then((results: any[]): void => {
 					this.SendRaw(response, results);
 				}).catch((error: IErrorObject) => {
 					this.SendError(response, error);
 				});
-
 			});
 		} catch (error: any) {
 			this.SendError(response, error);
@@ -769,22 +764,18 @@ export class Accounts extends Wrapper {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00340"), request.user, () => {
 				const params = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
-				const user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
-				const type: string = params.type;
+				const user_id: mongoose.Types.ObjectId = this.target_user(operator,request);
+				//	const user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
+				const linktype: string = params.type;
 				const option: IQueryOption = params.option;
-
-				const aggregater: any[] = [];
-
-				Accounts.to_aggregater(aggregater, user_id, type);
-
-				Accounts.option_aggregater(aggregater, option);
-
-				Relation.aggregate(aggregater).then((results: any[]): void => {
+				const aggregator: any[] = [];
+				Accounts.to_aggregator(aggregator, user_id, linktype);
+				Accounts.option_aggregator(aggregator, option);
+				Relation.aggregate(aggregator, {allowDiskUse: true}).then((results: any[]): void => {
 					this.SendRaw(response, results);
 				}).catch((error: IErrorObject) => {
 					this.SendError(response, error);
 				});
-
 			});
 		} catch (error: any) {
 			this.SendError(response, error);
@@ -799,35 +790,33 @@ export class Accounts extends Wrapper {
 	 */
 	public relation_from_user(request: any, response: any): void {
 		try {
-				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00341"), request.user, () => {
-					const params = request.params;
-					const target_username: string = params.username;
-					const type: string = params.type;
-					const option: IQueryOption = params.option;
-
-					LocalAccount.default_find_by_name(null, target_username).then((target_user: any) => {
+			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00341"), request.user, () => {
+				const params = request.params;
+				const target_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(params.user_id);
+				const linktype: string = params.linktype;
+				const option: IQueryOption = params.option;
+				if (target_user_id) {
+					LocalAccount.default_find_by_id(null, target_user_id).then((target_user: any) => {
 						if (target_user) {
 							const user_id = target_user.user_id;
-
-							const aggregater: any[] = [];
-
-							Accounts.from_aggregater(aggregater, user_id, type);
-
-							Accounts.option_aggregater(aggregater, option);
-
-							Relation.aggregate(aggregater).then((results: any[]): void => {
+							const aggregator: any[] = [];
+							Accounts.from_aggregator(aggregator, user_id, linktype);
+							Accounts.option_aggregator(aggregator, option);
+							Relation.aggregate(aggregator, {allowDiskUse: true}).then((results: any[]): void => {
 								this.SendRaw(response, results);
 							}).catch((error: IErrorObject) => {
 								this.SendError(response, error);
 							});
-
 						} else {
-							this.SendError(response, Errors.generalError(1, 'no user', "S00344"));
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40019"));
 						}
 					}).catch((error: any) => {
 						this.SendError(response, Errors.Exception(error, "S00345"));
 					});
-				});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
+			});
 		} catch (error: any) {
 			this.SendError(response, error);
 		}
@@ -839,36 +828,75 @@ export class Accounts extends Wrapper {
 	 * @param response
 	 * @returns none
 	 */
+	public relation_from_user_with_type(request: any, response: any): void {
+		try {
+			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00341"), request.user, () => {
+				const params = request.params;
+				const target_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(params.user_id);
+				const type: string = params.type;
+				const linktype: string = params.linktype;
+				const option: IQueryOption = params.option;
+				if (target_user_id) {
+					LocalAccount.default_find_by_id(null, target_user_id).then((target_user: any) => {
+						if (target_user) {
+							const user_id = target_user.user_id;
+							const aggregator: any[] = [];
+							Accounts.from_user_with_type_aggregator(aggregator, user_id, type, linktype);
+							Accounts.option_aggregator(aggregator, option);
+							Relation.aggregate(aggregator, {allowDiskUse: true}).then((results: any[]): void => {
+								this.SendRaw(response, results);
+							}).catch((error: IErrorObject) => {
+								this.SendError(response, error);
+							});
+						} else {
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40019"));
+						}
+					}).catch((error: any) => {
+						this.SendError(response, Errors.Exception(error, "S00345"));
+					});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
+			});
+		} catch (error: any) {
+			this.SendError(response, error);
+		}
+	}
+
+	/**
+	 * リレーション(Deprecate)
+	 * @param request
+	 * @param response
+	 * @returns none
+	 */
 	public relation_to_user(request: any, response: any): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00341"), request.user, () => {
 				const params = request.params;
-				const target_username: string = params.username;
-				const type: string = params.type;
+				const target_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(params.user_id);
+				const linktype: string = params.linktype;
 				const option: IQueryOption = params.option;
-
-				LocalAccount.default_find_by_name(null, target_username).then((target_user: any) => {
-					if (target_user) {
-						const user_id = target_user.user_id;
-
-						const aggregater: any[] = [];
-
-						Accounts.to_aggregater(aggregater, user_id, type);
-
-						Accounts.option_aggregater(aggregater, option);
-
-						Relation.aggregate(aggregater).then((results: any[]): void => {
-							this.SendRaw(response, results);
-						}).catch((error: IErrorObject) => {
-							this.SendError(response, error);
-						});
-
-					} else {
-						this.SendError(response, Errors.generalError(1, 'no user', "S00344"));
-					}
-				}).catch((error: any) => {
-					this.SendError(response, Errors.Exception(error, "S00345"));
-				});
+				if (target_user_id) {
+					LocalAccount.default_find_by_id(null, target_user_id).then((target_user: any) => {
+						if (target_user) {
+							const user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(target_user.user_id);
+							const aggregator: any[] = [];
+							Accounts.to_aggregator(aggregator, user_id, linktype);
+							Accounts.option_aggregator(aggregator, option);
+							Relation.aggregate(aggregator, {allowDiskUse: true}).then((results: any[]): void => {
+								this.SendRaw(response, results);
+							}).catch((error: IErrorObject) => {
+								this.SendError(response, error);
+							});
+						} else {
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40020"));
+						}
+					}).catch((error: any) => {
+						this.SendError(response, Errors.Exception(error, "S00345"));
+					});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
 			});
 		} catch (error: any) {
 			this.SendError(response, error);
@@ -886,26 +914,30 @@ export class Accounts extends Wrapper {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00341"), request.user, () => {
 				const operator: IAccountModel = this.Transform(request.user);
 				const from_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
-				const target_username: string = request.params.username;
-				const type: string = request.params.type;
-				LocalAccount.default_find_by_name(null, target_username).then((target_user: any) => {
-					if (target_user) {
-						const to_user_id: mongoose.Types.ObjectId = target_user.user_id;
-						Relation.cancel(to_user_id, from_user_id, type).then((result: any) => {
-							if (result) {
-								this.SendSuccess(response, result);
-							} else {
-								this.SendError(response, Errors.generalError(1, 'target user not found.', "S00342"));
-							}
-						}).catch((error: IErrorObject) => {
-							this.SendError(response, Errors.Exception(error, "S00343"));
-						})
-					} else {
-						this.SendError(response, Errors.generalError(1, 'no user', "S00344"));
-					}
-				}).catch((error: any) => {
-					this.SendError(response, Errors.Exception(error, "S00345"));
-				});
+				const target_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(request.params.user_id);
+				const linktype: string = request.params.type;
+				if (target_user_id) {
+					LocalAccount.default_find_by_id(null, target_user_id).then((target_user: any) => {
+						if (target_user) {
+							const to_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(target_user.user_id);
+							Relation.cancel(to_user_id, from_user_id, linktype).then((result: any) => {
+								if (result) {
+									this.SendSuccess(response, result);
+								} else {
+									this.SendError(response, Errors.generalError(1, 'target user not found.', "S00342"));
+								}
+							}).catch((error: IErrorObject) => {
+								this.SendError(response, Errors.Exception(error, "S00343"));
+							})
+						} else {
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40021"));
+						}
+					}).catch((error: any) => {
+						this.SendError(response, Errors.Exception(error, "S00345"));
+					});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
 			});
 		} catch (error: any) {
 			this.SendError(response, error);
@@ -923,26 +955,30 @@ export class Accounts extends Wrapper {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00346"), request.user, () => {
 				const operator: IAccountModel = this.Transform(request.user);
 				const from_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
-				const target_username: string = request.params.username;
-				const type: string = request.params.type;
-				LocalAccount.default_find_by_name(null, target_username).then((target_user: any) => {
-					if (target_user) {
-						const to_user_id: mongoose.Types.ObjectId = target_user.user_id;
-						Relation.cancel(from_user_id, to_user_id, type).then((result: any) => {
-							if (result) {
-								this.SendSuccess(response, result);
-							} else {
-								this.SendError(response, Errors.generalError(-1, 'target user not found.', "S00347"));
-							}
-						}).catch((error: IErrorObject) => {
-							this.SendError(response, Errors.Exception(error, "S00348"));
-						})
-					} else {
-						this.SendError(response, Errors.generalError(1, 'no user', "S00349"));
-					}
-				}).catch((error: any) => {
-					this.SendError(response, Errors.Exception(error, "S00350"));
-				});
+				const target_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(request.params.user_id);
+				const linktype: string = request.params.type;
+				if (target_user_id) {
+					LocalAccount.default_find_by_id(null, target_user_id).then((target_user: any) => {
+						if (target_user) {
+							const to_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(target_user.user_id);
+							Relation.cancel(from_user_id, to_user_id, linktype).then((result: any) => {
+								if (result) {
+									this.SendSuccess(response, result);
+								} else {
+									this.SendError(response, Errors.generalError(-1, 'target user not found.', "S00347"));
+								}
+							}).catch((error: IErrorObject) => {
+								this.SendError(response, Errors.Exception(error, "S00348"));
+							})
+						} else {
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40022"));
+						}
+					}).catch((error: any) => {
+						this.SendError(response, Errors.Exception(error, "S00350"));
+					});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
 			});
 		} catch (error: any) {
 			this.SendError(response, Errors.Exception(error, "S00351"));
@@ -959,32 +995,87 @@ export class Accounts extends Wrapper {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00377"), request.user, () => {
 				const operator: IAccountModel = this.Transform(request.user);
-				const from_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
-				const target_username: string = request.params.username;
-				const type: string = request.params.type;
-				LocalAccount.default_find_by_name(null, target_username).then((target_user: any) => {
-					if (target_user) {
-						const to_user_id: mongoose.Types.ObjectId = target_user.user_id;
-						Relation.break(from_user_id, to_user_id, type).then((result: any) => {
-							if (result) {
-								this.SendSuccess(response, result);
-							} else {
-								this.SendError(response, Errors.generalError(1, 'target user not found.', "S00352"));
-							}
-						}).catch((error: IErrorObject) => {
-							this.SendError(response, Errors.Exception(error, "S00353"));
-						})
-					} else {
-						this.SendError(response, Errors.generalError(1, 'no user', "S00354"));
-					}
-				}).catch((error: any) => {
-					this.SendError(response, Errors.Exception(error, "S00355"));
-				});
+				// const from_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(operator.user_id);
+				const from_user_id: mongoose.Types.ObjectId = this.target_user(operator,request);
+				const target_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(request.params.to_id);
+				const linktype: string = request.params.type;
+				if (target_user_id) {
+					LocalAccount.default_find_by_id(null, target_user_id).then((target_user: any) => {
+						if (target_user) {
+							const to_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(target_user.user_id);
+							Relation.break(from_user_id, to_user_id, linktype).then((result: any) => {
+								if (result) {
+									this.SendSuccess(response, result);
+								} else {
+									this.SendError(response, Errors.generalError(1, 'target user not found.', "S00352"));
+								}
+							}).catch((error: IErrorObject) => {
+								this.SendError(response, Errors.Exception(error, "S00353"));
+							})
+						} else {
+							this.SendError(response, Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40023"));
+						}
+					}).catch((error: any) => {
+						this.SendError(response, Errors.Exception(error, "S00355"));
+					});
+				} else {
+					this.SendError(response, Errors.userError(1, "ユーザIDがありません。", "S04332"));
+				}
 			});
 		} catch (error: any) {
 			this.SendError(response, Errors.Exception(error, "S00356"));
 		}
 	}
+
+	/**
+	 * 双方リレーション削除
+	 * @param source_user_name
+	 * @param target_user_name
+	 * @param linktype
+	 * @param callback
+	 */
+	public relation(source_user_name: string, target_user_name: string, linktype: string, callback: Callback<any>): void {
+		LocalAccount.default_find_by_name(null, source_user_name).then((source_user: any) => {
+			if (source_user) { //
+				const from_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(source_user.user_id);
+				LocalAccount.default_find_by_name(null, target_user_name).then((target_user: any) => {
+					if (target_user) { //
+						const to_user_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId(target_user.user_id);
+						if (!from_user_id.equals(to_user_id)) { // 自己
+							Relation.related(from_user_id, to_user_id, linktype).then((result: any) => {
+								if (!result) {
+									const relation: any = new Relation();
+									relation.from_id = from_user_id;
+									relation.to_id = to_user_id;
+									relation.type = linktype;
+									relation.save().then((result: any) => {
+										callback(null, result);
+									}).catch((error: IErrorObject) => {
+										callback(error, null);
+									})
+								} else {
+									callback(Errors.generalError(1, "already.", "S00333"), null);
+								}
+							}).catch((error: IErrorObject) => {
+								callback(error, null);
+							})
+						} else {
+							callback(Errors.generalError(1, 'same.', "S00335"), null);
+						}
+					} else {
+						callback(Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40024"), null);
+					}
+				}).catch((error: any) => {
+					callback(error, null);
+				});
+			} else {
+				callback(Errors.generalError(10, '一度ログアウトして、ログインし直してください。', "S40025"), null);
+			}
+		}).catch((error: any) => {
+			callback(error, null);
+		});
+	}
+
 }
 
 module.exports = Accounts;

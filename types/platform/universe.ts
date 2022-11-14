@@ -3,9 +3,9 @@
  * This software is released under the MIT License.
  * opensource.org/licenses/mit-license.php
  */
+import * as mongoose from "mongoose";
 
 export interface ErrorObject {
-	type:number;
 	code: number;
 	message: string;
 	tag: string;
@@ -71,13 +71,15 @@ export enum AuthLevel {
 
 export interface IAccountPublic {
 	username: string;
-	user_id: string;
+	user_id: mongoose.Types.ObjectId;
 	auth: number;
 	category: string;
 	status: number;
 	type: string;
 	enabled: boolean;
 	subscribe: number;
+	relations:any;
+	depth:number;
 }
 
 export interface IRights {

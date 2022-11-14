@@ -53,18 +53,7 @@ export class LogoutDialogDirective {
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any) => {
+		dialog.afterClosed().subscribe((result: any) => {
 			if (result) {
 				this.complete.emit(result);
 			}

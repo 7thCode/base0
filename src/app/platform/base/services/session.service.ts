@@ -48,27 +48,20 @@ export class SessionService extends HttpService {
 		if (this.cache) {
 			callback(null, this.cache);
 		} else {
-			this.http.get(this.endPoint + "/session/auth", this.httpOptions).pipe(retry(3)).subscribe(
-				{
-					next: (result: any): void => {
-						if (result) {
-							if (result.code === 0) {
-								this.cache = result.value;
-								callback(null, result.value);
-							} else {
-								callback(Errors.serverError(result, "A00037"), null);
-							}
-						} else {
-							callback(Errors.networkError("A00037"), null);
-						}
-					},
-					error: (error: HttpErrorResponse) => {
-						callback(Errors.networkException(error, "A00038"), null);
-					},
-					complete: () => {
+			this.http.get(this.endPoint + "/session/auth", this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+				if (result) {
+					if (result.code === 0) {
+						this.cache = result.value;
+						callback(null, result.value);
+					} else {
+						callback(Errors.serverError(result, "A00037"), null);
 					}
+				} else {
+					callback(Errors.networkError("A00037"), null);
 				}
-			);
+			}, (error: HttpErrorResponse) => {
+				callback(Errors.networkException(error, "A00038"), null);
+			});
 		}
 	}
 
@@ -79,31 +72,24 @@ export class SessionService extends HttpService {
 	 * @param callback コールバック
 	 */
 	public put(content: object, callback: Callback<ISession>): void {
-		this.http.put(this.endPoint + "/session/auth", content, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							if (this.cache) {
-								if (this.cache.data) {
-									this.cache.data = result.value;
-								}
-							}
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00039"), null);
+		this.http.put(this.endPoint + "/session/auth", content, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					if (this.cache) {
+						if (this.cache.data) {
+							this.cache.data = result.value;
 						}
-					} else {
-						callback(Errors.networkError("A00040"), null);
 					}
-				},
-				error: (error: HttpErrorResponse) => {
-					callback(Errors.networkException(error, "A00041"), null);
-				},
-				complete: () => {
+					callback(null, result.value);
+				} else {
+					callback(Errors.serverError(result, "A00039"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00040"), null);
 			}
-		);
+		}, (error: HttpErrorResponse) => {
+			callback(Errors.networkException(error, "A00041"), null);
+		});
 	}
 
 }

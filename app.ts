@@ -333,7 +333,6 @@ const normal: () => void = () => {
 
 		// database
 
-		//const url ="mongodb+srv://aigmaster:33550336@cluster0.od1kc.mongodb.net/aig?retryWrites=true&w=majority";
 		mongoose.connect(connect_url, options)
 			.catch((error: any) => {
 				logger.fatal("catch Mongoose exception. ", error.stack);
@@ -348,7 +347,6 @@ const normal: () => void = () => {
 
 		// Housekeeping GC
 		// kill -s SIGUSR1 id...
-		// pm2 start app.js -n aig --node-args="--expose-gc"
 		process.on("SIGUSR1", (): void => {
 			const pre_gc = Math.floor(process.memoryUsage().heapUsed / 1000 / 1000);
 			global.gc();

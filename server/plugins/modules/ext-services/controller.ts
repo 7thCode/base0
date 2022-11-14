@@ -12,7 +12,7 @@ import {Errors} from "../../../platform/base/library/errors";
 
 const Wrapper: any = require("../../../platform/base/controllers/wrapper");
 
-const http: any = require('http');
+const request: any = require("request");
 
 export class ExtServices extends Wrapper {
 
@@ -59,7 +59,6 @@ export class ExtServices extends Wrapper {
 	 *
 	 *
 	 */
-/*
 	public zip_to_address(req: any, response: IJSONResponse): void {
 		try {
 			const zip: string = req.params.zip;
@@ -98,40 +97,6 @@ export class ExtServices extends Wrapper {
 			this.SendError(response, Errors.Exception(error, "S00385"));
 		}
 
-	}
-*/
-	/**
-	 *
-	 * exec
-	 *
-	 * @param request
-	 * @param response
-	 * @returns none
-	 */
-	public zip_to_address(req: any, response: IJSONResponse): void {
-		try {
-
-			const zip: string = req.params.zip;
-			const clean_zip: string = this.normalize_postal(this.wide_to_single(zip));
-
-			const url =  "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + clean_zip;
-
-			let body = '';
-			http.get(url, (api_response: any) => {
-				api_response.on('data', (chunk: any) => {
-					body += chunk;
-				});
-
-				api_response.on('end', (res: any) => {
-					this.SendSuccess(response, JSON.parse(body));
-				});
-			}).on('error', (error: any) => {
-				this.SendError(response, error);
-			})
-
-		} catch (error: any) {
-			this.SendError(response, Errors.Exception(error, "S10001"));
-		}
 	}
 
 }

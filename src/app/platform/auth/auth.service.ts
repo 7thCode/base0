@@ -93,26 +93,19 @@ export class AuthService extends HttpService {
 	 * @param callback コールバック
 	 */
 	public is_logged_in(callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/auth/local/is_logged_in", this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00013"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00014"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00015"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/auth/local/is_logged_in", this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					callback(null, result.value);
+				} else {
+					callback(Errors.serverError(result, "A00013"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00014"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00015"), null);
+		});
 	}
 
 	/**
@@ -127,29 +120,22 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {username, password}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/local/login", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											this.session.put({token: result.value.token}, () => {
-												callback(null, result.value);
-												// localStorage.setItem("QR", result.value.token);
-											})
-										} else {
-											callback(Errors.serverError(result, "A00216"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00017"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00018"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/local/login", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									this.session.put({token:result.value.token} ,() => {
+										callback(null, result.value);
+										//			localStorage.setItem("QR", result.value.token);
+									})
+								} else {
+									callback(Errors.serverError(result, "A00216"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00017"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00018"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A00316"), null);
 					}
@@ -173,28 +159,21 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {username, password, code}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/local/login_totp", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											this.session.put({token: result.value.token}, () => {
-												callback(null, result.value);
-											});
-										} else {
-											callback(Errors.serverError(result, "A00019"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00020"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00021"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/local/login_totp", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									this.session.put({token:result.value.token} ,() => {
+										callback(null, result.value);
+									});
+								} else {
+									callback(Errors.serverError(result, "A00019"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00020"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00021"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A00516"), null);
 					}
@@ -217,26 +196,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {username, code}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/local/verify_totp", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											callback(null, result.value);
-										} else {
-											callback(Errors.serverError(result, "A00102"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00103"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00104"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/local/verify_totp", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00102"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00103"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00104"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A00716"), null);
 					}
@@ -254,28 +226,21 @@ export class AuthService extends HttpService {
 	 * @param callback コールバック
 	 */
 	public login_with_token(token: string, callback: Callback<any>): void {
-		this.http.post(this.endPoint + "/auth/local/login", {content: token}, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							this.session.put({token: result.value.token}, () => {
-								callback(null, result.value);
-							});
-						} else {
-							callback(Errors.serverError(result, "A00105"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00106"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00107"), null);
-				},
-				complete: () => {
+		this.http.post(this.endPoint + "/auth/local/login", {content: token}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					this.session.put({token:result.value.token} ,() => {
+						callback(null, result.value);
+					});
+				} else {
+					callback(Errors.serverError(result, "A00105"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00106"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00107"), null);
+		});
 	}
 
 	/**
@@ -287,22 +252,15 @@ export class AuthService extends HttpService {
 	public get_login_token(callback: Callback<any>): void {
 		this.session.get((error, session: any) => {
 			const value: any = session.data.token;
-			this.http.get(this.endPoint + "/auth/token/qr/" + encodeURIComponent(value), this.httpOptions).pipe(retry(3)).subscribe(
-				{
-					next: (result: any): void => {
-						if (result) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.networkError("A00109"), null);
-						}
-					},
-					error: (error: HttpErrorResponse): void => {
-						callback(Errors.networkException(error, "A00110"), null);
-					},
-					complete: () => {
-					}
+			this.http.get(this.endPoint + "/auth/token/qr/" + encodeURIComponent(value), this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+				if (result) {
+					callback(null, result.value);
+				} else {
+					callback(Errors.networkError("A00109"), null);
 				}
-			);
+			}, (error: HttpErrorResponse): void => {
+				callback(Errors.networkException(error, "A00110"), null);
+			});
 		})
 	}
 
@@ -323,26 +281,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {auth, username, password, category, type, metadata}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/local/register", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (account: any): void => {
-									if (account) {
-										if (account.code === 0) {
-											callback(null, account.value);
-										} else {
-											callback(Errors.serverError(account, "A00154"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00155"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00156"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/local/register", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((account: any): void => {
+							if (account) {
+								if (account.code === 0) {
+									callback(null, account.value);
+								} else {
+									callback(Errors.serverError(account, "A00154"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00155"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00156"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A00916"), null);
 					}
@@ -364,31 +315,24 @@ export class AuthService extends HttpService {
 	 * @param type タイプ
 	 * @param callback コールバック
 	 */
-	public regist_immediate(auth: number, username: string, password: string, category: string, type: string, metadata: any, callback: Callback<any>): void {
+	public regist_immediate(auth: number,username: string, password: string, category: string, type: string, metadata: any, callback: Callback<any>): void {
 		this.PublicKey.fixed((error: IErrorObject, key: string): void => {
 			if (!error) {
 				this.value_encrypt(key, {auth, username, password, category, type, metadata}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/immediate/register", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (account: any): void => {
-									if (account) {
-										if (account.code === 0) {
-											callback(null, account.value);
-										} else {
-											callback(Errors.serverError(account, "A00157"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00158"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00159"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/immediate/register", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((account: any): void => {
+							if (account) {
+								if (account.code === 0) {
+									callback(null, account.value);
+								} else {
+									callback(Errors.serverError(account, "A00157"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00158"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00159"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A01116"), null);
 					}
@@ -412,26 +356,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {username, password}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/local/password", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											callback(null, result.value);
-										} else {
-											callback(Errors.serverError(result, "A00160"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00161"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00162"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/local/password", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00160"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00161"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00162"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A01316"), null);
 					}
@@ -455,26 +392,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {username, password}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/immediate/password", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											callback(null, result.value);
-										} else {
-											callback(Errors.serverError(result, "A00163"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00154"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00165"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/immediate/password", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00163"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00154"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00165"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A01516"), null);
 					}
@@ -498,26 +428,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {update_username}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/local/username", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											callback(null, result.value);
-										} else {
-											callback(Errors.serverError(result, "A00166"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00167"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00168"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/local/username", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00166"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00167"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00168"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A01716"), null);
 					}
@@ -541,26 +464,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {original_username, update_username}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/immediate/username", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											callback(null, result.value);
-										} else {
-											callback(Errors.serverError(result, "A00169"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00170"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00171"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/immediate/username", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00169"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00170"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00171"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A01916"), null);
 					}
@@ -584,26 +500,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/local/remove", {}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											callback(null, result.value);
-										} else {
-											callback(Errors.serverError(result, "A00172"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00173"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00174"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/local/remove", {}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00172"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00173"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00174"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A02116"), null);
 					}
@@ -627,26 +536,19 @@ export class AuthService extends HttpService {
 			if (!error) {
 				this.value_encrypt(key, {original_username, update_username}, (error: IErrorObject, value: any): void => {
 					if (!error) {
-						this.http.post(this.endPoint + "/auth/immediate/remove", {content: value}, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (result: any): void => {
-									if (result) {
-										if (result.code === 0) {
-											callback(null, result.value);
-										} else {
-											callback(Errors.serverError(result, "A00175"), null);
-										}
-									} else {
-										callback(Errors.networkError("A00176"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00177"), null);
-								},
-								complete: () => {
+						this.http.post(this.endPoint + "/auth/immediate/remove", {content: value}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+							if (result) {
+								if (result.code === 0) {
+									callback(null, result.value);
+								} else {
+									callback(Errors.serverError(result, "A00175"), null);
 								}
+							} else {
+								callback(Errors.networkError("A00176"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00177"), null);
+						});
 					} else {
 						callback(Errors.generalError(error.code, error.message, "A02316"), null);
 					}
@@ -664,27 +566,20 @@ export class AuthService extends HttpService {
 	 * @param callback コールバック
 	 */
 	public logout(callback: Callback<any>): void {
-		this.http.get(this.endPoint + "/auth/logout", this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (account: any): void => {
-					if (account) {
-						if (account.code === 0) {
-							// 			localStorage.removeItem("QR");
-							callback(null, account.value);
-						} else {
-							callback(null, null);
-						}
-					} else {
-						callback(Errors.networkError("A00178"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00179"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/auth/logout", this.httpOptions).pipe(retry(3)).subscribe((account: any): void => {
+			if (account) {
+				if (account.code === 0) {
+					//			localStorage.removeItem("QR");
+					callback(null, account.value);
+				} else {
+					callback(null, null);
 				}
+			} else {
+				callback(Errors.networkError("A00178"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00179"), null);
+		});
 	}
 
 	/**
@@ -695,26 +590,19 @@ export class AuthService extends HttpService {
 	 * @param callback コールバック
 	 */
 	public withdraw(callback: Callback<any>): void {
-		this.http.post(this.endPoint + "/auth/local/remove", {}, this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, result.value);
-						} else {
-							callback(Errors.serverError(result, "A00180"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00181"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00182"), null);
-				},
-				complete: () => {
+		this.http.post(this.endPoint + "/auth/local/remove", {}, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					callback(null, result.value);
+				} else {
+					callback(Errors.serverError(result, "A00180"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00181"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00182"), null);
+		});
 	}
 
 	/*

@@ -83,7 +83,7 @@ import {Errors} from "../../platform/base/library/errors";
 })
 export class StripeComponent extends GridViewComponent implements OnInit {
 
-	public heigestPlan: number;
+	public isSubscribe: boolean;
 	private spinner: Spinner;
 
 	/**
@@ -105,34 +105,6 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 	) {
 		super(session, matDialog);
 		this.spinner = new Spinner(overlay);
-	}
-
-	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	public toListView(object: any): any {
-		object.cols = 1;
-		object.rows = 1;
-		return object;
-	}
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	public toView(data: any): any {
-		return data;
-	}
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	public confirmToModel(data: any): any {
-		return data;
 	}
 
 	/**
@@ -163,7 +135,15 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 		this.spinner.Progress(value);
 	}
 
-
+	/**
+	 * リストビューデコレータ
+	 * @param object
+	 */
+	protected toListView(object: any): any {
+		object.cols = 1;
+		object.rows = 1;
+		return object;
+	}
 
 	/*
 	* width to grid columns
@@ -242,9 +222,9 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 			return card;
 		}
 		this.Progress(true);
-		this.stripeService.is_subscribe((error: IErrorObject, heigestPlan: number) => {
+		this.stripeService.is_subscribe((error: IErrorObject, result: boolean) => {
 			if (!error) {
-				this.heigestPlan = heigestPlan;
+				this.isSubscribe = result;
 				this.stripeService.retrieveCustomer((error: IErrorObject, result: any) => {
 					if (!error) {
 						if (result) {
@@ -610,10 +590,12 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 
 	/**
 	 */
-	public subscribe(plan_no: number) {
+	public subscribe() {
+
 		const charge = {}
+
 		this.Progress(true);
-		this.stripeService.subscribe(plan_no, charge, (error: IErrorObject, result: any) => {
+		this.stripeService.subscribe(charge, (error: IErrorObject, result: any) => {
 			this.Progress(false);
 			if (!error) {
 				this.messageBar("OK");
@@ -625,10 +607,10 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 
 	/**
 	 */
-	public update_subscription(plan_no: number) {
+	public update_subscription() {
 		const metadata = {order_id: '1234'};
 		this.Progress(true);
-		this.stripeService.update_subscribe(plan_no, metadata, (error: IErrorObject, result: any) => {
+		this.stripeService.update_subscribe(metadata, (error: IErrorObject, result: any) => {
 			this.Progress(false);
 			if (!error) {
 				this.messageBar("OK");
@@ -640,9 +622,9 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 
 	/**
 	 */
-	public cancel_subscription(plan_no: number) {
+	public cancel_subscription() {
 		this.Progress(true);
-		this.stripeService.cancel_subscribe(plan_no,(error: IErrorObject, result: any) => {
+		this.stripeService.cancel_subscribe((error: IErrorObject, result: any) => {
 			this.Progress(false);
 			if (!error) {
 				this.messageBar("OK");

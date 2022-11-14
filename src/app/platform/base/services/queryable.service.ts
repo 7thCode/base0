@@ -57,30 +57,23 @@ export abstract class QueryableService extends HttpService {
 			if (!error) {
 				this.Encode(option, (error: IErrorObject, optionString: string): void => {
 					if (!error) {
-						this.http.get(this.endPoint + "/" + this.model + "/auth/query/" + queryString + "/" + optionString, this.httpOptions).pipe(retry(3)).subscribe(
-							{
-								next: (results: any): void => {
-									if (results) {
-										if (Array.isArray(results)) {
-											const filterd: any[] = [];
-											results.forEach((result) => {
-												filterd.push(this.decorator(result));
-											});
-											callback(null, filterd);
-										} else {
-											callback(Errors.serverError(results, "A00183"), []);
-										}
-									} else {
-										callback(Errors.networkError("A00184"), null);
-									}
-								},
-								error: (error: HttpErrorResponse): void => {
-									callback(Errors.networkException(error, "A00185"), []);
-								},
-								complete: () => {
+						this.http.get(this.endPoint + "/" + this.model + "/auth/query/" + queryString + "/" + optionString, this.httpOptions).pipe(retry(3)).subscribe((results: any): void => {
+							if (results) {
+								if (Array.isArray(results)) {
+									const filterd: any[] = [];
+									results.forEach((result) => {
+										filterd.push(this.decorator(result));
+									});
+									callback(null, filterd);
+								} else {
+									callback(Errors.serverError(results, "A00183"), []);
 								}
+							} else {
+								callback(Errors.networkError("A00184"), null);
 							}
-						);
+						}, (error: HttpErrorResponse): void => {
+							callback(Errors.networkException(error, "A00185"), []);
+						});
 					} else {
 
 						callback(Errors.responseError("A00186"), []);
@@ -101,22 +94,15 @@ export abstract class QueryableService extends HttpService {
 	public count(query: object, callback: Callback<number>): void {
 		this.Encode(query, (error: IErrorObject, queryString: string): void => {
 			if (!error) {
-				this.http.get(this.endPoint + "/" + this.model + "/auth/count/" + queryString, this.httpOptions).pipe(retry(3)).subscribe(
-					{
-						next: (result: any): void => {
-							if (result) {
-								callback(null, result);
-							} else {
-								callback(Errors.networkError("A00188"), 0);
-							}
-						},
-						error: (error: HttpErrorResponse): void => {
-							callback(Errors.networkException(error, "A00189"), null);
-						},
-						complete: () => {
-						}
+				this.http.get(this.endPoint + "/" + this.model + "/auth/count/" + queryString, this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+					if (result) {
+						callback(null, result);
+					} else {
+						callback(Errors.networkError("A00188"), 0);
 					}
-				);
+				}, (error: HttpErrorResponse): void => {
+					callback(Errors.networkException(error, "A00189"), null);
+				});
 			} else {
 				callback(Errors.responseError("A00190"), null);
 			}
@@ -130,26 +116,19 @@ export abstract class QueryableService extends HttpService {
 	 * @param callback オブジェクトを返すコールバック
 	 */
 	public get(id: string, callback: Callback<object>): void {
-		this.http.get(this.endPoint + "/" + this.model + "/auth/" + encodeURIComponent(id), this.httpOptions).pipe(retry(3)).subscribe(
-			{
-				next: (result: any): void => {
-					if (result) {
-						if (result.code === 0) {
-							callback(null, this.decorator(result.value));
-						} else {
-							callback(Errors.serverError(result, "A00191"), null);
-						}
-					} else {
-						callback(Errors.networkError("A00192"), null);
-					}
-				},
-				error: (error: HttpErrorResponse): void => {
-					callback(Errors.networkException(error, "A00193"), null);
-				},
-				complete: () => {
+		this.http.get(this.endPoint + "/" + this.model + "/auth/" + encodeURIComponent(id), this.httpOptions).pipe(retry(3)).subscribe((result: any): void => {
+			if (result) {
+				if (result.code === 0) {
+					callback(null, this.decorator(result.value));
+				} else {
+					callback(Errors.serverError(result, "A00191"), null);
 				}
+			} else {
+				callback(Errors.networkError("A00192"), null);
 			}
-		);
+		}, (error: HttpErrorResponse): void => {
+			callback(Errors.networkException(error, "A00193"), null);
+		});
 	}
 
 }

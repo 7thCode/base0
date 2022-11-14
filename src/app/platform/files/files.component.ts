@@ -26,7 +26,6 @@ import {FilesService} from "./files.service";
 import {Errors} from "../base/library/errors";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
-import {InfoDialogComponent} from "../base/components/info-dialog/info-dialog.component";
 
 /**
  * ファイル
@@ -41,7 +40,7 @@ import {InfoDialogComponent} from "../base/components/info-dialog/info-dialog.co
 
 export class FilesComponent extends UploadableComponent implements OnInit {
 
-// 	@ViewChild(MatPaginator) paginator: MatPaginator;
+// 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
 	public get isProgress(): boolean {
 		return this.spinner.progress;
@@ -139,36 +138,6 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	}
 
 	/**
-	 * メッセージダイアログ
-	 *
-	 * @returns none
-	 */
-	private messageDialog(message: string, callback: (result: any) => void): void {
-		const dialog: MatDialogRef<any> = this.matDialog.open(InfoDialogComponent, {
-			width: "30%",
-			minWidth: "320px",
-			height: "fit-content",
-			data: {content: {title: "", message: message, tag: ""}},
-			disableClose: true,
-		});
-
-		dialog.afterClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any): void => {
-			callback(result);
-		});
-	}
-
-	/**
 	 *
 	 */
 	protected Progress(value: boolean): void {
@@ -200,23 +169,12 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	 */
 	public ngOnInit(): void {
 		super.ngOnInit();
-	// 	this.paginator.pageIndex = 0;
+// 		this.paginator.pageIndex = 0;
 		this.page = 0;
 		this.query = {};
 		this.results = [];
 		this.breakpoint = this.widthToColumns(window.innerWidth);
-		this.route.queryParams.subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-				params => {
+		this.route.queryParams.subscribe(params => {
 			this.params = params;
 			this.draw((error: IErrorObject, results: object[] | null): void => {
 				if (!error) {
@@ -281,50 +239,17 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.afterOpened().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any): void => {
+		dialog.afterOpened().subscribe((result: any): void => {
 
 		});
 
-		dialog.beforeClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any): void => {
+		dialog.beforeClosed().subscribe((result: any): void => {
 			if (result) { // if not cancel then
 				callback(null, result.content.file);
 			}
 		});
 
-		dialog.afterClosed().subscribe(
-			/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-			(result: any): void => {
+		dialog.afterClosed().subscribe((result: any): void => {
 			this.Complete("", result);
 		});
 	}
@@ -416,8 +341,8 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	 */
 	public findByFilename(): void {
 // 		this.paginator.pageIndex = 0;
-		this.query = {};
 		this.page = 0;
+		this.query = {};
 
 		if (this.filename) {
 			this.query = {filename: {$regex: this.filename}};
@@ -480,18 +405,7 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 				},
 				disableClose: true,
 			});
-			dialog.afterClosed().subscribe(
-				/*
-{
-	next: (result: object) => {
-	},
-	error: (error): void => {
-	},
-	complete: () => {
-	}
-}
-*/
-				(result: object) => {
+			dialog.afterClosed().subscribe((result: object) => {
 				if (result) { // if not cancel then
 					_delete(name);
 				}
@@ -555,11 +469,4 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 		});
 	}
 
-	public pathWithToken(filename: string): void {
-		this.filesService.pathWithToken(filename, (error: any, value: string): void => {
-			if (!error) {
-				this.messageDialog(this.endPoint + value,() => {})
-			}
-		})
-	}
 }

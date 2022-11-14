@@ -37,26 +37,6 @@ export abstract class GridViewComponent extends UpdatableComponent implements On
 		super(session, matDialog);
 	}
 
-	/**
-	 * リストビューデコレータ
-	 *
-	 * @param object デコレーション対象
-	 */
-	abstract toListView(object: any): any;
-
-	/**
-	 * ビューデコレータ
-	 *
-	 * @param data デコレーション対象
-	 */
-	abstract toView(data: any): any;
-
-	/**
-	 * トランスフォーマー
-	 * @param data トランスフォーム対象
-	 */
-	abstract confirmToModel(data: any): any;
-
 	/*
 	* width to grid columns
 	*  @returns columns
