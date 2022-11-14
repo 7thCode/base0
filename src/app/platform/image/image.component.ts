@@ -209,17 +209,50 @@ export class ImageComponent extends UploadableComponent implements OnInit, OnCha
 			disableClose: true,
 		});
 
-		dialog.afterOpened().subscribe((result: any): void => {
+		dialog.afterOpened().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 
 		});
 
-		dialog.beforeClosed().subscribe((result: any): void => {
+		dialog.beforeClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			if (result) { // if not cancel then
 				callback(null, result.content.file);
 			}
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			this.Complete("", result);
 		});
 	}
@@ -239,10 +272,32 @@ export class ImageComponent extends UploadableComponent implements OnInit, OnCha
 			disableClose: true,
 		});
 
-		dialog.afterOpened().subscribe(() => {
+		dialog.afterOpened().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			() => {
 		});
 
-		dialog.beforeClosed().subscribe((result: any): void => {
+		dialog.beforeClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			if (result) { // if not cancel then
 				switch (result.command) {
 					case "cancel":
@@ -271,7 +326,18 @@ export class ImageComponent extends UploadableComponent implements OnInit, OnCha
 			}
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 
 		});
 

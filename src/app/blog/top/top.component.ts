@@ -19,7 +19,7 @@ import {DomSanitizer, Meta, Title} from "@angular/platform-browser";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {Errors} from "../../platform/base/library/errors";
 import {environment} from "../../../environments/environment";
-
+import {AttrPath} from 'attrpath';
 
 @Component({
 	selector: "blog-top",

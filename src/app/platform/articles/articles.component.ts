@@ -134,7 +134,18 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 		this.sort = {};
 		super.ngOnInit();
 
-		this.route.queryParams.subscribe(params => {
+		this.route.queryParams.subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			params => {
 			this.params = params;
 		});
 	}
@@ -163,7 +174,18 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.beforeClosed().subscribe((result: any): void => {
+		dialog.beforeClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			if (result) { // if not cancel then
 				this.Progress(true);
 
@@ -176,7 +198,18 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 			}
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			this.Complete("", result);
 		});
 
@@ -197,7 +230,18 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 					disableClose: true,
 				});
 
-				dialog.beforeClosed().subscribe((result: any): void => {
+				dialog.beforeClosed().subscribe(
+					/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+					(result: any): void => {
 					if (result) { // if not cancel then
 						this.Progress(true);
 						this.update(id, this.confirmToModel(result.content), (error: IErrorObject, result: any): void => {
@@ -209,7 +253,18 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 					}
 				});
 
-				dialog.afterClosed().subscribe((result: any): void => {
+				dialog.afterClosed().subscribe(
+					/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+					(result: any): void => {
 					this.Complete("", result);
 				});
 			} else {
@@ -251,7 +306,18 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 				},
 				disableClose: true,
 			});
-			dialog.afterClosed().subscribe((result: object) => {
+			dialog.afterClosed().subscribe(
+				/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+				(result: object) => {
 				if (result) { // if not cancel then
 					_delete(id);
 				}

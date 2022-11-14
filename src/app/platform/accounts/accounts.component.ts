@@ -28,6 +28,7 @@ import {SessionService} from "../base/services/session.service";
 import {AccountsService} from "./accounts.service";
 import {Errors} from "../base/library/errors";
 import {MatPaginator} from "@angular/material/paginator";
+import {HttpErrorResponse} from "@angular/common/http";
 
 /**
  * アカウントレコード
@@ -262,7 +263,7 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 	 */
 	public ngOnInit(): void {
 		this.Progress(false);
-	// 	this.paginator.pageIndex = 0;
+		// 	this.paginator.pageIndex = 0;
 		this.page = 0;
 		this.query = {};
 
@@ -302,7 +303,7 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 	 *
 	 */
 	public findByNickname(): void {
-	// 	this.paginator.pageIndex = 0;
+		// 	this.paginator.pageIndex = 0;
 		this.query = {};
 		this.page = 0;
 		if (this.nickname) {
@@ -393,47 +394,62 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.beforeClosed().subscribe((result: { content: { username: string, password: string, nickname: string } }): void => {
-			if (result) { // if not cancel then
-				this.Progress(true);
-				const content: { username: string, password: string, nickname: string } = result.content;
-				const username: string = content.username;
-				const password: string = content.password;
-				const category: string = "";
-				const type: string = "";
-				const auth:number = AuthLevel.user;
+		dialog.beforeClosed().subscribe(
+			{
+				next: (result: { content: { username: string, password: string, nickname: string } }): void => {
+					if (result) { // if not cancel then
+						this.Progress(true);
+						const content: { username: string, password: string, nickname: string } = result.content;
+						const username: string = content.username;
+						const password: string = content.password;
+						const category: string = "";
+						const type: string = "";
+						const auth: number = AuthLevel.user;
 
-				const metadata: { nickname: string, id: string } = {nickname: content.nickname, id: "1"};
-				this.authService.regist_immediate(auth, username, password, category, type, metadata, (error: IErrorObject, result: object): void => {
-					if (!error) {
-						this.draw((error: IErrorObject, accounts: object[]): void => {
+						const metadata: { nickname: string, id: string } = {nickname: content.nickname, id: "1"};
+						this.authService.regist_immediate(auth, username, password, category, type, metadata, (error: IErrorObject, result: object): void => {
 							if (!error) {
-								this.results = accounts;
-								this.Complete("", result);
+								this.draw((error: IErrorObject, accounts: object[]): void => {
+									if (!error) {
+										this.results = accounts;
+										this.Complete("", result);
+									} else {
+										this.Complete("error", error);
+										this.errorBar(error);
+									}
+								});
 							} else {
 								this.Complete("error", error);
 								this.errorBar(error);
 							}
+							this.Progress(false);
 						});
-					} else {
-						this.Complete("error", error);
-						this.errorBar(error);
 					}
-					this.Progress(false);
-				});
+				},
+				error: (error): void => {
+				},
+				complete: () => {
+				}
 			}
-		});
+		);
 
-		dialog.afterClosed().subscribe((result: object): void => {
-
-		});
+		dialog.afterClosed().subscribe(
+			{
+				next: (result: object): void => {
+				},
+				error: (error): void => {
+				},
+				complete: () => {
+				}
+			}
+		);
 	}
 
 	/**
 	 * アップデートダイアログ
 	 * @returns none
 	 */
-	public updateDialog(account:any): void {
+	public updateDialog(account: any): void {
 		const id = account.user_id;
 		this.Progress(true);
 		this.get(id, (error: IErrorObject, result: any | null): void => {
@@ -451,42 +467,57 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 						disableClose: true,
 					});
 
-					dialog.beforeClosed().subscribe((result: object): void => {
-						if (result) { // if not cancel then
-							this.Progress(true);
-							this.update(id, AccountsComponent.confirmToModel(result), (error: IErrorObject, result: object | null): void => {
-								if (!error) {
-									if (result) {
-										this.draw((error: IErrorObject, accounts: object[] | null): void => {
-											if (!error) {
-												if (accounts) {
-													this.results = accounts;
-													this.Complete("", result);
-												} else {
-													this.Complete("error", Errors.generalError(-1, "error.", "A00005"));
-													this.errorBar(Errors.generalError(-1, "error.", "A00006"));
-												}
+					dialog.beforeClosed().subscribe(
+						{
+							next: (result: object): void => {
+								if (result) { // if not cancel then
+									this.Progress(true);
+									this.update(id, AccountsComponent.confirmToModel(result), (error: IErrorObject, result: object | null): void => {
+										if (!error) {
+											if (result) {
+												this.draw((error: IErrorObject, accounts: object[] | null): void => {
+													if (!error) {
+														if (accounts) {
+															this.results = accounts;
+															this.Complete("", result);
+														} else {
+															this.Complete("error", Errors.generalError(-1, "error.", "A00005"));
+															this.errorBar(Errors.generalError(-1, "error.", "A00006"));
+														}
+													} else {
+														this.Complete("error", error);
+														this.errorBar(error);
+													}
+												});
 											} else {
-												this.Complete("error", error);
-												this.errorBar(error);
+												this.Complete("error", Errors.generalError(-1, "error.", "A00007"));
+												this.errorBar(Errors.generalError(-1, "error.", "A00008"));
 											}
-										});
-									} else {
-										this.Complete("error", Errors.generalError(-1, "error.", "A00007"));
-										this.errorBar(Errors.generalError(-1, "error.", "A00008"));
-									}
-								} else {
-									this.Complete("error", error);
-									this.errorBar(error);
+										} else {
+											this.Complete("error", error);
+											this.errorBar(error);
+										}
+										this.Progress(false);
+									});
 								}
-								this.Progress(false);
-							});
+							},
+							error: (error): void => {
+							},
+							complete: () => {
+							}
 						}
-					});
+					);
 
-					dialog.afterClosed().subscribe((result: object): void => {
-
-					});
+					dialog.afterClosed().subscribe(
+						{
+							next: (result: object): void => {
+							},
+							error: (error): void => {
+							},
+							complete: () => {
+							}
+						}
+					);
 				} else {
 					this.Complete("error", Errors.generalError(-1, "error.", "A00009"));
 					this.errorBar(Errors.generalError(-1, "error.", "A00010"));
@@ -503,7 +534,7 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 	 * デリートダイアログ
 	 * @returns none
 	 */
-	public deleteDialog(account:any): void {
+	public deleteDialog(account: any): void {
 
 		const id = account.user_id;
 		const resultDialogContent: any = {title: "User", message: "Delete User?"};
@@ -519,33 +550,42 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe((result: object) => {
-			if (result) { // if not cancel then
-				this.Progress(true);
-				this.delete(id, (error: IErrorObject, result: any): void => {
-					if (!error) {
-						this.draw((error: IErrorObject, accounts: object[] | null): void => {
+		dialog.afterClosed().subscribe(
+			{
+				next: (result: object) => {
+					if (result) { // if not cancel then
+						this.Progress(true);
+						this.delete(id, (error: IErrorObject, result: any): void => {
 							if (!error) {
-								if (accounts) {
-									this.results = accounts;
-									this.Complete("", result);
-								} else {
-									this.Complete("error", Errors.generalError(-1, "error.", "A00011"));
-									this.errorBar(Errors.generalError(-1, "error.", "A00012"));
-								}
+								this.draw((error: IErrorObject, accounts: object[] | null): void => {
+									if (!error) {
+										if (accounts) {
+											this.results = accounts;
+											this.Complete("", result);
+										} else {
+											this.Complete("error", Errors.generalError(-1, "error.", "A00011"));
+											this.errorBar(Errors.generalError(-1, "error.", "A00012"));
+										}
+									} else {
+										this.Complete("error", error);
+										this.errorBar(error);
+									}
+								});
 							} else {
 								this.Complete("error", error);
 								this.errorBar(error);
 							}
+							this.Progress(false);
 						});
-					} else {
-						this.Complete("error", error);
-						this.errorBar(error);
 					}
-					this.Progress(false);
-				});
+				},
+				error: (error): void => {
+					this.errorBar(error);
+				},
+				complete: () => {
+				}
 			}
-		});
+		);
 	}
 
 }

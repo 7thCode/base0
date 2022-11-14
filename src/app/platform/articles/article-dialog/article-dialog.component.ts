@@ -44,7 +44,18 @@ export class ArticleDialogComponent extends BaseDialogComponent {
 	 *
 	 */
 	public triggerResize() {
-		this.zone.onStable.pipe(take(1)).subscribe(() => this.autosize.resizeToFitContent(true));
+		this.zone.onStable.pipe(take(1)).subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			() => this.autosize.resizeToFitContent(true));
 	}
 
 	/**

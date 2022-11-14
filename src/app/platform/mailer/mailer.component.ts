@@ -239,7 +239,18 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 		this.results = [];
 		this.getSession((error: IErrorObject, session: object): void => {
 			if (!error) {
-				this.route.queryParams.subscribe(params => {
+				this.route.queryParams.subscribe(
+					/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+						params => {
 					this.params = params;
 					this.draw((error: IErrorObject, messages: object[] | null): void => {
 						this.Progress(false);
@@ -299,11 +310,33 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.afterOpened().subscribe((result: any): void => {
+		dialog.afterOpened().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			this.Progress(false);
 		});
 
-		dialog.beforeClosed().subscribe((result: any): void => {
+		dialog.beforeClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			if (result) { // if not cancel then
 				this.Progress(true);
 				const data: any = {
@@ -331,7 +364,18 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 			}
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			this.Complete("", result);
 		});
 
@@ -358,11 +402,33 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 					disableClose: true,
 				});
 
-				dialog.afterOpened().subscribe((result: any): void => {
+				dialog.afterOpened().subscribe(
+					/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+					(result: any): void => {
 					this.Progress(false);
 				});
 
-				dialog.beforeClosed().subscribe((result: any): void => {
+				dialog.beforeClosed().subscribe(
+					/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+					(result: any): void => {
 					if (result) { // if not cancel then
 						this.Progress(true);
 						const data: any = {
@@ -396,7 +462,18 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 					}
 				});
 
-				dialog.afterClosed().subscribe((result: any): void => {
+				dialog.afterClosed().subscribe(
+					/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+					(result: any): void => {
 					this.Complete("", result);
 				});
 
@@ -422,11 +499,33 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.afterOpened().subscribe((result: any): void => {
+		dialog.afterOpened().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			this.Progress(false);
 		});
 
-		dialog.beforeClosed().subscribe((result: any): void => {
+		dialog.beforeClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			if (result) { // if not cancel then
 				this.Progress(true);
 				this.delete(message.UID, (error: any, messages: any[]) => {
@@ -446,7 +545,18 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 			}
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			this.Complete("", result);
 		});
 

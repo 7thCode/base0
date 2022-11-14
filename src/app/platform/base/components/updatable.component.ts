@@ -93,7 +93,18 @@ export abstract class UpdatableComponent extends SessionableComponent implements
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			callback(result);
 		});
 	}

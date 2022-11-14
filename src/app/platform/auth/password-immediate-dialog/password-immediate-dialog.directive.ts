@@ -59,7 +59,18 @@ export class PasswordImmediateDialogDirective {
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe((result: any) => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any) => {
 			if (result) {
 				const dialog: MatDialogRef<any> = this.matDialog.open(InfoDialogComponent, {
 					width: "30%",
@@ -69,7 +80,18 @@ export class PasswordImmediateDialogDirective {
 					disableClose: true,
 				});
 
-				dialog.afterClosed().subscribe((result: any) => {
+				dialog.afterClosed().subscribe(
+					/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+					(result: any) => {
 					if (result) {
 						this.complete.emit(result);
 					}

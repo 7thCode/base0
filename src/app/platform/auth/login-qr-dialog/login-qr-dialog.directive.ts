@@ -55,7 +55,18 @@ export class LoginQrDialogDirective {
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe((result: any) => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any) => {
 			this.complete.emit(result);
 		});
 	}

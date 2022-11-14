@@ -152,7 +152,18 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			callback(result);
 		});
 	}
@@ -194,7 +205,18 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 		this.query = {};
 		this.results = [];
 		this.breakpoint = this.widthToColumns(window.innerWidth);
-		this.route.queryParams.subscribe(params => {
+		this.route.queryParams.subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+				params => {
 			this.params = params;
 			this.draw((error: IErrorObject, results: object[] | null): void => {
 				if (!error) {
@@ -259,17 +281,50 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 			disableClose: true,
 		});
 
-		dialog.afterOpened().subscribe((result: any): void => {
+		dialog.afterOpened().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 
 		});
 
-		dialog.beforeClosed().subscribe((result: any): void => {
+		dialog.beforeClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			if (result) { // if not cancel then
 				callback(null, result.content.file);
 			}
 		});
 
-		dialog.afterClosed().subscribe((result: any): void => {
+		dialog.afterClosed().subscribe(
+			/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+			(result: any): void => {
 			this.Complete("", result);
 		});
 	}
@@ -425,7 +480,18 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 				},
 				disableClose: true,
 			});
-			dialog.afterClosed().subscribe((result: object) => {
+			dialog.afterClosed().subscribe(
+				/*
+{
+	next: (result: object) => {
+	},
+	error: (error): void => {
+	},
+	complete: () => {
+	}
+}
+*/
+				(result: object) => {
 				if (result) { // if not cancel then
 					_delete(name);
 				}
