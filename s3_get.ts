@@ -7,7 +7,6 @@
 import {AWSError} from "aws-sdk";
 
 const fs = require('fs');
-const crypto = require('crypto');
 const AWS = require('aws-sdk');
 
 const credentials = new AWS.SharedIniFileCredentials({profile: 'wasabi'});
@@ -17,26 +16,26 @@ AWS.config.region = "ap-northeast-2";
 const ep = new AWS.Endpoint('s3.wasabisys.com');
 const s3 = new AWS.S3({endpoint: ep});
 
-const md5sum = (data: any) => {
-  const hash = crypto.createHash('md5')
-	  .update(data)
-	  .digest('base64');
-  return hash;
-};
+const main = (bucket: any, key: string, fileName: string) => {
+	const params = {
+		Bucket: bucket,
+		Key: key,
+	};
 
-const main = async (bucket: any, key: string, fileName: string) => {
-  const fileData = fs.readFileSync(fileName);
-  const contentMD5 = md5sum(fileData);
-  const params = {
-	  Bucket: bucket,
-	  Key: key,
-	  Body: fileData,
-	  ContentMD5: contentMD5,
-	  ContentType: 'video/mp4',
-	  ACL: 'public-read'
-  };
+	s3.getObject(params, (err: any, data: any) => {
+		if (err) {
+			console.log(err);
+			return;
+		}
 
-  await s3.putObject(params).promise();
-};
+		const writer = fs.createWriteStream(fileName);
+		writer.on("finish", () => {
+			console.log("success");
+		})
 
-main('7thcode', 'backup/qtie.mp4', '/Users/oda/Desktop/qtie.mp4');
+		writer.write(data.Body);
+		writer.end();
+	});
+
+}
+main('7thcode', 'backup/qtie.mp4', '/Users/oda/Desktop/qtie2.mp4');
