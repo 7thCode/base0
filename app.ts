@@ -216,7 +216,7 @@ const normal: () => void = () => {
 		const connect_url: string = config.db.protocol + "://" + user + pass + config.db.address + port + "/" + config.db.name;
 
 		let options: any = {
-			keepAlive: 1,
+			keepAlive: true,
 			maxPoolSize: 10,
 			connectTimeoutMS: 1000000,
 			socketTimeoutMS: 560000,
