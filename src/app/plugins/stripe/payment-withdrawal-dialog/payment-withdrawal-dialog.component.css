@@ -1,0 +1,17 @@
+.fix-action-dialog {
+	height: 100%;
+	background-color: #242424;
+}
+
+.spacer {
+	flex-grow: 1;
+}
+
+.payment-card-dialog {
+	background-color: #242424;
+	color: #ffffff;
+}
+
+::ng-deep.mat-checkbox-label {
+	white-space: normal;
+}

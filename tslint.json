@@ -13,6 +13,7 @@
 				"limit": 500
 			}
 		],
+		"comment-format": false,
 		"member-ordering": [
 			false,
 			{

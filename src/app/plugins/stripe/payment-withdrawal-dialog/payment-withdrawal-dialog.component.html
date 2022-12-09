@@ -1,0 +1,34 @@
+<div [class.dark-theme]="true" class="fix-action-dialog" style="background-color: #24242480;">
+
+	<!-- <div class="card-title" style="color:#ffffff;font-weight: 600;">退会手続き</div> -->
+	<h2 class="mat-dialog-title dialog_title" id="mat-dialog-title-0" mat-dialog-title="" style="color: #ffffff;">Withdraw</h2>
+	<!-- <h2 mat-dialog-title style="font-size: 1.4rem;color:#ffffff;font-weight: 600;">退会手続き</h2> -->
+	<mat-dialog-content>
+		<mat-card class="payment-card-dialog" style="background-color: #24242480;padding:0">
+			<mat-card-content class="payment-card-dialog-content">
+
+					<div style="line-height: 2;overflow:hidden;">
+						<div style="font-weight: 600;">
+						</div>
+						<div>
+						</div>
+						<form #form="ngForm" fxLayout="column wrap" novalidate style="padding: 12px;background: #4F4F4F;border-radius: 1em;margin-top:12px;">
+							<mat-checkbox (change)="onChecked($event)" [(ngModel)]="checked" fxFlex.lt-sm="100%" fxLayout="row wrap" required></mat-checkbox>
+							<mat-checkbox (change)="onChecked1($event)" [(ngModel)]="checked1" fxFlex.lt-sm="100%" fxLayout="row wrap" required></mat-checkbox>
+							<mat-checkbox (change)="onChecked2($event)" [(ngModel)]="checked2" fxFlex.lt-sm="100%" fxLayout="row wrap" required></mat-checkbox>
+						</form>
+					</div>
+
+			</mat-card-content>
+		</mat-card>
+	</mat-dialog-content>
+	<mat-dialog-actions fxLayout="row" fxLayoutAlign="center center" fxLayoutAlign.lt-sm="space-between center" style="padding: 12px 0;color:#ffffff;font-size:12px;">
+		<div fxFlex="40" fxLayoutAlign="center center" style="padding-top:12px;">
+			<button (click)="onAccept()" *ngIf="!(!checked || !checked1 || !checked2 || form.invalid)" [disabled]="!checked || !checked1 || !checked2 || form.invalid" color="primary" mat-raised-button id="mat-raised-button">Accept</button>
+			<button *ngIf="!checked || !checked1 || !checked2 || form.invalid" mat-raised-button style="background-color:#B0D296; color: #F4F7F1;">Accept</button>
+		</div>
+		<div fxFlex="40" fxLayoutAlign="center center" style="padding-top:12px;">
+			<button (click)="cancel()" color="warn" mat-dialog-close="" mat-raised-button id="mat-cancel-button">Cancel</button>
+		</div>
+	</mat-dialog-actions>
+</div>

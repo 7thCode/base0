@@ -241,6 +241,7 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 	* override
 	* @returns columns
  	*/
+	/*
 	protected widthToColumns(width: number): number {
 		let result: number;
 		if (width < 600) {
@@ -254,6 +255,12 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 		} else {
 			result = 8; // xl,
 		}
+		return result;
+	}
+*/
+	protected widthToColumns(width: number): number {
+		let result: number;
+		result = width / 320;
 		return result;
 	}
 

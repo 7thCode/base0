@@ -92,6 +92,7 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	 *
 	 * @param width
 	 */
+	/*
 	private widthToColumns(width: number): number {
 		let result: number = 4;
 		if (width < 600) {
@@ -105,6 +106,13 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 		} else {
 			result = 8; // xl,
 		}
+		return result;
+	}
+*/
+
+	private widthToColumns(width: number): number {
+		let result: number;
+		result = width / 320;
 		return result;
 	}
 

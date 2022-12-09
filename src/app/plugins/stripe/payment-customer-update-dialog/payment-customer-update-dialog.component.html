@@ -1,0 +1,94 @@
+<div [class.dark-theme]="true" class="fix-action-dialog" style="background: linear-gradient(#242424,#141414);">
+	<mat-dialog-content>
+		<div style="padding:16px; color: #424242;">
+			<div class="card-title"></div>
+		</div>
+			<form #form="ngForm" fxLayout="column" fxLayoutAlign="space-between" novalidate>
+				<div fxLayout="column" style="margin:16px 0 8px 0;font-size: 14px;">
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>名前</mat-label>
+							<input #name_field="ngModel" [(ngModel)]="content.name" autocomplete="off" matInput maxlength="100" name="name" required type="text" style="color: #ffffff">
+							<mat-error *ngIf="name_field.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="name_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>電話番号</mat-label>
+							<input #phone_field="ngModel" [(ngModel)]="content.phone" autocomplete="off" matInput maxlength="100" name="phone" required type="text" style="color: #ffffff">
+							<mat-error *ngIf="phone_field.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="phone_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>メールアドレス</mat-label>
+							<input #email_field="ngModel" [(ngModel)]="content.email" autocomplete="off" email matInput maxlength="255" name="email" required type="email" style="color: #ffffff">
+							<mat-error *ngIf="email_field.errors?.email;">有効なメールアドレスで</mat-error>
+							<mat-error *ngIf="email_field.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="email_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>郵便番号</mat-label>
+							<input #address_postal_code_field="ngModel" (change)="changePostalCode()" [(ngModel)]="content.address.postal_code" autocomplete="off" matInput maxlength="100" name="address_postal_code" required type="text" style="color: #ffffff">
+							<mat-error *ngIf="address_postal_code_field.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="address_postal_code_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>都道府県</mat-label>
+							<input #address_state_field="ngModel" [(ngModel)]="content.address.state" autocomplete="off" matInput maxlength="100" name="address_state" required type="text" style="color: #ffffff">
+							<mat-error *ngIf="address_state_field.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="address_state_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>住所(市区町村)</mat-label>
+							<input #address_city_field="ngModel" [(ngModel)]="content.address.city" autocomplete="off" matInput maxlength="16" name="address_city" required type="text" style="color: #ffffff">
+							<mat-error *ngIf="address_city_field.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="address_city_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>番地</mat-label>
+							<input #address_line1_field="ngModel" [(ngModel)]="content.address.line1" autocomplete="off" matInput maxlength="100" name="address_line1" required type="text" style="color: #ffffff">
+							<mat-error *ngIf="address_line1_field.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="address_line1_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between">
+						<mat-form-field appearance="outline" fxFlex="100%" style="height: 80px;">
+							<mat-label>マンション名</mat-label>
+							<input #address_line2_field="ngModel" [(ngModel)]="content.address.line2" autocomplete="off" matInput maxlength="100" name="address_line2" type="text" style="color: #ffffff">
+							<mat-error *ngIf="address_line2_field.errors?.maxlength">長すぎます</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+			</form>
+	</mat-dialog-content>
+
+	<div class="spacer"></div>
+
+	<mat-dialog-actions fxLayoutAlign="center" fxLayoutAlign.lt-sm="center">
+		<div fxFlex="100%" fxFlex.lt-sm="100%" fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-around" fxLayoutAlign.lt-sm="center">
+			<button (click)="onAccept()" *ngIf="!form.invalid" [disabled]="form.invalid" color="primary" mat-raised-button fxFlex="30%" fxFlex.lt-sm="100%">更新</button>
+			<button *ngIf="form.invalid" mat-raised-button style="background-color:#B0D296; color: #F4F7F1;" fxFlex="30%" fxFlex.lt-sm="100%">更新</button>
+
+            <button (click)="cancel()" [disabled]="progress" color="warn" mat-dialog-close="" mat-stroked-button fxFlex="30%" fxFlex.lt-sm="100%">閉じる</button>
+		</div>
+	</mat-dialog-actions>
+
+</div>

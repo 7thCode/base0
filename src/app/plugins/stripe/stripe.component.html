@@ -1,5 +1,5 @@
 <ng-container>
-	<mat-card style="margin:2rem;">
+	<mat-card style="margin:20px;">
 		<mat-card-header>
 			<div style="font-size: 32px;font-weight: 900;">Stripe</div>
 			<button (click)="updateCustomerDialog()" mat-icon-button>
@@ -14,16 +14,16 @@
 				<button (click)="subscribe()" mat-button>subscribe</button>
 			</div>
 			<div *ngIf="isSubscribe">
-				<button (click)="update_subscription()" mat-button>Update subscribe</button>
-				<button (click)="cancel_subscription()" mat-button>cancel subscribe</button>
+				<button (click)="updateSubscription()" mat-button>Update subscribe</button>
+				<button (click)="cancelSubscription()" mat-button>cancel subscribe</button>
 			</div>
 
 		</mat-card-header>
 		<mat-card-content>
 			<div fxLayout="row" fxLayoutAlign="space-between">
-				<mat-paginator (page)="Page($event)" [length]="count" [pageSize]="size">
-				</mat-paginator>
-				<button (click)="createDialog()" class="fab-center" color="primary" mat-fab>+</button>
+				<!--	<mat-paginator (page)="Page($event)" [length]="count" [pageSize]="size">
+					</mat-paginator> -->
+				<button (click)="createCardDialog()" class="fab-center" color="primary" mat-fab>+</button>
 			</div>
 			<mat-grid-list (window:resize)="onResize($event)" [cols]="breakpoint" rowHeight="3:2">
 				<mat-grid-tile *ngFor="let card of results; let i = index" [colspan]="card.cols" [rowspan]="card.rows">
@@ -53,7 +53,7 @@
 						<button (click)="updateDefault(card.id)" *ngIf="!card.is_default" mat-icon-button>
 							<mat-icon matTooltip="to Default" style="color:#c89e10">star</mat-icon>
 						</button>
-						<button (click)="deleteSource(i)" mat-icon-button>
+						<button (click)="onDeleteSource(card.id)" mat-icon-button>
 							<mat-icon color="warn">delete_sweep</mat-icon>
 						</button>
 					</mat-grid-tile-footer>
