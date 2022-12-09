@@ -25,29 +25,27 @@ import {BaseModule} from "../../platform/base/base.module";
 
 import {StripeComponent} from "./stripe.component";
 import {StripeCardCreateDialogComponent} from "./stripe-card-create-dialog/stripe-card-create-dialog.component";
-import {StripeCustomerUpdateDialogComponent} from "./stripe-customer-update-dialog/stripe-customer-update-dialog.component";
 
 import {SessionService} from "../../platform/base/services/session.service";
 import {StripeService} from "./stripe.service";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {CompleteDialogComponent} from "./complete-dialog/complete-dialog.component";
-import {PaymentCustomerUpdateDialogComponent} from "./payment-customer-update-dialog/payment-customer-update-dialog.component";
-import {PaymentCustomerUpdateDialogDirective} from "./payment-customer-update-dialog/payment-customer-update-dialog.directive";
-import {PaymentWithdrawalDialogComponent} from "./payment-withdrawal-dialog/payment-withdrawal-dialog.component";
-import {PaymentWithdrawalDialogDirective} from "./payment-withdrawal-dialog/payment-withdrawal-dialog.directive";
+import {StripeCustomerUpdateDialogComponent} from "./stripe-customer-update-dialog/stripe-customer-update-dialog.component";
+import {StripeWithdrawalDialogComponent} from "./stripe-withdrawal-dialog/stripe-withdrawal-dialog.component";
+import {StripeCustomerUpdateDialogDirective} from "./stripe-customer-update-dialog/stripe-customer-update-dialog.directive";
+import {StripeWithdrawalDialogDirective} from "./stripe-withdrawal-dialog/stripe-withdrawal-dialog.directive";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
 	declarations: [
 		StripeComponent,
 		StripeCardCreateDialogComponent,
-		StripeCustomerUpdateDialogComponent,
 
 		CompleteDialogComponent,
-		PaymentCustomerUpdateDialogComponent,
-		PaymentCustomerUpdateDialogDirective,
-		PaymentWithdrawalDialogComponent,
-		PaymentWithdrawalDialogDirective
+		StripeCustomerUpdateDialogComponent,
+		StripeCustomerUpdateDialogDirective,
+		StripeWithdrawalDialogComponent,
+		StripeWithdrawalDialogDirective
 	],
 	providers: [
 		SessionService,

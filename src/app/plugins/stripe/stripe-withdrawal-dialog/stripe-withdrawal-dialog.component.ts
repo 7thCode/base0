@@ -17,11 +17,11 @@ import {TranslateService} from "@ngx-translate/core";
  * @since 0.01
  */
 @Component({
-	selector: "aigia-payment-withdrawal-dialog",
-	styleUrls: ["./payment-withdrawal-dialog.component.css"],
-	templateUrl: "./payment-withdrawal-dialog.component.html",
+	selector: "stripe-withdrawal-dialog",
+	styleUrls: ["./stripe-withdrawal-dialog.component.css"],
+	templateUrl: "./stripe-withdrawal-dialog.component.html",
 })
-export class PaymentWithdrawalDialogComponent extends BaseDialogComponent {
+export class StripeWithdrawalDialogComponent extends BaseDialogComponent {
 
 	/**
 	 * @constructor
@@ -32,7 +32,7 @@ export class PaymentWithdrawalDialogComponent extends BaseDialogComponent {
 	constructor(
 		@Inject(MAT_DIALOG_DATA)
 		public data: any,
-		public matDialogRef: MatDialogRef<PaymentWithdrawalDialogComponent>,
+		public matDialogRef: MatDialogRef<StripeWithdrawalDialogComponent>,
 		public translate: TranslateService) {
 		super();
 	}

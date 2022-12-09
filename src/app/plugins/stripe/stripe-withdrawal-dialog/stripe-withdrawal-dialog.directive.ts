@@ -9,15 +9,15 @@
 import {Directive, EventEmitter, HostListener, Input, Output} from "@angular/core";
 import {IErrorObject} from "../../../../../types/platform/universe";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {PaymentWithdrawalDialogComponent} from "./payment-withdrawal-dialog.component";
+import {StripeWithdrawalDialogComponent} from "./stripe-withdrawal-dialog.component";
 import {CompleteDialogComponent} from "../complete-dialog/complete-dialog.component";
 import {StripeService} from "../stripe.service";
 
 @Directive({
-	selector: "[payment-withdrawal-dialog]",
+	selector: "[stripe-withdrawal-dialog]",
 })
 
-export class PaymentWithdrawalDialogDirective {
+export class StripeWithdrawalDialogDirective {
 
 	@Output() public progress = new EventEmitter<any>();
 	@Output() public success = new EventEmitter<any>();
@@ -56,7 +56,7 @@ export class PaymentWithdrawalDialogDirective {
 		this.stripeService.retrieveCustomer((error: IErrorObject, result: any) => {
 			if (!error) {
 				result.sources.updateable.description = "";
-				const dialog: MatDialogRef<any> = this.matDialog.open(PaymentWithdrawalDialogComponent, {
+				const dialog: MatDialogRef<any> = this.matDialog.open(StripeWithdrawalDialogComponent, {
 					width: "50%",
 					minWidth: "320px",
 					height: "fit-content",

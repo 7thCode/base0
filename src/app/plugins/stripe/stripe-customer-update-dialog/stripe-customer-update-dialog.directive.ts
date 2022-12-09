@@ -9,15 +9,15 @@
 import {Directive, EventEmitter, HostListener, Input, Output} from "@angular/core";
 import {ICustomerContent} from "../../../../../types/plugins/universe";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {PaymentCustomerUpdateDialogComponent} from "./payment-customer-update-dialog.component";
+import {StripeCustomerUpdateDialogComponent} from "./stripe-customer-update-dialog.component";
 import {IErrorObject} from "../../../../../types/platform/universe";
 import {StripeService} from "../stripe.service";
 
 @Directive({
-	selector: "[payment-customer-update-dialog]",
+	selector: "[stripe-customer-update-dialog]",
 })
 
-export class PaymentCustomerUpdateDialogDirective {
+export class StripeCustomerUpdateDialogDirective {
 
 	@Input() public user: {username:string, user_id:string};
 	@Output() public progress = new EventEmitter<any>();
@@ -82,7 +82,7 @@ export class PaymentCustomerUpdateDialogDirective {
 			}
 		}
 
-		const dialog: MatDialogRef<any> = this.matDialog.open(PaymentCustomerUpdateDialogComponent, {
+		const dialog: MatDialogRef<any> = this.matDialog.open(StripeCustomerUpdateDialogComponent, {
 			minWidth: "320px",
 			maxWidth: "620px",
 			height: "fit-content",

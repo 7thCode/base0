@@ -13,8 +13,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 import {GridViewComponent} from "../../platform/base/components/gridview.component";
-import {StripeCustomerUpdateDialogComponent} from "./stripe-customer-update-dialog/stripe-customer-update-dialog.component";
-import {StripeCardCreateDialogComponent} from "./stripe-card-create-dialog/stripe-card-create-dialog.component";
+
 
 import {SessionService} from "../../platform/base/services/session.service";
 import {StripeService} from "./stripe.service";
@@ -25,9 +24,10 @@ import {YesNoDialogComponent} from "../../platform/base/components/yes-no-dialog
 import {Spinner} from "../../platform/base/library/spinner";
 import {Errors} from "../../platform/base/library/errors";
 import {ICustomerContent} from "../../../../types/plugins/universe";
-import {PaymentWithdrawalDialogComponent} from "./payment-withdrawal-dialog/payment-withdrawal-dialog.component";
+import {StripeWithdrawalDialogComponent} from "./stripe-withdrawal-dialog/stripe-withdrawal-dialog.component";
 import {CompleteDialogComponent} from "./complete-dialog/complete-dialog.component";
-import {PaymentCustomerUpdateDialogComponent} from "./payment-customer-update-dialog/payment-customer-update-dialog.component";
+import {StripeCardCreateDialogComponent} from "./stripe-card-create-dialog/stripe-card-create-dialog.component";
+import {StripeCustomerUpdateDialogComponent} from "./stripe-customer-update-dialog/stripe-customer-update-dialog.component";
 
 /**
  * Stripe
@@ -481,7 +481,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 			}
 		}
 
-		const dialog: MatDialogRef<any> = this.matDialog.open(PaymentCustomerUpdateDialogComponent, {
+		const dialog: MatDialogRef<any> = this.matDialog.open(StripeCustomerUpdateDialogComponent, {
 			minWidth: "320px",
 			maxWidth: "620px",
 			height: "fit-content",
@@ -651,7 +651,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 		this.stripeService.retrieveCustomer((error: IErrorObject, result: any) => {
 			if (!error) {
 				result.sources.updateable.description = "";
-				const dialog: MatDialogRef<any> = this.matDialog.open(PaymentWithdrawalDialogComponent, {
+				const dialog: MatDialogRef<any> = this.matDialog.open(StripeWithdrawalDialogComponent, {
 					width: "50%",
 					minWidth: "320px",
 					height: "fit-content",
