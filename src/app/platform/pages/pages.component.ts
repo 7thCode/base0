@@ -19,7 +19,6 @@ import {SessionService} from "../base/services/session.service";
 import {PagesService} from "./pages.service";
 import {Overlay} from "@angular/cdk/overlay";
 import {YesNoDialogComponent} from "../base/components/yes-no-dialog/yes-no-dialog.component";
-//import {Spinner} from "../base/library/spinner";
 import {Errors} from "../base/library/errors";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
@@ -115,6 +114,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 	public ngOnInit(): void {
 		this.sort = {};
 		super.ngOnInit();
+		this.InitProgress();
 		this.route.queryParams.subscribe(params => {
 			this.params = params;
 		});

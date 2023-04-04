@@ -1,4 +1,4 @@
-<ng-container>
+<ng-container class="spinner-container">
 	<mat-card style="margin:2rem;">
 		<mat-card-header>
 			<div style="font-size: 32px;font-weight: 900;">Pages</div>
@@ -38,4 +38,5 @@
 			</mat-grid-list>
 		</mat-card-content>
 	</mat-card>
+	<mat-spinner *ngIf="isProgress" class="spinner"></mat-spinner>
 </ng-container>

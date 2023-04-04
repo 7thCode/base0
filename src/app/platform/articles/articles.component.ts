@@ -113,6 +113,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 	*
 	*/
 	public ngOnInit(): void {
+		this.InitProgress();
 		this.sort = {};
 		super.ngOnInit();
 

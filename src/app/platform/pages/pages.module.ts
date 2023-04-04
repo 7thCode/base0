@@ -32,6 +32,7 @@ import {PagesComponent} from "./pages.component";
 
 import {SessionService} from "../base/services/session.service";
 import {PagesService} from "./pages.service";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
 	declarations: [
@@ -64,6 +65,7 @@ import {PagesService} from "./pages.service";
 		PageEditModule,
 
 		BaseModule,
+		MatProgressSpinnerModule,
 	],
 	exports: [
 		PagesComponent,

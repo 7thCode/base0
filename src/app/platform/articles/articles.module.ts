@@ -28,6 +28,7 @@ import {ArticlesComponent} from "./articles.component";
 
 import {SessionService} from "../base/services/session.service";
 import {ArticlesService} from "./articles.service";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
 	declarations: [
@@ -54,6 +55,7 @@ import {ArticlesService} from "./articles.service";
 		MatGridListModule,
 
 		BaseModule,
+		MatProgressSpinnerModule,
 	],
 	exports: [
 		ArticlesComponent,

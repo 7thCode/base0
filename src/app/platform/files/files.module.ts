@@ -25,6 +25,7 @@ import {ImageModule} from "../image/image.module";
 import {FilesComponent} from "./files.component";
 
 import {SessionService} from "../base/services/session.service";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import {SessionService} from "../base/services/session.service";
 
 		BaseModule,
 		ImageModule,
+		MatProgressSpinnerModule,
 	],
 	exports: [
 		FilesComponent,

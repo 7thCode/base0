@@ -23,6 +23,7 @@ import {SessionService} from "../base/services/session.service";
 import {PersonalComponent} from "./personal.component";
 import {AccountsService} from "../accounts/accounts.service";
 import {MatListModule} from "@angular/material/list";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
 	declarations: [
@@ -47,6 +48,7 @@ import {MatListModule} from "@angular/material/list";
 		PageEditModule,
 
 		BaseModule,
+		MatProgressSpinnerModule,
 	]
 })
 

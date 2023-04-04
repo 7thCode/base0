@@ -11,20 +11,19 @@ import {RouterModule, Routes} from "@angular/router";
 import {ErrorComponent} from "./platform/error/error.component";
 
 const routes: Routes = [
-	{
-		path: '',
-		loadChildren: () => import('./blog/blog.module').then((m) => {
-			return m.BlogModule;
-		})
-	},
+
 	{
 		path: 'platform',
 		loadChildren: () => import('./platform/platform.module').then((m) => {
 			return m.PlatformModule;
 		})
 	},
-
-	{path: '**', component: ErrorComponent},
+	{
+		path: '**',
+		loadChildren: () => import('./blog/blog.module').then((m) => {
+			return m.BlogModule;
+		})
+	},
 ];
 
 @NgModule({

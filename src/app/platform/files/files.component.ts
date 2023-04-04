@@ -177,6 +177,7 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	 */
 	public ngOnInit(): void {
 		super.ngOnInit();
+		this.InitProgress();
 // 		this.paginator.pageIndex = 0;
 		this.page = 0;
 		this.query = {};

@@ -16,7 +16,6 @@ import {Overlay} from "@angular/cdk/overlay";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
-//import {Spinner} from "../base/library/spinner";
 
 import {SessionableComponent} from "../base/components/sessionable.component";
 import {AccountDialogComponent} from "./account-dialog/account-dialog.component";
@@ -268,7 +267,7 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 	 *
 	 */
 	public ngOnInit(): void {
-		this.Progress(false);
+		this.InitProgress();
 // 		this.paginator.pageIndex = 0;
 		this.page = 0;
 		this.query = {};

@@ -37,3 +37,13 @@
 mat-paginator {
 	background-color: rgba(255, 255, 255, 0);
 }
+
+.spinner-container {
+	position:relative;
+}
+
+.spinner {
+	position:absolute;
+	top:calc(50vh - 50px);
+	left:calc(50% - 50px);
+}

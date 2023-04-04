@@ -7,7 +7,7 @@
 "use strict";
 
 import {AuthLevel, Callback, IErrorObject, IQueryOption} from "../../../../types/platform/universe";
-import {IAccountContent, IAccountModel, IAccountRequest, IJSONResponse, IQueryParam, IQueryRequest, IUsernameParam} from "../../../../types/platform/server";
+import {IAccountContent, IAccountModel, IAccountRequest, IJSONResponse, IQueryParam, IQueryRequest, IUserIDParam, IUsernameParam} from "../../../../types/platform/server";
 import * as mongoose from "mongoose";
 import {Errors} from "../../base/library/errors";
 
@@ -287,11 +287,11 @@ export class Accounts extends Wrapper {
 	public get(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00300"), request.user, () => {
-				const target: IUsernameParam = request.params;
+				const target: IUserIDParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00301"), operator.login, () => {
-					if (Accounts.own_by_name(operator, target.username)) {
-						LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+					if (Accounts.own_by_id(operator, target.user_id)) {
+						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
 							this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40002"), account, () => {
 								this.SendSuccess(response, account.public());
 							});
@@ -317,7 +317,7 @@ export class Accounts extends Wrapper {
 	public put(request: IAccountRequest<IAccountContent>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00304"), request.user, () => {
-				const target: IUsernameParam = request.params;
+				const target: IUserIDParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				const type: string = request.body.type;
 				const content: IAccountContent = request.body.content;
@@ -337,8 +337,8 @@ export class Accounts extends Wrapper {
 					}
 
 					this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00306"), operator.login, () => {
-						if (Accounts.own_by_name(operator, target.username)) {
-							LocalAccount.set_by_name(operator, target.username, update).then((account: IAccountModel): void => {
+						if (Accounts.own_by_id(operator, target.user_id)) {
+							LocalAccount.set_by_id(operator, target.user_id, update).then((account: IAccountModel): void => {
 								this.SendSuccess(response, account.public());
 							}).catch((error: any) => {
 								this.SendError(response, Errors.Exception(error, "S10037"));
@@ -401,11 +401,11 @@ export class Accounts extends Wrapper {
 	public get_is_secret(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00312"), request.user, () => {
-				const target: IUsernameParam = request.params;
+				const target: IUserIDParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00313"), operator.login, () => {
-					if (Accounts.own_by_name(operator, target.username)) {
-						LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+					if (Accounts.own_by_id(operator, target.user_id)) {
+						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
 							this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40003"), account, () => {
 								const is_2fa: boolean = (account.secret !== "");
 								this.SendSuccess(response, {is_2fa});
@@ -429,6 +429,7 @@ export class Accounts extends Wrapper {
 	 * @param response
 	 * @returns none
 	 */
+
 	public post_set_secret(request: IAccountRequest<any>, response: IJSONResponse): void {
 
 		const usernameToMail = (username: string): string => {
@@ -437,16 +438,16 @@ export class Accounts extends Wrapper {
 
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00316"), request.user, () => {
-				const target: IUsernameParam = request.params;
+				const target: IUserIDParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00317"), operator.login, () => {
-					if (Accounts.own_by_name(operator, target.username)) {
-						LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+					if (Accounts.own_by_id(operator, target.user_id)) {
+						LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
 							this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40004"), account, () => {
 								this.ifExist(response, Errors.generalError(-1, "Already Multi-factor authentication.", "S00319"), !Boolean(account.secret), () => {
 									const secret: any = SpeakEasy.generateSecret({
 										length: 20,
-										name: target.username,
+										name: account.username,
 										issuer: this.systemsConfig.ua,
 									});
 									const update: object = {
@@ -455,11 +456,11 @@ export class Accounts extends Wrapper {
 
 									const qr_url: string = SpeakEasy.otpauthURL({ // data url encode of secret QR code.
 										secret: secret.ascii,
-										label: encodeURIComponent(usernameToMail(target.username)),
+										label: encodeURIComponent(usernameToMail(account.username)),
 										issuer: this.systemsConfig.ua,
 									});
 
-									LocalAccount.set_by_name(operator, target.username, update).then((account: object): void => {
+									LocalAccount.set_by_id(operator, target.user_id, update).then((account: object): void => {
 										QRCode.toDataURL(qr_url, (error: IErrorObject, qrcode: any): void => {
 											this.ifSuccess(response, error, (): void => {
 												this.SendSuccess(response, {qrcode});
@@ -492,16 +493,16 @@ export class Accounts extends Wrapper {
 	public post_reset_secret(request: IAccountRequest<any>, response: IJSONResponse): void {
 		try {
 			this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00321"), request.user, () => {
-				const target: IUsernameParam = request.params;
+				const target: IUserIDParam = request.params;
 				const operator: IAccountModel = this.Transform(request.user);
 				this.ifExist(response, Errors.userError(1, "ログインしていません.", "S00322"), operator.login, () => {
-					LocalAccount.default_find_by_name(operator, target.username).then((account: IAccountModel): void => {
+					LocalAccount.default_find_by_id(operator, target.user_id).then((account: IAccountModel): void => {
 						this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40012"), account, () => {
-							if (Accounts.own_by_name(operator, target.username)) {
+							if (Accounts.own_by_id(operator, target.user_id)) {
 								const update: object = {
 									secret: "",
 								};
-								LocalAccount.set_by_name(operator, target.username, update).then((account: IAccountModel): void => {
+								LocalAccount.set_by_id(operator, target.user_id, update).then((account: IAccountModel): void => {
 									this.ifExist(response, Errors.generalError(10, "一度ログアウトして、ログインし直してください。", "S40013"), account, () => {
 										this.SendSuccess(response, {});
 									});

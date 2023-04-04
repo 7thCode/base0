@@ -24,7 +24,6 @@ import {AccountsService} from "./accounts/accounts.service";
 import {SessionService} from "./base/services/session.service";
 
 import {fadeAnimation} from "./base/library/fade-animation";
-// import {Spinner} from "./base/library/spinner";
 
 /**
  * プラットフォーム
@@ -197,7 +196,7 @@ export class PlatformComponent extends ResponsiveComponent implements OnInit, On
 	 */
 	public ngOnInit(): void {
 		super.ngOnInit();
-		this.Progress(true);
+		this.InitProgress();
 		this.widthValue = 200;
 		this.angular = VERSION.full;
 		this.dark = (localStorage.getItem("darkmode") === "true");
