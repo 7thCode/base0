@@ -100,14 +100,14 @@ router.post('/stripe/subscribe', [gatekeeper.default, gatekeeper.authenticate,
 router.get('/stripe/subscribe', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe._has_subscribe(request, response);
+			stripe.has_subscribe(request, response);
 		});
 	}])
 
 router.put('/stripe/subscribe', [gatekeeper.default, gatekeeper.authenticate,
 	(request: object, response: object): void => {
 		gatekeeper.catch(response, () => {
-			stripe._update_subscribe(request, response);
+			stripe.update_subscribe(request, response);
 		});
 	}])
 

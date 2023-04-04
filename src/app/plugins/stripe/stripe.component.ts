@@ -518,17 +518,15 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 
 	/**
 	 * アップデートダイアログ
-	 * @param id ターゲット
 	 */
 	public updateCustomerDialog(): void {
-
 		this.stripeService.retrieveCustomer((error: IErrorObject, result: any) => {
 			if (!error) {
 
 				const dialog: MatDialogRef<any> = this.matDialog.open(StripeCustomerUpdateDialogComponent, {
-					width: "50%",
 					minWidth: "320px",
 					height: "fit-content",
+					panelClass: "dark-card",
 					data: {content: result.sources.updateable},
 					disableClose: true,
 				});
@@ -536,12 +534,39 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 				dialog.beforeClosed().subscribe((result: any): void => {
 					if (result) { // if not cancel then
 						this.Progress(true);
-						this.stripeService.updateCustomer(result.content, (error: IErrorObject, result: any) => {
+						this.stripeService.updateCustomer(result, (error: IErrorObject, result: any) => {
 							if (!error) {
 								this.draw((error: IErrorObject, cards: object[] | null): void => {
+									if (!error) {
+										this.changeDetectorRef.detectChanges();
+										this.Progress(false);
+										const complete: MatDialogRef<any> = this.matDialog.open(CompleteDialogComponent, {
+											width: "50%",
+											minWidth: "320px",
+											height: "fit-content",
+											panelClass: "dark-card",
+											data: {content: {title: "", message: "更新しました。"}},
+											disableClose: true,
+										});
+
+										complete.beforeClosed().subscribe((result: any): void => {
+											this.changeDetectorRef.detectChanges();
+											location.reload();
+										});
+
+										complete.afterClosed().subscribe((result: any): void => {
+											this.Complete("", result);
+										});
+
+									} else {
+										this.Progress(false);
+										this.errorBar(error);
+									}
 								});
+							} else {
+								this.Progress(false);
+								this.errorBar(error);
 							}
-							this.Progress(false);
 						})
 					}
 				});
@@ -676,8 +701,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 											minWidth: "320px",
 											height: "fit-content",
 											panelClass: "dark-card",
-											// data: {content: result.sources.updateable},
-											data: {content: {title: "", message: "退会完了しました"}},
+											data: {content: {title: "", message: "OK"}},
 
 											disableClose: true,
 										});
