@@ -22,6 +22,8 @@ import {Errors} from "../library/errors";
 @Directive()
 export abstract class SessionableComponent {
 
+	private progress: number = 0;
+
 	/**
 	 *  @returns 現行のセッション。
 	 */
@@ -32,17 +34,9 @@ export abstract class SessionableComponent {
 		return this.privateCurrentSession;
 	}
 
-// 	public set currentSession(value: any) {
-// 		this.privateCurrentSession = value;
-// 	}
-
 	public get currentSessionData(): any {
 		return this.privateCurrentSession.data;
 	}
-
-// 	public set currentSessionData(value: any) {
-// 		this.privateCurrentSession.data = value;
-// 	}
 
 	/**
 	 * authLevel
@@ -70,6 +64,10 @@ export abstract class SessionableComponent {
 		return result;
 	}
 
+	protected get isProgress(): boolean {
+		return this.progress != 0;
+	}
+
 	/**
 	 * プロバイダ取得
 	 * @returns アカウントのロール
@@ -84,11 +82,6 @@ export abstract class SessionableComponent {
 		}
 		return result;
 	}
-
-	/**
-	 *
-	 */
-	// public progress: boolean = false;
 
 	/**
 	 *
@@ -125,6 +118,18 @@ export abstract class SessionableComponent {
 			enabled: true,
 			login: false
 		};
+	}
+
+	protected InitProgress(): void {
+		this.progress = 0;
+	}
+
+	protected Progress(_in: boolean): void {
+		if (_in) {
+			this.progress += 1;
+		} else {
+			this.progress -= 1;
+		}
 	}
 
 	/**

@@ -19,7 +19,7 @@ import {SessionService} from "../base/services/session.service";
 import {PagesService} from "./pages.service";
 import {Overlay} from "@angular/cdk/overlay";
 import {YesNoDialogComponent} from "../base/components/yes-no-dialog/yes-no-dialog.component";
-import {Spinner} from "../base/library/spinner";
+//import {Spinner} from "../base/library/spinner";
 import {Errors} from "../base/library/errors";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
@@ -38,14 +38,14 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 
 // 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
-	public get isProgress(): boolean {
-		return this.spinner.progress;
-	}
+//	public get isProgress(): boolean {
+//		return this.spinner.progress;
+//	}
 
 	public path = "";
 	public params: any = {};
 
-	protected spinner: Spinner;
+//	protected spinner: Spinner;
 
 	/**
 	 * @constructor
@@ -66,7 +66,7 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 	) {
 		super(session, matDialog);
 		this.service = pageSerrvice;
-		this.spinner = new Spinner(overlay);
+//		this.spinner = new Spinner(overlay);
 	}
 
 	/**
@@ -98,9 +98,9 @@ export class PagesComponent extends GridViewComponent implements OnInit {
 		}
 	}
 
-	protected Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	protected Progress(value: boolean): void {
+//		this.spinner.Progress(value);
+//	}
 
 	/**
 	 * リストビューデコレータ

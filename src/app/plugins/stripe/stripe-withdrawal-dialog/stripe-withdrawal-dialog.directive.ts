@@ -10,7 +10,6 @@ import {Directive, EventEmitter, HostListener, Input, Output} from "@angular/cor
 import {IErrorObject} from "../../../../../types/platform/universe";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {StripeWithdrawalDialogComponent} from "./stripe-withdrawal-dialog.component";
-import {CompleteDialogComponent} from "../complete-dialog/complete-dialog.component";
 import {StripeService} from "../stripe.service";
 
 @Directive({

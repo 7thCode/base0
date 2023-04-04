@@ -19,7 +19,7 @@ import {SessionService} from "../base/services/session.service";
 import {ArticlesService} from "./articles.service";
 import {Overlay} from "@angular/cdk/overlay";
 import {YesNoDialogComponent} from "../base/components/yes-no-dialog/yes-no-dialog.component";
-import {Spinner} from "../base/library/spinner";
+//import {Spinner} from "../base/library/spinner";
 import {ActivatedRoute, Router} from "@angular/router";
 
 /**
@@ -34,13 +34,13 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class ArticlesComponent extends GridViewComponent implements OnInit {
 
-	public get isProgress(): boolean {
-		return this.spinner.progress;
-	}
+	//public get isProgress(): boolean {
+	//	return this.spinner.progress;
+	//}
 
 	public params: any = {};
 
-	private spinner: Spinner;
+	//private spinner: Spinner;
 
 	/**
 	 *
@@ -63,7 +63,7 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 	) {
 		super(session, matDialog);
 		this.service = articleService;
-		this.spinner = new Spinner(overlay);
+	//	this.spinner = new Spinner(overlay);
 	}
 
 	/**
@@ -95,9 +95,9 @@ export class ArticlesComponent extends GridViewComponent implements OnInit {
 		}
 	}
 
-	protected Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	protected Progress(value: boolean): void {
+//		this.spinner.Progress(value);
+//	}
 
 	/**
 	 * リストビューデコレータ

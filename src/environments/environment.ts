@@ -15,7 +15,7 @@ export const environment: any = {
 
 	meta: {
 		top: {
-			title: "TITLE",
+			title: "VOXI Labo",
 			description: [
 				{name: 'description', content: "DESC"},
 				{name: 'keywords', content: "key,words"},

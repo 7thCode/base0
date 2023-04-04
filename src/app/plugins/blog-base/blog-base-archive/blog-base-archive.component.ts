@@ -16,7 +16,7 @@ import {DomSanitizer, Meta, Title} from "@angular/platform-browser";
 import {Overlay} from "@angular/cdk/overlay";
 import {MatDialog} from "@angular/material/dialog";
 import {UpdatableComponent} from "../../../platform/base/components/updatable.component";
-import {Spinner} from "../../../platform/base/library/spinner";
+// import {Spinner} from "../../../platform/base/library/spinner";
 import {BlogBasePageComponent} from "../blog-base-page/blog-base-page.component";
 
 @Directive()

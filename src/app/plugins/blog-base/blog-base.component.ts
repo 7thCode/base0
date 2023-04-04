@@ -20,7 +20,7 @@ import {ResponsiveComponent} from "../../platform/base/components/responsive.com
 
 import {SessionService} from "../../platform/base/services/session.service";
 
-import {Spinner} from "../../platform/base/library/spinner";
+// import {Spinner} from "../../platform/base/library/spinner";
 
 /**
  * プラットフォーム
@@ -37,7 +37,7 @@ export class BlogBaseComponent extends ResponsiveComponent implements OnInit, On
 	public device: string;
 	public angular: string;
 
-	protected spinner: Spinner;
+//	protected spinner: Spinner;
 
 	@ViewChild("sidenav") protected sidenav: MatSidenav;
 
@@ -64,12 +64,12 @@ export class BlogBaseComponent extends ResponsiveComponent implements OnInit, On
 		this.widthValue = 0;
 		this.date = new Date();
 		this.device = "";
-		this.spinner = new Spinner(overlay);
+	//	this.spinner = new Spinner(overlay);
 	}
 
-	private Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+	//private Progress(value: boolean): void {
+	//	this.spinner.Progress(value);
+	//}
 
 	/*
 	*

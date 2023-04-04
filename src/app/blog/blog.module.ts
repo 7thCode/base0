@@ -18,7 +18,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {MatListModule} from "@angular/material/list";
-import {MatProgressSpinnerModule, MatSpinner} from "@angular/material/progress-spinner";
+// import {MatProgressSpinnerModule, MatSpinner} from "@angular/material/progress-spinner";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatMenuModule} from "@angular/material/menu";
@@ -45,6 +45,7 @@ import {BlogDescriptionModule} from "./description/description.module";
 import {BlogComponent} from "./blog.component";
 import {ListComponent} from './list/list.component';
 import {BlogArchiveModule} from "./archive/archive.module";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
 	declarations: [
@@ -69,11 +70,11 @@ import {BlogArchiveModule} from "./archive/archive.module";
 		MatSliderModule,
 		MatMenuModule,
 		MatButtonToggleModule,
-		MatProgressSpinnerModule,
+		//	MatProgressSpinnerModule,
 		MatFormFieldModule,
 		MatInputModule,
 
-	// 	AceEditorModule,
+		// 	AceEditorModule,
 
 		ErrorModule,
 		AuthModule,
@@ -86,10 +87,11 @@ import {BlogArchiveModule} from "./archive/archive.module";
 		BlogArchiveModule,
 
 		BasePipeModule,
+		MatProgressSpinnerModule,
 	],
 	providers: [],
 	bootstrap: [BlogComponent],
-	entryComponents: [MatSpinner],
+	entryComponents: [],
 })
 
 export class BlogModule {

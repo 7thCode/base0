@@ -19,7 +19,7 @@ import {UploadableComponent} from "../../platform/base/components/uploadable.com
 import {SessionService} from "../../platform/base/services/session.service";
 import {YesNoDialogComponent} from "../../platform/base/components/yes-no-dialog/yes-no-dialog.component";
 
-import {Spinner} from "../../platform/base/library/spinner";
+// import {Spinner} from "../../platform/base/library/spinner";
 import {ResizeDialogComponent} from "../../platform/image/resize-dialog/resize-dialog.component";
 import {NativeFilesService} from "./native-files.service";
 import {Errors} from "../../platform/base/library/errors";
@@ -39,9 +39,9 @@ export class NativeFilesComponent extends UploadableComponent implements OnInit 
 
 // 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
-	public get isProgress(): boolean {
-		return this.spinner.progress;
-	}
+//	public get isProgress(): boolean {
+//		return this.spinner.progress;
+//	}
 
 	@ViewChild("fileInput") public fileInput: any;
 
@@ -56,7 +56,7 @@ export class NativeFilesComponent extends UploadableComponent implements OnInit 
 	protected query: object = {};
 	protected page: number = 0;
 
-	private spinner: Spinner;
+//	private spinner: Spinner;
 
 	/**
 	 *
@@ -75,7 +75,7 @@ export class NativeFilesComponent extends UploadableComponent implements OnInit 
 	) {
 		super(session);
 		this.filesService = new NativeFilesService(http);
-		this.spinner = new Spinner(overlay);
+//		this.spinner = new Spinner(overlay);
 		this.resizeThreshold = {width: 1000, height: 1000};
 	}
 
@@ -136,7 +136,7 @@ export class NativeFilesComponent extends UploadableComponent implements OnInit 
 	 *
 	 */
 	protected Progress(value: boolean): void {
-		this.spinner.Progress(value);
+//		this.spinner.Progress(value);
 	}
 
 	/**

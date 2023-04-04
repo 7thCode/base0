@@ -13,7 +13,7 @@ import {AccountsService} from "../accounts/accounts.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Callback, IErrorObject} from "../../../../types/platform/universe";
-import {Spinner} from "../base/library/spinner";
+//import {Spinner} from "../base/library/spinner";
 import {Overlay} from "@angular/cdk/overlay";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -42,7 +42,7 @@ export class PersonalComponent extends SessionableComponent implements OnInit {
 	@Input() public image: string;
 	@Input() public mails: string[];
 
-	private spinner: Spinner;
+	//private spinner: Spinner;
 
 	/**
 	 *
@@ -65,15 +65,15 @@ export class PersonalComponent extends SessionableComponent implements OnInit {
 	) {
 		super(session);
 		this.mails = [];
-		this.spinner = new Spinner(overlay);
+	//	this.spinner = new Spinner(overlay);
 	}
 
 	/**
 	 * @param value
 	 */
-	private Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	private Progress(value: boolean): void {
+	//	this.spinner.Progress(value);
+//	}
 
 	/**
 	 * アカウント参照

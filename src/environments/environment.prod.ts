@@ -1,7 +1,7 @@
 export const environment = {
 	production: true,
 	endPoint: "",
-	webSocket: "wss://seventh-code.com/ws",
+	webSocket: "wss://voxilabo.com/ws",
 	headers: {
 		"Accept": "application/json; charset=utf-8",
 		"Content-Type": "application/json; charset=utf-8",
@@ -11,7 +11,7 @@ export const environment = {
 
 	meta: {
 		top: {
-			title: "TITLE",
+			title: "VOXI Labo",
 			description: [
 				{name: 'description', content: "DESC"},
 				{name: 'keywords', content: "key,words"},

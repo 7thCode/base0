@@ -20,7 +20,7 @@ import {UploadableComponent} from "../base/components/uploadable.component";
 import {SessionService} from "../base/services/session.service";
 import {YesNoDialogComponent} from "../base/components/yes-no-dialog/yes-no-dialog.component";
 
-import {Spinner} from "../base/library/spinner";
+//import {Spinner} from "../base/library/spinner";
 import {ResizeDialogComponent} from "../image/resize-dialog/resize-dialog.component";
 import {FilesService} from "./files.service";
 import {Errors} from "../base/library/errors";
@@ -42,9 +42,9 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 
 // 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
-	public get isProgress(): boolean {
-		return this.spinner.progress;
-	}
+//	public get isProgress(): boolean {
+//		return this.spinner.progress;
+//	}
 
 	@ViewChild("fileInput") public fileInput: any;
 
@@ -61,7 +61,7 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	protected query: object = {};
 	protected page: number = 0;
 
-	private spinner: Spinner;
+//	private spinner: Spinner;
 
 	/**
 	 *
@@ -84,7 +84,7 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	) {
 		super(session);
 		this.filesService = new FilesService(http);
-		this.spinner = new Spinner(overlay);
+//		this.spinner = new Spinner(overlay);
 		this.resizeThreshold = {width: 1000, height: 1000};
 	}
 
@@ -148,9 +148,9 @@ export class FilesComponent extends UploadableComponent implements OnInit {
 	/**
 	 *
 	 */
-	protected Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	protected Progress(value: boolean): void {
+//		this.spinner.Progress(value);
+//	}
 
 	/**
 	 *

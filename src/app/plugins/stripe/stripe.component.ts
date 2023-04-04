@@ -21,14 +21,14 @@ import {StripeService} from "./stripe.service";
 import * as _ from 'lodash';
 import {Overlay} from "@angular/cdk/overlay";
 import {YesNoDialogComponent} from "../../platform/base/components/yes-no-dialog/yes-no-dialog.component";
-import {Spinner} from "../../platform/base/library/spinner";
+//import {Spinner} from "../../platform/base/library/spinner";
 import {Errors} from "../../platform/base/library/errors";
 import {ICustomerContent} from "../../../../types/plugins/universe";
 import {StripeWithdrawalDialogComponent} from "./stripe-withdrawal-dialog/stripe-withdrawal-dialog.component";
 import {CompleteDialogComponent} from "./complete-dialog/complete-dialog.component";
 import {StripeCardCreateDialogComponent} from "./stripe-card-create-dialog/stripe-card-create-dialog.component";
 import {StripeCustomerUpdateDialogComponent} from "./stripe-customer-update-dialog/stripe-customer-update-dialog.component";
-
+import {TranslateService} from "@ngx-translate/core";
 /**
  * Stripe
  *
@@ -45,7 +45,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 	public hasPaymentMethod: boolean;
 	public isCustomer: boolean;
 
-	private spinner: Spinner;
+	//private spinner: Spinner;
 
 	/**
 	 * @param interactionService
@@ -62,10 +62,11 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 		protected matDialog: MatDialog,
 		private stripeService: StripeService,
 		protected snackbar: MatSnackBar,
-		public changeDetectorRef: ChangeDetectorRef
+		public changeDetectorRef: ChangeDetectorRef,
+		public translate: TranslateService
 	) {
 		super(session, matDialog);
-		this.spinner = new Spinner(overlay);
+	//	this.spinner = new Spinner(overlay);
 	}
 
 	/**
@@ -119,9 +120,9 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 
 	/**
 	 */
-	protected Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+	//protected Progress(value: boolean): void {
+	//	this.spinner.Progress(value);
+	//}
 
 	/*
 	* */
@@ -428,7 +429,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 					} else {
 						switch (error.code) {
 							case 1:
-								this.errorBar(Errors.generalError(1, "住所登録が必要です。", "A00001"));
+								this.errorBar(Errors.generalError(10, "住所登録が必要です。", "A00001"));
 								break;
 							default:
 								this.errorBar(error);
@@ -486,7 +487,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 			maxWidth: "620px",
 			height: "fit-content",
 			panelClass: "dark-card",
-			data: {content: create, spinner: this.spinner},
+			data: {content: create},
 			disableClose: true,
 		});
 
@@ -545,7 +546,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 											minWidth: "320px",
 											height: "fit-content",
 											panelClass: "dark-card",
-											data: {content: {title: "", message: "更新しました。"}},
+											data: {content: {title: "", message: this.translate.instant('更新しました。')}},
 											disableClose: true,
 										});
 
@@ -642,7 +643,7 @@ export class StripeComponent extends GridViewComponent implements OnInit {
 							minWidth: "320px",
 							height: "fit-content",
 							panelClass: "dark-card",
-							data: {content: {title: "", message: "入会完了しました"}},
+							data: {content: {title: "", message: this.translate.instant('入会完了しました')}},
 							disableClose: true,
 						});
 

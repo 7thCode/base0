@@ -9,7 +9,7 @@ import {SessionService} from "../../../platform/base/services/session.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {UpdatableComponent} from "../../../platform/base/components/updatable.component";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {Spinner} from "../../../platform/base/library/spinner";
+// import {Spinner} from "../../../platform/base/library/spinner";
 import {Overlay} from "@angular/cdk/overlay";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {IErrorObject} from "../../../../../types/platform/universe";
@@ -22,15 +22,15 @@ import {ActivatedRoute, Router} from "@angular/router";
 @Directive()
 export abstract class BlogBasePageComponent extends UpdatableComponent implements OnInit {
 
-	public get isProgress(): boolean {
-		return this.spinner.progress;
-	}
+//	public get isProgress(): boolean {
+//		return this.spinner.progress;
+//	}
 
 	public isHandset: any; // 360 – 399
 	public isTablet: any; // 600 – 719
 	public isDesktop: any;
 
-	protected spinner: Spinner;
+//	protected spinner: Spinner;
 
 	public constructor(
 		protected session: SessionService,
@@ -48,7 +48,7 @@ export abstract class BlogBasePageComponent extends UpdatableComponent implement
 	) {
 		super(session, matDialog);
 		this.service = blogsService;
-		this.spinner = new Spinner(overlay);
+//		this.spinner = new Spinner(overlay);
 	}
 
 	/**
@@ -76,9 +76,9 @@ export abstract class BlogBasePageComponent extends UpdatableComponent implement
 		}
 	}
 
-	protected Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	protected Progress(value: boolean): void {
+//		this.spinner.Progress(value);
+//	}
 
 	public imagePath(images: any[], index: number): string {
 		let path = "";

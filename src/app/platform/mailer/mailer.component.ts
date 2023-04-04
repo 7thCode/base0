@@ -20,7 +20,7 @@ import {ReplyDialogComponent} from "./reply-dialog/reply-dialog.component";
 import {Overlay} from "@angular/cdk/overlay";
 import {SendDialogComponent} from "./send-dialog/send-dialog.component";
 import {YesNoDialogComponent} from "../base/components/yes-no-dialog/yes-no-dialog.component";
-import {Spinner} from "../base/library/spinner";
+//import {Spinner} from "../base/library/spinner";
 import {Errors} from "../base/library/errors";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -39,9 +39,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class MailerComponent extends SessionableComponent implements OnInit {
 
-	public get isProgress(): boolean {
-		return this.spinner.progress;
-	}
+//	public get isProgress(): boolean {
+//		return this.spinner.progress;
+//	}
 
 	public size: number = 20;
 	public count: number = 0;
@@ -56,7 +56,7 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 
 	private mailbox: string = "INBOX";
 
-	private spinner: Spinner;
+//	private spinner: Spinner;
 
 	/**
 	 *
@@ -80,14 +80,14 @@ export class MailerComponent extends SessionableComponent implements OnInit {
 		protected route: ActivatedRoute,
 	) {
 		super(session);
-		this.spinner = new Spinner(overlay);
+//		this.spinner = new Spinner(overlay);
 	}
 
 	/**
 	 */
-	private Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	private Progress(value: boolean): void {
+//		this.spinner.Progress(value);
+//	}
 
 	/**
 	 */

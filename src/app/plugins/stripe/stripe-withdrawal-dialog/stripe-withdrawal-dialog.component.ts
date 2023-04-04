@@ -10,6 +10,7 @@ import {Component, Inject} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {BaseDialogComponent} from "../../../platform/base/components/base-dialog.component";
 import {TranslateService} from "@ngx-translate/core";
+import {StripeWithdrawalDialogDirective} from "./stripe-withdrawal-dialog.directive";
 
 /**
  *

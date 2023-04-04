@@ -24,7 +24,7 @@ import {AccountsService} from "./accounts/accounts.service";
 import {SessionService} from "./base/services/session.service";
 
 import {fadeAnimation} from "./base/library/fade-animation";
-import {Spinner} from "./base/library/spinner";
+// import {Spinner} from "./base/library/spinner";
 
 /**
  * プラットフォーム
@@ -52,7 +52,7 @@ export class PlatformComponent extends ResponsiveComponent implements OnInit, On
 
 	@ViewChild("sidenav") protected sidenav: MatSidenav;
 
-	private spinner: Spinner;
+//	private spinner: Spinner;
 
 	/**
 	 *
@@ -85,12 +85,12 @@ export class PlatformComponent extends ResponsiveComponent implements OnInit, On
 		this.date = new Date();
 		this.device = "";
 		// 	this.sock = new WebSocket(environment.webSocket);
-		this.spinner = new Spinner(overlay);
+//		this.spinner = new Spinner(overlay);
 	}
 
-	private Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	private Progress(value: boolean): void {
+//		this.spinner.Progress(value);
+//	}
 
 	/*
 	*

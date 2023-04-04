@@ -25,4 +25,14 @@
 	color:#808080;
 }
 
+.spinner-container {
+	position:relative;
+}
+
+.spinner {
+	position:absolute;
+	top:calc(50vh - 50px);
+	left:calc(50% - 50px);
+}
+
 /*# sourceMappingURL=progress.css.map */

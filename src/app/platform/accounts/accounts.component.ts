@@ -16,7 +16,7 @@ import {Overlay} from "@angular/cdk/overlay";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
-import {Spinner} from "../base/library/spinner";
+//import {Spinner} from "../base/library/spinner";
 
 import {SessionableComponent} from "../base/components/sessionable.component";
 import {AccountDialogComponent} from "./account-dialog/account-dialog.component";
@@ -44,9 +44,9 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 
 // 	@ViewChild(MatPaginator) public paginator: MatPaginator;
 
-	public get isProgress(): boolean {
-		return this.spinner.progress;
-	}
+//	public get isProgress(): boolean {
+//		return this.spinner.progress;
+//	}
 
 	public params: any = {};
 
@@ -61,7 +61,7 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 	protected query: object = {};
 	protected page: number = 0;
 
-	private spinner: Spinner;
+//	private spinner: Spinner;
 
 	/**
 	 *
@@ -85,7 +85,7 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 		protected route: ActivatedRoute,
 	) {
 		super(session);
-		this.spinner = new Spinner(overlay);
+//		this.spinner = new Spinner(overlay);
 	}
 
 	/**
@@ -104,9 +104,9 @@ export class AccountsComponent extends SessionableComponent implements OnInit {
 		return data;
 	}
 
-	private Progress(value: boolean): void {
-		this.spinner.Progress(value);
-	}
+//	private Progress(value: boolean): void {
+//		this.spinner.Progress(value);
+//	}
 
 	/**
 	 * アカウント参照

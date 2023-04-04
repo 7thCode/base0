@@ -25,10 +25,10 @@
 	<mat-dialog-actions fxLayout="row" fxLayoutAlign="center center" fxLayoutAlign.lt-sm="space-between center" style="padding: 12px 0;color:#ffffff;font-size:12px;">
 		<div fxFlex="40" fxLayoutAlign="center center" style="padding-top:12px;">
 			<button (click)="onAccept()" *ngIf="!(!checked || !checked1 || !checked2 || form.invalid)" [disabled]="!checked || !checked1 || !checked2 || form.invalid" color="primary" mat-raised-button id="mat-raised-button">Accept</button>
-			<button *ngIf="!checked || !checked1 || !checked2 || form.invalid" mat-raised-button style="background-color:#B0D296; color: #F4F7F1;">Accept</button>
+			<button *ngIf="!checked || !checked1 || !checked2 || form.invalid" mat-raised-button style="background-color:#B0D296; color: #F4F7F1;">OK</button>
 		</div>
 		<div fxFlex="40" fxLayoutAlign="center center" style="padding-top:12px;">
-			<button (click)="cancel()" color="warn" mat-dialog-close="" mat-raised-button id="mat-cancel-button">Cancel</button>
+			<button (click)="cancel()" color="warn" mat-dialog-close="" mat-raised-button id="mat-cancel-button">キャンセル</button>
 		</div>
 	</mat-dialog-actions>
 </div>

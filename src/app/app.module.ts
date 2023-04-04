@@ -16,7 +16,7 @@ import {HttpClientModule} from "@angular/common/http";
 
 import {OverlayModule} from "@angular/cdk/overlay";
 
-import {MatProgressSpinnerModule, MatSpinner} from "@angular/material/progress-spinner";
+// import {MatProgressSpinnerModule, MatSpinner} from "@angular/material/progress-spinner";
 
 import {AppRoutingModule} from "./app-routing.module";
 import {PlatformModule} from "./platform/platform.module";
@@ -38,7 +38,7 @@ import {environment} from '../environments/environment';
 		HttpClientModule,
 		OverlayModule,
 
-		MatProgressSpinnerModule,
+	//	MatProgressSpinnerModule,
 
 		PlatformModule,
 		ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
@@ -46,7 +46,7 @@ import {environment} from '../environments/environment';
 	providers: [],
 	bootstrap: [AppComponent],
 	entryComponents: [
-		MatSpinner,
+	//	MatSpinner,
 	],
 })
 

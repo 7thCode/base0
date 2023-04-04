@@ -5,42 +5,42 @@
 			<mat-card-content>
 				<form #form="ngForm" fxLayout="column" fxLayoutAlign="space-between" novalidate>
 					<mat-form-field class="input-text">
-						<mat-label>Number...</mat-label>
+						<mat-label>クレジット番号</mat-label>
 						<input #number_field="ngModel" [(ngModel)]="content.number" autocomplete="off" matInput maxlength="16" minlength="14" name="number" placeholder="4242424242424242" required type="text">
 						<mat-hint>16文字</mat-hint>
-						<mat-error *ngIf="number_field.errors?.required;">入力してください</mat-error>
-						<mat-error *ngIf="number_field.errors?.maxlength">長すぎます</mat-error>
-						<mat-error *ngIf="number_field.errors?.minlength">短すぎます</mat-error>
+						<mat-error *ngIf="number_field.errors?.['required'];">入力してください</mat-error>
+						<mat-error *ngIf="number_field.errors?.['maxlength'];">長すぎます</mat-error>
+						<mat-error *ngIf="number_field.errors?.['minlength'];">短すぎます</mat-error>
 					</mat-form-field>
 
 					<div fxLayout="row">
 						<mat-form-field class="input-text">
-							<mat-label>Month...</mat-label>
+							<mat-label>有効期限(月)</mat-label>
 							<mat-select #month_select="ngModel" [(ngModel)]="content.exp_month" name="month_select" required>
 								<mat-option *ngFor="let month of months" [value]="month">
 									{{month}}
 								</mat-option>
 							</mat-select>
-							<mat-error *ngIf="month_select.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="month_select.errors?.['required'];">入力してください</mat-error>
 						</mat-form-field>
 						<mat-form-field class="input-text">
-							<mat-label>Year...</mat-label>
+							<mat-label>有効期限(年)</mat-label>
 							<mat-select #year_select="ngModel" [(ngModel)]="content.exp_year" name="year_select" required>
 								<mat-option *ngFor="let year of years" [value]="year">
 									{{year}}
 								</mat-option>
 							</mat-select>
-							<mat-error *ngIf="year_select.errors?.required;">入力してください</mat-error>
+							<mat-error *ngIf="year_select.errors?.['required'];">入力してください</mat-error>
 						</mat-form-field>
 					</div>
 
 					<mat-form-field class="input-text">
 						<mat-label>cvc</mat-label>
-						<input #cvc_field="ngModel" [(ngModel)]="content.cvc" autocomplete="off" matInput maxlength="3" minlength="3" name="cvc" placeholder="123" required type="text">
-						<mat-hint>3文字</mat-hint>
-						<mat-error *ngIf="cvc_field.errors?.required;">入力してください</mat-error>
-						<mat-error *ngIf="cvc_field.errors?.maxlength">長すぎます</mat-error>
-						<mat-error *ngIf="cvc_field.errors?.minlength">短すぎます</mat-error>
+						<input #cvc_field="ngModel" [(ngModel)]="content.cvc" autocomplete="off" matInput maxlength="4" minlength="3" name="cvc" placeholder="123" required type="text">
+						<mat-hint>3もしくは4文字</mat-hint>
+						<mat-error *ngIf="cvc_field.errors?.['required'];">入力してください</mat-error>
+						<mat-error *ngIf="cvc_field.errors?.['maxlength'];">長すぎます</mat-error>
+						<mat-error *ngIf="cvc_field.errors?.['minlength'];">短すぎます</mat-error>
 					</mat-form-field>
 
 				</form>

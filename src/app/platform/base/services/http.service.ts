@@ -20,7 +20,6 @@ import {Callback} from "../../../../../types/platform/universe";
  *
  * @since 0.01
  */
-
 @Injectable({
 	providedIn: "root",
 })
@@ -52,6 +51,10 @@ export abstract class HttpService {
 			withCredentials: true,
 		};
 	}
+
+	protected isNumber(value: number): boolean {
+		return ((typeof value === 'number') && (isFinite(value)));
+	};
 
 	/**
 	 * URIストリングからオブジェクトにデシリアライズ
