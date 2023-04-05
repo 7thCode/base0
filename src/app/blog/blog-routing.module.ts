@@ -18,9 +18,9 @@ import {BlogArchiveComponent} from "./archive/archive.component";
 const routes: Routes = [
 	{
 		path: "", component: BlogComponent, children: [
-			{path: "top", component: BlogTopComponent, data: {animation: "top"}},
-			{path: "archive/:type/:skip", component: BlogArchiveComponent, data: {animation: 'archive'}},
-			{path: 'description/:id', component: BlogDescriptionComponent, data: {animation: 'description'}},
+			{path: "blog/top", component: BlogTopComponent, data: {animation: "top"}},
+			{path: "blog/archive/:type/:skip", component: BlogArchiveComponent, data: {animation: 'archive'}},
+			{path: 'blog/description/:id', component: BlogDescriptionComponent, data: {animation: 'description'}},
 			{path: "", component: BlogTopComponent, data: {animation: 'top'}},
 			{path: '**', component: ErrorComponent},
 		],
