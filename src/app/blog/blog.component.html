@@ -1,23 +1,40 @@
 <ng-container class="spinner-container">
-	<mat-toolbar fxLayout="row" fxLayoutAlign="end center" style="background-color:#72a3d2;height:32px">
+	<div fxLayout="column" fxLayout.lt-sm="column" style="height: auto;">
+		<div class="top">
+			<video autoplay muted loop playsinline poster="">
+				<source src="/videos/hero.mp4" type="video/mp4">
+			</video>
+			<div class="headline">
+				<div fxLayout="column" fxLayoutAlign="center">
+					<div fxLayout="row" fxLayoutAlign="center" style="font-size:60px;font-weight:900;color:#808080;">VOXI</div>
+					<div fxLayout="row" fxLayoutAlign="center" style="font-size:60px;font-weight:900;color:#808080;">Labo.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<mat-toolbar fxLayout="row" color="primary" fxLayoutAlign="start center">
 		<button (click)="sidenav.toggle()" *ngIf="(device === 'handset')" mat-icon-button>
 			<mat-icon style="color:#303030;">menu</mat-icon>
 		</button>
+		<span><a [routerLink]="'blog/top'" style="color:#fdfdfd;">VOXI Labo.</a></span>
 	</mat-toolbar>
-
-	<div fxLayout="column" fxLayout.lt-sm="column" style="height: auto;border-bottom: medium solid #25a8ff;">
-		<div class="hero" fxLayout="row" fxLayoutAlign="center center" style="position:relative">
-			<img src="/images/hero.jpg" style="width:100%;height:100%;">
-			<div style="position:absolute;left:8px;top:8px;padding: 20px 20px;font-size:24px;font-weight:900;color:#808080;">VOXI Labo.</div>
-		</div>
-	</div>
 
 	<mat-sidenav-container class="container">
 		<mat-sidenav #sidenav [mode]="(device === 'handset') ? 'over' : 'side'" [opened]="(device === 'desktop')"
 					 fxLayout="column" fxLayoutAlign="center"
-					 style="border-right:none;width:200px;background-color:#fdfdfd;">
-			<blog-list type="month"></blog-list>
-			<blog-list type="type"></blog-list>
+					 style="border-right:none;width:200px;background-color:#efefff;">
+			<div fxLayout="column" fxFill fxLayoutAlign="space-between">
+				<div fxLayout="column">
+					<blog-list type="month"></blog-list>
+					<blog-list type="type"></blog-list>
+				</div>
+
+				<mat-list style="background: #303030;">
+					<mat-list-item style="color:#fdfdfd;">xxxx</mat-list-item>
+				</mat-list>
+			</div>
+
+
 		</mat-sidenav>
 		<mat-sidenav-content style="background-color:#fdfdfd;">
 			<div [@fadeAnimation]="prepareRoute(outlet)">

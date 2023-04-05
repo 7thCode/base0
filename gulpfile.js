@@ -59,6 +59,7 @@ gulp.task('build', function() {
 		'public/iconfont/**/*.*',
 		'public/icons/**/*.*',
 		'public/favicon/**/*.*',
+		'public/videos/**/*.*',
 		'public/result/*.*',
 		'bridge/**/*.js',
 		'server/**/*.js',
