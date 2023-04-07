@@ -22,7 +22,6 @@ const routes: Routes = [
 			{path: "blog/archive/:type/:skip", component: BlogArchiveComponent, data: {animation: 'archive'}},
 			{path: 'blog/description/:id', component: BlogDescriptionComponent, data: {animation: 'description'}},
 			{path: "", component: BlogTopComponent, data: {animation: 'top'}},
-			{path: '**', component: ErrorComponent},
 		],
 	},
 ];

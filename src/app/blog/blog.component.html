@@ -12,11 +12,30 @@
 			</div>
 		</div>
 	</div>
-	<mat-toolbar fxLayout="row" color="primary" fxLayoutAlign="start center">
-		<button (click)="sidenav.toggle()" *ngIf="(device === 'handset')" mat-icon-button>
-			<mat-icon style="color:#303030;">menu</mat-icon>
-		</button>
-		<span><a [routerLink]="'blog/top'" style="color:#fdfdfd;">VOXI Labo.</a></span>
+	<mat-toolbar fxLayout="row" color="primary" fxLayoutAlign="space-between center">
+		<div>
+			<button (click)="sidenav.toggle()" *ngIf="(device === 'handset')" mat-icon-button>
+				<mat-icon style="color:#303030;">menu</mat-icon>
+			</button>
+			<span [routerLink]="'blog/top'" style="color:#fdfdfd;">VOXI Labo.</span>
+		</div>
+		<div>
+			<button [matMenuTriggerFor]="menu" mat-icon-button>
+				<mat-icon>more_vert</mat-icon>
+			</button>
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item>
+					<span></span>
+				</button>
+				<button mat-menu-item>
+					<span></span>
+				</button>
+				<button mat-menu-item>
+					<span></span>
+				</button>
+			</mat-menu>
+		</div>
+
 	</mat-toolbar>
 
 	<mat-sidenav-container class="container">
