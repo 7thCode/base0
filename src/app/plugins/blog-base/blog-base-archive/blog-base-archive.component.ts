@@ -41,7 +41,7 @@ export abstract class BlogBaseArchiveComponent extends BlogBasePageComponent imp
 		protected title: Title,
 		protected meta: Meta
 	) {
-		super(session, blogsService, breakpointObserver, overlay, matDialog, snackbar,	 domSanitizer, activatedRoute, router, title, meta);
+		super(session, blogsService, breakpointObserver, overlay, matDialog, snackbar, domSanitizer, activatedRoute, router, title, meta);
 	}
 
 	/**
@@ -79,9 +79,4 @@ export abstract class BlogBaseArchiveComponent extends BlogBasePageComponent imp
 	public sanitize(text: string) {
 		return this.domSanitizer.bypassSecurityTrustHtml(text);
 	}
-
-
-
-
-
 }

@@ -44,4 +44,8 @@ export class BlogDescriptionComponent extends BlogBaseDescriptionComponent imple
 	) {
 		super(session, blogsService, breakpointObserver, overlay, matDialog, snackbar,	 domSanitizer, activatedRoute, router, _title, meta);
 	}
+
+	public sanitize(text: string) {
+		return this.domSanitizer.bypassSecurityTrustHtml(text);
+	}
 }

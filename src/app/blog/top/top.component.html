@@ -1,7 +1,7 @@
 <ng-container>
 	<div style="margin:64px 36px 24px;">
 		<div fxLayout="row" fxLayoutAlign="space-between">
-			<h1><span>VOXI Blog.</span></h1>
+			<h1><span>Gallery.</span></h1>
 			<button (click)="createDialog()" *ngIf="auth | authis: 'manager'" class="fab-center" color="primary" mat-fab
 					style="margin:12px;">+
 			</button>
@@ -13,12 +13,12 @@
 		<div fxLayout="row wrap" fxLayoutAlign="center">
 			<div *ngFor="let resource of results" style="height:240px;width:180px;margin:12px;padding:4px;">
 				<div fxLayout="column" fxLayoutAlign="center">
-					<div fxLayout="row" fxLayoutAlign="end" style="width:100%;">
+				<!--	<div fxLayout="row" fxLayoutAlign="end" style="width:100%;">
 						<button mat-mini-fab color="primary" [routerLink]="['/blog/description', resource.content.id]">
 							<mat-icon>menu</mat-icon>
 						</button>
-					</div>
-					<a [routerLink]="['/blog/description', resource.content.id]" matRipple fxLayout="row" fxLayoutAlign="center center" style="width: 180px;height: 180px;padding: 0;">
+					</div> -->
+					<a [routerLink]="['/blog/description', resource.content.id]" matRipple fxLayout="row" fxLayoutAlign="center center" style="background-color: black;width: 180px;height: 180px;padding: 0;">
 						<app-image [scope]="'publish'" [fileName]="imageName(resource.content.accessory.images, 0)" [type]="imageMedia(resource.content.accessory.images, 0)"></app-image>
 					</a>
 				</div>
