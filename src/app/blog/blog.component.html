@@ -1,8 +1,7 @@
 <ng-container class="spinner-container">
 	<div fxLayout="column" fxLayout.lt-sm="column" style="height: auto;">
 		<div class="top">
-			<video autoplay muted loop playsinline poster="">
-				<source src="/videos/hero.mp4" type="video/mp4">
+			<video src="/videos/hero.mp4" autoplay muted loop playsinline>
 			</video>
 			<div class="headline">
 				<div fxLayout="column" fxLayoutAlign="center">
@@ -12,12 +11,13 @@
 			</div>
 		</div>
 	</div>
-	<mat-toolbar fxLayout="row" color="primary" fxLayoutAlign="space-between center">
+	<mat-toolbar fxLayout="row" class="dark-theme" fxLayoutAlign="space-between center">
 		<div>
 			<button (click)="sidenav.toggle()" *ngIf="(device === 'handset')" mat-icon-button>
-				<mat-icon style="color:#303030;">menu</mat-icon>
+				<mat-icon>menu</mat-icon>
 			</button>
-			<span [routerLink]="'blog/top'" style="color:#fdfdfd;">VOXI Labo.</span>
+			<span [routerLink]="'blog/top'">VOXI Labo.</span>
+			<a href="">profile</a>
 		</div>
 		<div>
 			<button [matMenuTriggerFor]="menu" mat-icon-button>
@@ -38,10 +38,8 @@
 
 	</mat-toolbar>
 
-	<mat-sidenav-container class="container">
-		<mat-sidenav #sidenav [mode]="(device === 'handset') ? 'over' : 'side'" [opened]="(device === 'desktop')"
-					 fxLayout="column" fxLayoutAlign="center"
-					 style="border-right:none;width:200px;background-color:#efefff;">
+	<mat-sidenav-container class="container" style="background: linear-gradient(#232323,#161616);">
+		<mat-sidenav #sidenav [mode]="(device === 'handset') ? 'over' : 'side'" [opened]="(device === 'desktop')" fxLayout="column" fxLayoutAlign="center" style="border-right:none;width:200px;background: linear-gradient(rgb(0 0 20), rgb(57, 57, 62));">
 			<div fxLayout="column" fxFill fxLayoutAlign="space-between">
 				<div fxLayout="column">
 					<blog-list type="month"></blog-list>
@@ -49,14 +47,12 @@
 				</div>
 
 				<mat-list style="background: #303030;">
-					<mat-list-item style="color:#fdfdfd;">xxxx</mat-list-item>
+					<mat-list-item style="color:#fdfdfd;">2023 VOXI Labo.</mat-list-item>
 				</mat-list>
 			</div>
-
-
 		</mat-sidenav>
-		<mat-sidenav-content style="background-color:#fdfdfd;">
-			<div [@fadeAnimation]="prepareRoute(outlet)">
+		<mat-sidenav-content>
+			<div [@fadeAnimation]="prepareRoute(outlet)" >
 				<router-outlet #outlet="outlet"></router-outlet>
 			</div>
 		</mat-sidenav-content>

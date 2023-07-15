@@ -35,14 +35,13 @@ export class BlogDescriptionComponent extends BlogBaseDescriptionComponent imple
 		protected overlay: Overlay,
 		protected matDialog: MatDialog,
 		protected snackbar: MatSnackBar,
-
 		protected domSanitizer: DomSanitizer,
 		protected activatedRoute: ActivatedRoute,
 		protected router: Router,
 		protected _title: Title,
 		protected meta: Meta
 	) {
-		super(session, blogsService, breakpointObserver, overlay, matDialog, snackbar,	 domSanitizer, activatedRoute, router, _title, meta);
+		super(session, blogsService, breakpointObserver, overlay, matDialog, snackbar, domSanitizer, activatedRoute, router, _title, meta);
 	}
 
 	public sanitize(text: string) {

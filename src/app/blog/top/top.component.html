@@ -1,42 +1,41 @@
 <ng-container>
-	<div style="margin:64px 36px 24px;">
-		<div fxLayout="row" fxLayoutAlign="space-between">
-			<h1><span>Gallery.</span></h1>
-			<button (click)="createDialog()" *ngIf="auth | authis: 'manager'" class="fab-center" color="primary" mat-fab
-					style="margin:12px;">+
-			</button>
-		</div>
-		<div class="paragraph" style="margin:36px;">
-			<div [innerHTML]='description' style="margin:48px;font-size: 12px;font-weight:500;line-height: 1.8rem;"></div>
-		</div>
-		<mat-paginator (page)="Page($event)" [length]="count" [pageSize]="size"></mat-paginator>
-		<div fxLayout="row wrap" fxLayoutAlign="center">
-			<div *ngFor="let resource of results" style="height:240px;width:180px;margin:12px;padding:4px;">
-				<div fxLayout="column" fxLayoutAlign="center">
+	<div fxLayout="row" fxLayoutAlign="space-between" style="margin: 12px;">
+		<h1><span>Gallery.</span></h1>
+		<button (click)="createDialog()" *ngIf="auth | authis: 'manager'" class="fab-center" color="primary" mat-fab
+				style="margin:12px;">+
+		</button>
+	</div>
+	<div class="paragraph" style="margin:36px;">
+		<div [innerHTML]='description' style="margin:48px;font-size: 12px;font-weight:500;line-height: 1.8rem;"></div>
+	</div>
+	<mat-paginator class="dark-theme" (page)="Page($event)" [length]="count" [pageSize]="size"></mat-paginator>
+	<div fxLayout="row wrap" fxLayoutAlign="center">
+		<div *ngFor="let resource of results" style="height:240px;width:180px;margin:12px;padding:4px;">
+			<div fxLayout="column" fxLayoutAlign="center">
 				<!--	<div fxLayout="row" fxLayoutAlign="end" style="width:100%;">
 						<button mat-mini-fab color="primary" [routerLink]="['/blog/description', resource.content.id]">
 							<mat-icon>menu</mat-icon>
 						</button>
 					</div> -->
-					<a [routerLink]="['/blog/description', resource.content.id]" matRipple fxLayout="row" fxLayoutAlign="center center" style="background-color: black;width: 180px;height: 180px;padding: 0;">
-						<app-image [scope]="'publish'" [fileName]="imageName(resource.content.accessory.images, 0)" [type]="imageMedia(resource.content.accessory.images, 0)"></app-image>
-					</a>
+				<a [routerLink]="['/blog/description', resource.content.id]" matRipple fxLayout="row" fxLayoutAlign="center center" style="background-color: black;width: 180px;height: 180px;padding: 0;">
+					<app-image [scope]="'publish'" [fileName]="imageName(resource.content.accessory.images, 0)" [type]="imageMedia(resource.content.accessory.images, 0)"></app-image>
+				</a>
+			</div>
+			<div fxLayout="column" fxLayoutAlign="space-between" style="color:#303030;margin-top:4px;">
+				<div>
+					<div class="top-sub">{{resource.create | date}}</div>
+					<div class="top-title">{{resource.content.value.title | truncate:14}}</div>
 				</div>
-				<div fxLayout="column" fxLayoutAlign="space-between" style="color:#303030;margin-top:4px;">
-					<div>
-						<div class="top-sub">{{resource.create | date}}</div>
-						<div class="top-title">{{resource.content.value.title | truncate:14}}</div>
-					</div>
-					<div *ngIf="auth | authis: 'manager'" fxLayout="row" fxLayoutAlign="space-around">
-						<button (click)="updateDialog(resource.content.id)" mat-icon-button>
-							<mat-icon style="color:#5f73df;">edit</mat-icon>
-						</button>
-						<button (click)="onDelete($event, resource.content.id)" mat-icon-button>
-							<mat-icon style="color:#f36e6e;">delete_sweep</mat-icon>
-						</button>
-					</div>
+				<div *ngIf="auth | authis: 'manager'" fxLayout="row" fxLayoutAlign="space-around">
+					<button (click)="updateDialog(resource.content.id)" mat-icon-button>
+						<mat-icon style="color:#5f73df;">edit</mat-icon>
+					</button>
+					<button (click)="onDelete($event, resource.content.id)" mat-icon-button>
+						<mat-icon style="color:#f36e6e;">delete_sweep</mat-icon>
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
+	<mat-paginator class="dark-theme" (page)="Page($event)" [length]="count" [pageSize]="size"></mat-paginator>
 </ng-container>

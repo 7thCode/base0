@@ -13,7 +13,7 @@
 	margin:4px 0;
 	font-size:12px;
 	font-weight:500;
-	color:#606060;
+	color: #eeeeee;
 }
 
 .top-title {
@@ -22,7 +22,7 @@
 	letter-spacing: 0.08em;
 	line-height: 1.2em;
 	font-size: 12px;
-	color: #404040;
+	color: #eeeeee;
 }
 
 h1 {
@@ -51,4 +51,15 @@ h1::after {
 	width: 100%;
 	height: 0;
 	border-bottom: 1px solid #ccc;
+}
+
+.panel-background {
+	background: linear-gradient(#1b1b1d,#39393e);
+}
+.mat-button-wrapper {
+	color:#fdfdfd;
+}
+.mat-paginator {
+	color:#fdfdfd;
+	background: #00000000;
 }
