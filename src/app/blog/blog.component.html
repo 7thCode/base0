@@ -16,8 +16,8 @@
 			<button (click)="sidenav.toggle()" *ngIf="(device === 'handset')" mat-icon-button>
 				<mat-icon>menu</mat-icon>
 			</button>
-			<span [routerLink]="'blog/top'">VOXI Labo.</span>
-			<a href="">profile</a>
+			<span style="margin:0 10px;" [routerLink]="'blog/top'">VOXI Labo.</span>
+			<a style="margin:0 10px;font-size:12px;background-color:rgb(245,245,245);color:#303030;" href="/images/profile.pdf" mat-flat-button>profile</a>
 		</div>
 		<div>
 			<button [matMenuTriggerFor]="menu" mat-icon-button>
