@@ -32,10 +32,6 @@ class BTreeNode {
 }
 */
 
-
-//const root = new BTreeNode(true);
-
-
 class TreeNode {
 	public data: Entry[];
 }
@@ -51,24 +47,24 @@ let r: TreeNode = {
 	data: [
 		{
 			key: 150,
-			value: 0,
+			value: 3,
 			lesser: {
 				data: [
 					{
 						key: 3,
-						value: 1,
+						value: 0,
 						lesser: null,
 						grater: null
 					},
 					{
 						key: 100,
-						value: 2,
+						value: 1,
 						lesser: null,
 						grater: null
 					},
 					{
 						key: 120,
-						value: 3,
+						value: 2,
 						lesser: null,
 						grater: null
 					}],
@@ -83,12 +79,28 @@ let r: TreeNode = {
 				data: [
 					{
 						key: 360,
-						value: 5,
+						value: 9,
 						lesser: {
 							data: [
 								{
 									key: 320,
+									value: 5,
+									lesser: null,
+									grater: null
+								},
+								{
+									key: 330,
 									value: 6,
+									lesser: null,
+									grater: null
+								},{
+									key: 340,
+									value: 7,
+									lesser: null,
+									grater: null
+								},{
+									key: 350,
+									value: 8,
 									lesser: null,
 									grater: null
 								}],
@@ -97,19 +109,19 @@ let r: TreeNode = {
 							data: [
 								{
 									key: 400,
-									value: 7,
+									value: 10,
 									lesser: null,
 									grater: null
 								},
 								{
 									key: 500,
-									value: 8,
+									value: 11,
 									lesser: null,
 									grater: null
 								},
 								{
 									key: 600,
-									value: 9,
+									value: 12,
 									lesser: null,
 									grater: null
 								}],
@@ -120,70 +132,79 @@ let r: TreeNode = {
 }
 
 
-const between = (value:number, start:number, end:number):boolean => {
+const between = (value: number, start: number, end: number): boolean => {
 	return ((start < value) && (value < end));
 }
 
-const find = (current_node: TreeNode, find_key: number): number => {
-		const size = current_node.data.length;
-		for (let index: number = 0; index < size; index++) {
-			const lesser_entry: Entry = current_node.data[index];
-			let grater_entry: Entry = null;
-			
-			if (index < size - 1) {
-				grater_entry = current_node.data[index + 1];
+const find = (current_node: TreeNode, find_key: number): Entry => {
+	const size = current_node.data.length;
+	for (let index: number = 0; index < size; index++) {
+		const lesser_entry: Entry = current_node.data[index];
+
+		// 先頭、中間
+		if (index < size - 1) {
+			const grater_entry: Entry = current_node.data[index + 1];
+
+			if (find_key === grater_entry.key) {
+				return grater_entry;
 			}
 
-			if (find_key === lesser_entry.key) {
-				return lesser_entry.value;
-			}
-
-			if (find_key < lesser_entry.key) {
-				if (lesser_entry.lesser) {
-					return find(lesser_entry.lesser, find_key);
+			if (between(find_key, lesser_entry.key, grater_entry.key)) {
+				if (grater_entry.lesser) {
+					return find(grater_entry.lesser, find_key);
 				}
 			}
 
-			if (find_key > lesser_entry.key) {
-				if (lesser_entry.grater) {
-					return find(lesser_entry.grater, find_key);
+			if (find_key > grater_entry.key) {
+				if (grater_entry.grater) {
+					return find(grater_entry.grater, find_key);
 				}
 			}
-
-			if (grater_entry) {
-				if (find_key === grater_entry.key) {
-					return grater_entry.value;
-				}
-
-				if (between(find_key, lesser_entry.key, grater_entry.key)) {
-					if (grater_entry.lesser) {
-						return find(grater_entry.lesser, find_key);
-					}
-				}
-
-				if (find_key > grater_entry.key) {
-					if (grater_entry.grater) {
-						return find(grater_entry.grater, find_key);
-					}
-				}
-			}
-
 		}
-	return undefined;
+
+		// 先頭、中間、終端
+		if (find_key === lesser_entry.key) {
+			return lesser_entry;
+		}
+
+		if (find_key < lesser_entry.key) {
+			if (lesser_entry.lesser) {
+				return find(lesser_entry.lesser, find_key);
+			}
+		}
+
+		if (find_key > lesser_entry.key) {
+			if (lesser_entry.grater) {
+				return find(lesser_entry.grater, find_key);
+			}
+		}
+
+	}
+	return {
+		key: undefined,
+		value: undefined,
+		lesser: undefined,
+		grater: undefined
+	};
 }
 
+console.log("003 :", find(r, 3).value);
+console.log("100 :", find(r, 100).value);
+console.log("120 :", find(r, 120).value);
+console.log("150 :", find(r, 150).value);
+console.log("200 :", find(r, 200).value);
+console.log("320 :", find(r, 320).value);
+console.log("330 :", find(r, 330).value);
+console.log("340 :", find(r, 340).value);
+console.log("350 :", find(r, 350).value);
+console.log("360 :", find(r, 360).value);
+console.log("400 :", find(r, 400).value);
+console.log("500 :", find(r, 500).value);
+console.log("600 :", find(r, 600).value);
 
-console.log("003 :", find(r, 3));
-console.log("100 :",find(r, 100));
-console.log("120 :",find(r, 120));
-console.log("150 :",find(r, 150));
-console.log("200 :",find(r, 200));
-console.log("320 :",find(r, 320));
-console.log("360 :",find(r, 360));
-
-console.log("400 :",find(r, 400));
-console.log("500 :",find(r, 500));
-console.log("600 :",find(r, 600));
+//for (let i = 0; i < 601; i+= 1) {
+//	console.log( i + " :", find(r, i).value);
+//}
 
 
 
