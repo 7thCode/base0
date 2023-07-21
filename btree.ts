@@ -93,12 +93,12 @@ let r: TreeNode = {
 									value: 6,
 									lesser: null,
 									grater: null
-								},{
+								}, {
 									key: 340,
 									value: 7,
 									lesser: null,
 									grater: null
-								},{
+								}, {
 									key: 350,
 									value: 8,
 									lesser: null,
@@ -136,7 +136,7 @@ const between = (value: number, start: number, end: number): boolean => {
 	return ((start < value) && (value < end));
 }
 
-const find = (current_node: TreeNode, find_key: number): Entry => {
+const find = (current_node: TreeNode, find_key: number): [TreeNode, Entry] => {
 	const size = current_node.data.length;
 	for (let index: number = 0; index < size; index++) {
 		const lesser_entry: Entry = current_node.data[index];
@@ -146,7 +146,7 @@ const find = (current_node: TreeNode, find_key: number): Entry => {
 			const grater_entry: Entry = current_node.data[index + 1];
 
 			if (find_key === grater_entry.key) {
-				return grater_entry;
+				return [current_node, grater_entry];
 			}
 
 			if (between(find_key, lesser_entry.key, grater_entry.key)) {
@@ -164,7 +164,7 @@ const find = (current_node: TreeNode, find_key: number): Entry => {
 
 		// 先頭、中間、終端
 		if (find_key === lesser_entry.key) {
-			return lesser_entry;
+			return [current_node, lesser_entry];
 		}
 
 		if (find_key < lesser_entry.key) {
@@ -180,27 +180,27 @@ const find = (current_node: TreeNode, find_key: number): Entry => {
 		}
 
 	}
-	return {
-		key: undefined,
-		value: undefined,
-		lesser: undefined,
-		grater: undefined
-	};
+	return [current_node, null];
 }
 
-console.log("003 :", find(r, 3).value);
-console.log("100 :", find(r, 100).value);
-console.log("120 :", find(r, 120).value);
-console.log("150 :", find(r, 150).value);
-console.log("200 :", find(r, 200).value);
-console.log("320 :", find(r, 320).value);
-console.log("330 :", find(r, 330).value);
-console.log("340 :", find(r, 340).value);
-console.log("350 :", find(r, 350).value);
-console.log("360 :", find(r, 360).value);
-console.log("400 :", find(r, 400).value);
-console.log("500 :", find(r, 500).value);
-console.log("600 :", find(r, 600).value);
+
+let [node, entry] = find(r, 350)
+
+console.log("003 :", node, entry);
+
+console.log("003 :", find(r, 3)[1].value);
+console.log("100 :", find(r, 100)[1].value);
+console.log("120 :", find(r, 120)[1].value);
+console.log("150 :", find(r, 150)[1].value);
+console.log("200 :", find(r, 200)[1].value);
+console.log("320 :", find(r, 320)[1].value);
+console.log("330 :", find(r, 330)[1].value);
+console.log("340 :", find(r, 340)[1].value);
+console.log("350 :", find(r, 350)[1].value);
+console.log("360 :", find(r, 360)[1].value);
+console.log("400 :", find(r, 400)[1].value);
+console.log("500 :", find(r, 500)[1].value);
+console.log("600 :", find(r, 600)[1].value);
 
 //for (let i = 0; i < 601; i+= 1) {
 //	console.log( i + " :", find(r, i).value);
